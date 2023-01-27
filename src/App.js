@@ -1,8 +1,8 @@
 import './App.css';
 import React from 'react';
 import RouterList from './routes'
-import Header from './modules/generic/frames/header';
-import Footer from './modules/generic/frames/footer';
+import Header from './modules/frames/Header';
+import Footer from './modules/frames/Footer';
 import {withRouter} from 'react-router-dom';
 
 function App() {

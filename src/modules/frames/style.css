@@ -1,0 +1,19 @@
+.container{
+    width: 100%;
+}
+.headerContainer{
+    display: flex;
+    margin-left: 15%;
+    margin-right: 15%;
+    row-gap: 10%;
+}
+.blank{
+    display: flex;
+    width: 30%;
+}
+.headerLinks{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+}
