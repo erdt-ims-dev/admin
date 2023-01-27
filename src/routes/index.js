@@ -1,11 +1,13 @@
 import React from 'react';
 import {Switch} from 'react-router-dom';
 import Route from './route'
-import Landing from '../modules/landing/index'
+import Dashboard from '../modules/dashboard/index'
+import Login from '../modules/auth/login'
 export default function Routes(){
 	return(
 		<Switch>
-			<Route path="/" exact component={Landing}/>
+			<Route path="/" exact component={Dashboard}/>
+			<Route path="/login" exact component={Login}/>
 		</Switch>
 	)
 }
