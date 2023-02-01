@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Navbar, Container, Breadcrumb } from 'react-bootstrap'
+import erdt from '../../assets/img/erdtl.png'
 import './style.css'
 
 export class Header extends Component {
@@ -11,8 +12,10 @@ export class Header extends Component {
       }
     render() {
         return (
-            <div>
-              
+            <div className='headerContainer'>
+              <div>
+                <img src={erdt} className="logo"/>
+              </div>
             </div>
         )
     }
