@@ -13,7 +13,10 @@ export class Header extends Component {
     render() {
         return (
             <div className='headerContainer'>
-              <div>
+              <div style={{
+                marginLeft: 25,
+                marginTop: 10
+              }}>
                 <img src={erdt} className="logo"/>
               </div>
             </div>

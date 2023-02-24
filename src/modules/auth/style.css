@@ -89,7 +89,7 @@ clear: both;
 .loginForm{
   display: flex;
   justify-content: center;
-  margin-top: 5%;
+  margin-top: 7%;
   width: 60vh;
   height: 50vh;
   border: 1px solid;
