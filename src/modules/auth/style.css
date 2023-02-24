@@ -1,4 +1,4 @@
-
+/* 
 #header {
     height: 40px;
     background: linear-gradient(to bottom, #2557fd, #6379f1)
@@ -32,6 +32,7 @@ clear: both;
 }
   #login-form {
     margin: 100px auto 100px;
+    min-height: 60vh;
     width: 300px;
     padding: 20px;
     border: 1px solid #ccc;
@@ -75,4 +76,22 @@ clear: both;
 .column {
   width: 100%;
 }
+} */
+
+.loginContainer{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+
+}
+.loginForm{
+  display: flex;
+  justify-content: center;
+  margin-top: 5%;
+  width: 60vh;
+  height: 50vh;
+  border: 1px solid;
+  border-radius: 10px;
 }

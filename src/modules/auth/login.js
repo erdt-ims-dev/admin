@@ -5,6 +5,8 @@ import USCLogo from '../../assets/img/usc.png'
 import DCISM from '../../assets/img/dcism.png'
 import Circuit from '../../assets/img/circuitboard.png'
 import './style.css'
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 class Login extends Component {
     constructor(props) {
@@ -15,36 +17,35 @@ class Login extends Component {
       }
     render() {
         return (
-            <div>
-            <div className="bg" style={{
-              backgroundImage: Circuit
+           <div className='loginContainer'>
+            <div className='loginForm'>
+            <Form style={{
+              display: 'flex',
+              justifyContent: 'center',
+              "flex-direction": 'column'
             }}>
-              <div id="login-form">
-                <form action="/login" method="post">
-                  <div id="main-holder">
-                    <h1 id="login-header">LOG IN</h1>
-                    <input type="text" id="username" name="username" className="login-form" placeholder="Email" />
-                    <input type="password" id="password" name="password" className="login-form" placeholder="Password" />
-                    <br />
-                    <br />
-                    <br />
-                    <input type="submit" defaultValue="ENTER" />
-                  </div></form>
-              </div> 
-              <div id="footer">
-                <div className="footering">
-                  <div className="column">
-                    <img src={USCLogo} width={367} height={131} />
-                  </div>
-                  <div className="column">
-                    <img src={DCISM} width={367} height={131} />
-                  </div>
-                  <div className="column"> </div>
-                  <div className="column"> </div>
-                </div>
-              </div>
-              </div>
+              <Form.Group className="mb-3" controlId="formBasicEmail" style={{
+              }}>
+                <Form.Label>Email address</Form.Label>
+                <Form.Control type="email" placeholder="Enter email" />
+                <Form.Text className="text-muted">
+                  We'll never share your email with anyone else.
+                </Form.Text>
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" placeholder="Password" />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                <Form.Check type="checkbox" label="Check me out" />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
             </div>
+           </div>
 
         )
     }
