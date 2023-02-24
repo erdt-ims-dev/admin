@@ -19,6 +19,9 @@ export class Header extends Component {
               }}>
                 <img src={erdt} className="logo"/>
               </div>
+              <div className='name'>
+                <h2>USC-ERDT</h2>
+              </div>
             </div>
         )
     }
