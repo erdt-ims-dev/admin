@@ -4,12 +4,15 @@ import Route from './route'
 import Dashboard from '../modules/dashboard/index'
 import Login from '../modules/auth/login'
 import Signup from '../modules/auth/signup'
+import Endorsedapplicant from '../modules/applications/endorsedapplicant';
+
 export default function Routes(){
 	return(
 		<Switch>
 			<Route path="/" exact component={Login}/>
 			<Route path="/dashboard" exact component={Dashboard}/>
 			<Route path="/signup" exact component={Signup}/>
+			<Route path="/endoresedapplicant" exact component={Endorsedapplicant}/>
 		</Switch>
 	)
 }
