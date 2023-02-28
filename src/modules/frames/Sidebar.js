@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Navbar, Container, Breadcrumb } from 'react-bootstrap'
 import erdt from '../../assets/img/erdtl.png'
 import './style.css'
-import Sidebar from "react-sidebar";
 
 
 export class SidebarFrame extends Component {
@@ -21,18 +20,7 @@ export class SidebarFrame extends Component {
         const {sidebarOpen} = this.state;
         return (
             <div>
-                <Sidebar
-                    sidebar={
-                        <div>
-
-                        </div>
-                    }
-                    open={sidebarOpen}
-                    docked={true}
-                    onSetOpen={this.onSetSidebarOpen}
-                    styles={{ sidebar: { background: "white" } }}
-                >
-                </Sidebar>
+                {/* here */}
             </div>
         )
     }
