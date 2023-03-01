@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import { Navbar, Container, Breadcrumb } from 'react-bootstrap'
 import erdt from '../../assets/img/erdtl.png'
 import {Sidebar, InputItem, DropdownItem, Icon, Item, Logo, LogoText} from 'react-sidebar-ui'
-
 import './style.css'
-
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHouse, faListCheck, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 export class SidebarFrame extends Component {
     constructor(props) {
         super(props);
@@ -37,7 +36,9 @@ export class SidebarFrame extends Component {
                     bgColor='light' 
                     classes='sidebarItem'
                     >
-                    <Icon><i className="fas fa-home"/></Icon>
+                    <Icon>
+                        <FontAwesomeIcon icon={faHouse}/>
+                    </Icon>
                     Dashboard
                     </Item>
 
@@ -46,23 +47,31 @@ export class SidebarFrame extends Component {
                     classes='sidebarItem'
                     // onClick={this.props.history.push('/endoresedapplicant')}
                     >
-                    <Icon><i className="fas fa-home"/></Icon>
+                    <Icon>
+                        <FontAwesomeIcon icon={faHouse}/>
+                    </Icon>
                     Applications
                     </Item>
 
                     <Item bgColor='light' classes='sidebarItem'>
-                    <Icon><i className="fas fa-info"/></Icon>
-                    Student List
+                    <Icon>
+                        <FontAwesomeIcon icon={faListCheck}/>
+                    </Icon>
+                        Student List
                     </Item>
 
                     <Item bgColor='light' classes='sidebarItem'>
-                    <Icon><i className="fas fa-sitemap"/></Icon>
-                    Account Settings
+                    <Icon>
+                        <FontAwesomeIcon icon={faGear}/>
+                    </Icon>
+                        Account Settings
                     </Item>
 
                     <Item bgColor='light' classes='sidebarItem'>
-                    <Icon><i className="far fa-address-book"/></Icon>
-                    Logout
+                    <Icon>
+                        <FontAwesomeIcon icon={faRightFromBracket}/>
+                    </Icon>
+                        Logout
                     </Item>
 
                     <Item bgColor='light'>
