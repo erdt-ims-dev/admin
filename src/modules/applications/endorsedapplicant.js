@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import './applications.css'
 
 
-// const applicants = [
-//     {name: "Jack C. Jones", course: "MS EE", gmail: "jackjones@gmail.com"},
-//     {name: "George C. Jones", course: "MS ECE", gmail: "georgejones@gmail.com"},
-// ];
+const applicants = [
+    {name: "Jack C. Jones", course: "MS EE", gmail: "jackjones@gmail.com"},
+    {name: "George C. Jones", course: "MS ECE", gmail: "georgejones@gmail.com"},
+];
 
 class Endorsedapplicant extends Component {
 
