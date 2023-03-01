@@ -51,3 +51,8 @@
     justify-content: end;
     font-size: 10px;
   }
+  /* Sidebard */
+  .sidebarItem{
+    text-align: start;
+    margin-left: 10px;
+  }

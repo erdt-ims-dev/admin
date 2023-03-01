@@ -9,7 +9,9 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-
+import '@fortawesome/free-solid-svg-icons';
+// import '@fortawesome/free-regular-svg-icons';
+// import '@fortawesome/free-brands-svg-icons'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
