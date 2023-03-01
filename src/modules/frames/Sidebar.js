@@ -44,7 +44,7 @@ export class SidebarFrame extends Component {
                     <Item 
                     bgColor='light' 
                     classes='sidebarItem'
-                    onClick={this.props.history.push('/endoresedapplicant')}
+                    // onClick={this.props.history.push('/endoresedapplicant')}
                     >
                     <Icon><i className="fas fa-home"/></Icon>
                     Applications

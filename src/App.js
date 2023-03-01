@@ -25,10 +25,10 @@ function App(props) {
         </div>
         <div>
           <div className='mainContainer'>
-            <div>
+            <div className='sidebarContainer'>
             <Sidebar {...props}/>
             </div>
-            <div>
+            <div className='pageContainer'>
             <RouterList />
             </div>
           </div>
