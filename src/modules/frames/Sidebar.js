@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Navbar, Container, Breadcrumb } from 'react-bootstrap'
 import erdt from '../../assets/img/erdtl.png'
+import {Sidebar, InputItem, DropdownItem, Icon, Item, Logo, LogoText} from 'react-sidebar-ui'
 import './style.css'
-import Sidebar from "react-sidebar";
-
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHouse, faListCheck, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 export class SidebarFrame extends Component {
     constructor(props) {
         super(props);
@@ -21,17 +21,63 @@ export class SidebarFrame extends Component {
         const {sidebarOpen} = this.state;
         return (
             <div>
-                <Sidebar
-                    sidebar={
-                        <div>
+                <Sidebar bgColor='light' isCollapsed={false}>
+                    <Logo
+                    image={erdt}
+                    imageName='react logo'/>
+                    <LogoText>Sidebar Test</LogoText>
+                    {/* <DropdownItem
+                    values={['First', 'Second', 'Third']}
+                    bgColor={'light'}
+                    >
+                    Dashboard
+                    </DropdownItem> */}
+                    <Item 
+                    bgColor='light' 
+                    classes='sidebarItem'
+                    >
+                    <Icon>
+                        <FontAwesomeIcon icon={faHouse}/>
+                    </Icon>
+                    Dashboard
+                    </Item>
 
-                        </div>
-                    }
-                    open={sidebarOpen}
-                    docked={true}
-                    onSetOpen={this.onSetSidebarOpen}
-                    styles={{ sidebar: { background: "white" } }}
-                >
+                    <Item 
+                    bgColor='light' 
+                    classes='sidebarItem'
+                    // onClick={this.props.history.push('/endoresedapplicant')}
+                    >
+                    <Icon>
+                        <FontAwesomeIcon icon={faHouse}/>
+                    </Icon>
+                    Applications
+                    </Item>
+
+                    <Item bgColor='light' classes='sidebarItem'>
+                    <Icon>
+                        <FontAwesomeIcon icon={faListCheck}/>
+                    </Icon>
+                        Student List
+                    </Item>
+
+                    <Item bgColor='light' classes='sidebarItem'>
+                    <Icon>
+                        <FontAwesomeIcon icon={faGear}/>
+                    </Icon>
+                        Account Settings
+                    </Item>
+
+                    <Item bgColor='light' classes='sidebarItem'>
+                    <Icon>
+                        <FontAwesomeIcon icon={faRightFromBracket}/>
+                    </Icon>
+                        Logout
+                    </Item>
+
+                    <Item bgColor='light'>
+                    
+                    </Item>
+                    {/* <InputItem type='text' placeholder={'Search...'}/> */}
                 </Sidebar>
             </div>
         )

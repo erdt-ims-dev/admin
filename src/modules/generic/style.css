@@ -1,0 +1,19 @@
+/* Breadcrumbs */
+.breadcrumbContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 70vh;
+}
+.breadcrumbHeader{
+    display: flex;
+    justify-content: start;
+    color: grey;
+    margin-top: 5%;
+}
+.breadcrumbSubheader{
+    display: flex;
+    justify-content: start;
+    color: grey
+}
+/* Cards */

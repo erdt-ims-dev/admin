@@ -1,2 +1,16 @@
-div{
+.pagename{
+    height: 48px;
+    width: 70%;
+    float: left;
+}
+.pagebutton{
+    height: 48px;
+    width: 30%;
+    float: right;
+    text-align: center;
+    justify-content: center;
+}
+.pagesearch{
+    width: 30%;
+    float: right;
 }

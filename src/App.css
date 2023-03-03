@@ -1,13 +1,21 @@
 .App {
   text-align: center;
-  min-height: 75vh;
+  min-height: 75vh!important;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-
+.mainContainer{
+  display: flex;
+}
+.sidebarContainer{
+  flex: 1 1 auto;
+}
+.pageContainer{
+  flex: 11 1 auto;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
