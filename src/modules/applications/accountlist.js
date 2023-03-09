@@ -7,7 +7,7 @@ import './applications.css'
 const accounts = [
     {}
 ]
-class Accountlist extends Component {
+class Applicantlist extends Component {
     render() {
         return (
             <div>
@@ -19,13 +19,17 @@ class Accountlist extends Component {
                     <table className='applicanttable'>
                         <tr>
                             <th>Name</th>
-                            <th>Program</th>
-                            <th>Actions</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Type</th>
+                            <th></th>
                         </tr>
                         <tr>
                             <td>Alison Smith</td>
-                            <td>MS-ME</td>
-                            <td><FontAwesomeIcon icon={faThumbsUp}/><FontAwesomeIcon icon={faEye}/></td>
+                            <td>1/1/2023</td>
+                            <td>ACTIVE</td>
+                            <td>STAFF</td>
+                            <td><div>DELETE</div><div>EDIT</div></td>
                         </tr>
                     </table>
                 </div>
@@ -34,4 +38,4 @@ class Accountlist extends Component {
     }
 }
 
-export default Accountlist
+export default Applicantlist

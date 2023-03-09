@@ -5,6 +5,7 @@ import Dashboard from '../modules/dashboard/index'
 import Login from '../modules/auth/login'
 import Endorsedapplicant from '../modules/applications/endorsedapplicant';
 import Applicantlist from '../modules/applications/applicantlist';
+import Accountlist from '../modules/applications/accountlist';
 
 export default function Routes(){
 	return(
@@ -13,6 +14,7 @@ export default function Routes(){
 			<Route path="/dashboard" exact component={Dashboard}/>
 			<Route path="/endoresedapplicant" exact component={Endorsedapplicant}/>
 			<Route path="/applicantlist" exact component={Applicantlist}/>
+			<Route path="/accountlist" exact component={Accountlist}/>
 		</Switch>
 	)
 }
