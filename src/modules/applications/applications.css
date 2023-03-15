@@ -16,6 +16,11 @@
 }
 
 .applicanttable{
-    width:100%;
+    display: block;
+    width:80%;
     background-color: #d9e8f6;
+    height: 300px;
+    width: 1200px;
+    margin: 100px 12px;
+    border-radius: 30px;
 }

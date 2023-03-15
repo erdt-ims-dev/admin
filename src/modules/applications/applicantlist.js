@@ -16,18 +16,20 @@ class Accountlist extends Component {
                     <div className='pagebutton'><button>+ Add new applicants</button></div>
                 </div>
                 <div>
-                    <table className='applicanttable'>
-                        <tr>
-                            <th>Name</th>
-                            <th>Program</th>
-                            <th>Actions</th>
-                        </tr>
-                        <tr>
-                            <td>Alison Smith</td>
-                            <td>MS-ME</td>
-                            <td><FontAwesomeIcon icon={faThumbsUp}/><FontAwesomeIcon icon={faEye}/></td>
-                        </tr>
-                    </table>
+                    <div className='applicanttable'>
+                        <table style={{width: "100%"}}>
+                            <tr>
+                                <th>Name</th>
+                                <th>Program</th>
+                                <th>Actions</th>
+                            </tr>
+                            <tr>
+                                <td>Alison Smith</td>
+                                <td>MS-ME</td>
+                                <td><FontAwesomeIcon icon={faThumbsUp}/><FontAwesomeIcon icon={faEye}/></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         )
