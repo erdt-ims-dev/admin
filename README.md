@@ -3,7 +3,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
-comar was here
+comar was here, no he wasnt
 In the project directory, you can run:
 
 ### `npm start`
