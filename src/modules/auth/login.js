@@ -46,13 +46,8 @@ class Login extends Component {
             </Form>
             </div>
            </div>
-        )
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   console.log(`Email: ${email}, Password: ${password}`);
-  // };
 
-        
+        )
     }
 }
 

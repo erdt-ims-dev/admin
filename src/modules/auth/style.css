@@ -6,7 +6,7 @@
   width: 100%;
   height: 75vh;
   background-image: url('../../assets/img/circuitboard.png');
-
+  
 }
 .loginForm{
   display: flex;

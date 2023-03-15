@@ -26,12 +26,7 @@ export class SidebarFrame extends Component {
                     image={erdt}
                     imageName='react logo'/>
                     <LogoText>Sidebar Test</LogoText>
-                    {/* <DropdownItem
-                    values={['First', 'Second', 'Third']}
-                    bgColor={'light'}
-                    >
-                    Dashboard
-                    </DropdownItem> */}
+                    
                     <Item 
                     bgColor='light' 
                     classes='sidebarItem'
@@ -52,6 +47,20 @@ export class SidebarFrame extends Component {
                     </Icon>
                     Applications
                     </Item>
+                    {/* <DropdownItem
+                    values={['Existing Applications', 'Record List', 'Scholar List']}
+                    bgColor={'light'}
+                    classes='sidebarItem'
+                    >
+                    <div>
+                    <Icon>
+                        <FontAwesomeIcon icon={faHouse}/>
+                    </Icon>
+                    </div>
+                    <div>
+                    Applications
+                    </div>
+                    </DropdownItem> */}
 
                     <Item bgColor='light' classes='sidebarItem'>
                     <Icon>

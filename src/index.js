@@ -12,9 +12,7 @@ import '@fontsource/roboto/700.css';
 import '@fortawesome/free-solid-svg-icons';
 import '@fortawesome/free-regular-svg-icons';
 import '@fortawesome/free-brands-svg-icons'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
