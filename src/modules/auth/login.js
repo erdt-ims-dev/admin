@@ -26,7 +26,8 @@ class Login extends Component {
             }}>
               <Form.Group className="mb-3" controlId="formBasicEmail" style={{
               }}>
-                <Form.Label>Email address</Form.Label>
+                <h2>LOGIN</h2>
+                <Form.Label></Form.Label>
                 <Form.Control type="email" placeholder="Enter email" />
                 <Form.Text className="text-muted">
                   We'll never share your email with anyone else.
@@ -34,20 +35,28 @@ class Login extends Component {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
+                <Form.Label></Form.Label>
                 <Form.Control type="password" placeholder="Password" />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                <Form.Check type="checkbox" label="Check me out" />
+                <Form.Check type="checkbox" label="Forgot pass?" />
               </Form.Group>
-              <Button variant="primary" type="submit">
-                Submit
+              <Button variant="light" type="submit">
+                Enter
               </Button>
             </Form>
             </div>
            </div>
+<<<<<<< HEAD
 
         )
+=======
+        )
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   console.log(`Email: ${email}, Password: ${password}`);
+        
+>>>>>>> e746b11f8b5998d4a7493936f6121cf5fc3fb469
     }
 }
 
