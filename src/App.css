@@ -1,6 +1,5 @@
 .App {
   text-align: center;
-  min-height: 75vh!important;
   background-color: #f1f5fb;
 }
 
@@ -16,6 +15,8 @@
 }
 .pageContainer{
   flex: 11 1 auto;
+  min-height: 75vh!important;
+
 }
 .dsiplay-web{
   display: block;
