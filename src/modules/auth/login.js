@@ -7,7 +7,7 @@ import Circuit from '../../assets/img/circuitboard.png'
 import './style.css'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-
+import history from "history/browser";
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -15,6 +15,9 @@ class Login extends Component {
           data: null
         };
       }
+    navigate(route){
+      this.history.push(route)
+    }
     render() {
         return (
            <div className='loginContainer'>
@@ -41,7 +44,9 @@ class Login extends Component {
               <Form.Group className="mb-3" controlId="formBasicCheckbox">
                 <Form.Check type="checkbox" label="Forgot pass?" />
               </Form.Group>
-              <Button variant="light" type="submit">
+              <Button variant="light" type="submit" 
+                onClick={history.push("/dashboard")}
+              >
                 Enter
               </Button>
             </Form>

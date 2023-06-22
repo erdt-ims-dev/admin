@@ -5,6 +5,8 @@ import {Sidebar, InputItem, DropdownItem, Icon, Item, Logo, LogoText} from 'reac
 import './style.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse, faListCheck, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import history from "history/browser";
+
 const item = [
     {
         name: "Dashboard",
@@ -48,7 +50,7 @@ export class SidebarFrame extends Component {
         const {sidebarOpen} = this.state;
         return (
             <div>
-                <Sidebar bgColor='light' isCollapsed={false}>
+                <Sidebar classes='sidebarStyles' bgColor='white' isCollapsed={sidebarOpen}>
                     {/* <Logo
                     image={erdt}
                     imageName='react logo'/> */}
@@ -57,8 +59,9 @@ export class SidebarFrame extends Component {
                         item.map((item, index)=>{
                             return(
                                 <Item 
-                                bgColor='light' 
+                                bgColor='white' 
                                 classes='sidebarItem'
+                                onClick={()=> this.props.navigate(item.route)}
                                 >
                                 <Icon >
                                     <FontAwesomeIcon icon={item.icon}/>
