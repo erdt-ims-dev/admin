@@ -5,8 +5,8 @@ import {Sidebar, InputItem, DropdownItem, Icon, Item, Logo, LogoText} from 'reac
 import './style.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse, faListCheck, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
-import history from "history/browser";
 
+// Modify 'item' as needed
 const item = [
     {
         name: "Dashboard",
@@ -61,6 +61,7 @@ export class SidebarFrame extends Component {
                                 <Item 
                                 bgColor='white' 
                                 classes='sidebarItem'
+                                // I used this.props.navigate here <Sidebar/> is being called by App.js directly. You can call this.props.navigate as is
                                 onClick={()=> this.props.navigate(item.route)}
                                 >
                                 <Icon >
