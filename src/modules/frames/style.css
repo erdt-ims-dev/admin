@@ -4,6 +4,7 @@
     display: flex;
     margin-left: 3%;
 }
+
 .name{
   margin-left: 10px;
   margin-top: 18px;
@@ -55,6 +56,10 @@
   .sidebarItem{
     display: flex;
     text-align: start;
+    margin: 20px;
+    width: 250px
+  }
+  .sidebarText{
     margin-left: 10px;
   }
   /* Imported CSS - Sidebar */

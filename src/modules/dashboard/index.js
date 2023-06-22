@@ -1,25 +1,31 @@
 import React, { Component } from 'react'
-import { Card, ListGroup } from 'react-bootstrap'
+import Card from 'react-bootstrap/Card';
 import './style.css'
 import Breadcrumb from '../generic/breadcrumb';
 const data = [
   {
-    title: "Total Applicants"
+    title: "Total Applicants",
+    count: 123
   },
   {
-    title: "Total Endorsed Applicants"
+    title: "Total Endorsed Applicants",
+    count: 41
   },
   {
-    title: "Total Scholars"
+    title: "Total Scholars",
+    count: 315
   },
   {
-    title: "Pending Applications"
+    title: "Pending Applications",
+    count: 12
   },
   {
-    title: "Total Applicants"
+    title: "Total Applicants",
+    count: 513
   },
   {
-    title: "New Scholars This Semester"
+    title: "New Scholars This Semester",
+    count: 23
   },
 ]
 class Dashboard extends Component {
@@ -38,11 +44,22 @@ class Dashboard extends Component {
               <div className='cardContainer'>
                 {
                   data.map((item, index)=>{
-                    <Card
-                    title={item.title}/>
+                    return(
+                      <Card style={{ width: '18rem' }}>
+                        <Card.Body>
+                          <Card.Title>{item.count}</Card.Title>
+                          <Card.Text>
+                            {
+                              item.title
+                            }
+                          </Card.Text>
+                        </Card.Body>
+                      </Card>
+                    )
                   })
                 }
-              </div>
+              
+        </div>
             </div>
 
         )

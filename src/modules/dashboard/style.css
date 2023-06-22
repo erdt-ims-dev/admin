@@ -1,3 +1,10 @@
 .cardContainer{
     width: 100%;
+    display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.dashboardContainer{
+    min-height: 75vh;
 }

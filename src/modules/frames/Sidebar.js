@@ -5,12 +5,39 @@ import {Sidebar, InputItem, DropdownItem, Icon, Item, Logo, LogoText} from 'reac
 import './style.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse, faListCheck, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+const item = [
+    {
+        name: "Dashboard",
+        route: "/dashboard",
+        icon: faHouse
+    },
+    {
+        name: "Applications",
+        route: "/applications",
+        icon: faListCheck
+    },
+    {
+        name: "Student List",
+        route: "/list",
+        icon: faListCheck
+    },
+    {
+        name: "Settings",
+        route: "/settings",
+        icon: faGear
+    },
+    {
+        name: "Logout",
+        route: "/logout",
+        icon: faRightFromBracket
+    },
+]
 export class SidebarFrame extends Component {
     constructor(props) {
         super(props);
         this.state = {
           data: null,
-          sidebarOpen: true
+          sidebarOpen: false
         };
         this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
       }
@@ -22,70 +49,26 @@ export class SidebarFrame extends Component {
         return (
             <div>
                 <Sidebar bgColor='light' isCollapsed={false}>
-                    <Logo
+                    {/* <Logo
                     image={erdt}
-                    imageName='react logo'/>
-                    <LogoText>Sidebar Test</LogoText>
-                    
-                    <Item 
-                    bgColor='light' 
-                    classes='sidebarItem'
-                    >
-                    <Icon>
-                        <FontAwesomeIcon icon={faHouse}/>
-                    </Icon>
-                    Dashboard
-                    </Item>
-
-                    <Item 
-                    bgColor='light' 
-                    classes='sidebarItem'
-                    // onClick={this.props.history.push('/endoresedapplicant')}
-                    >
-                    <Icon>
-                        <FontAwesomeIcon icon={faHouse}/>
-                    </Icon>
-                    Applications
-                    </Item>
-                    {/* <DropdownItem
-                    values={['Existing Applications', 'Record List', 'Scholar List']}
-                    bgColor={'light'}
-                    classes='sidebarItem'
-                    >
-                    <div>
-                    <Icon>
-                        <FontAwesomeIcon icon={faHouse}/>
-                    </Icon>
-                    </div>
-                    <div>
-                    Applications
-                    </div>
-                    </DropdownItem> */}
-
-                    <Item bgColor='light' classes='sidebarItem'>
-                    <Icon>
-                        <FontAwesomeIcon icon={faListCheck}/>
-                    </Icon>
-                        Student List
-                    </Item>
-
-                    <Item bgColor='light' classes='sidebarItem'>
-                    <Icon>
-                        <FontAwesomeIcon icon={faGear}/>
-                    </Icon>
-                        Account Settings
-                    </Item>
-
-                    <Item bgColor='light' classes='sidebarItem'>
-                    <Icon>
-                        <FontAwesomeIcon icon={faRightFromBracket}/>
-                    </Icon>
-                        Logout
-                    </Item>
-
-                    <Item bgColor='light'>
-                    
-                    </Item>
+                    imageName='react logo'/> */}
+                    {/* <LogoText>Sidebar Test</LogoText> */}
+                    {
+                        item.map((item, index)=>{
+                            return(
+                                <Item 
+                                bgColor='light' 
+                                classes='sidebarItem'
+                                >
+                                <Icon >
+                                    <FontAwesomeIcon icon={item.icon}/>
+                                </Icon>
+                                <p classes='sidebarText'>{item.name}</p>
+                                
+                                </Item>
+                            )
+                        })
+                    }
                     {/* <InputItem type='text' placeholder={'Search...'}/> */}
                 </Sidebar>
             </div>

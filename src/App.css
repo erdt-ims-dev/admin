@@ -17,6 +17,9 @@
 .pageContainer{
   flex: 11 1 auto;
 }
+.dsiplay-web{
+  display: block;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
