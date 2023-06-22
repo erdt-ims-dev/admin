@@ -9,14 +9,17 @@ import React, { useEffect } from 'react';
 
 
 function App(props) {
+  // This basically creates a history stack. The stack is '/'
   let history = createBrowserHistory();
 
+  // This listens to any changes on the page, onClick() will update the page, triggering the useEffect()
   useEffect(() => {
     const unlisten = history.listen(({ action, location }) => {
       console.log(
         `The current URL is ${location.pathname}${location.search}${location.hash}`
       );
       console.log(`The last navigation action was ${action}`);
+      // Reload page when there's any changes
       window.location.reload(); 
     });
 
@@ -25,11 +28,13 @@ function App(props) {
     };
   }, []);
 
+  // Checks the route if /logout
   const navigate = (route) => {
     if (route == '/logout') {
       const { logout } = props;
       logout()
     } else {
+      // Stack, '/' + 'route' = '/route' or ie. '/dashboard'
       history.push(route)
     }
   }

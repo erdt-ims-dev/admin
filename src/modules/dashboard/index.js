@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Card from 'react-bootstrap/Card';
 import './style.css'
 import Breadcrumb from '../generic/breadcrumb';
+// temporary data, will be using API to retrieve future data
 const data = [
   {
     title: "Total Applicants",
@@ -43,6 +44,7 @@ class Dashboard extends Component {
               subheader={"Heres the current statistics"}/>
               <div className='cardContainer'>
                 {
+                  // See dynamic list rendering in react. .map() function in JS also documents this method
                   data.map((item, index)=>{
                     return(
                       <Card style={{ width: '18rem' }}>
