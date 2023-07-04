@@ -6,9 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faEye, faX, faComment } from '@fortawesome/free-solid-svg-icons'
 
 const applicants = [
-    {name: "Allison Smith", course: "MS-ME", gmail: "jackjones@gmail.com"},
-    {name: "Lorenzo Scott", course: "MS-CE", gmail: "georgejones@gmail.com"},
-    {name: "Edward Rose", course: "MS-ME", gmail: "georgejones@gmail.com"},
+    {name: "Allison Smith", course: "MS-ME", datesubmitted: "2-23-2023"},
+    {name: "Lorenzo Scott", course: "MS-CE", datesubmitted: "11-12-2023"},
+    {name: "Edward Rose", course: "MS-ME", datesubmitted: "11-12-2023"},
+    {name: "Kylie Bradley", course: "MS-CE", datesubmitted: "11-12-2023"},
 ];
 
 
@@ -17,12 +18,13 @@ class Endorsedapplicant extends Component {
     render() {
         return (
             <div>
-                <div className="headerStyle"><h2>ENDORSED APPLICANT</h2></div>
+                <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div>
                 
-                <div className='applicanttitle'>
+                <div className='applicanttitle' >
                     <p>Name</p>
                     <p>Course</p>
-                    <p>Action</p>
+                    <p>Date Submitted</p>
+                    <p >Action</p>
                 </div>
                 <div className='applicantData'>
                 {
@@ -31,7 +33,7 @@ class Endorsedapplicant extends Component {
                             <div key={idx}>
                                 <p>{applicant.name}</p>
                                 <p>{applicant.course}</p>
-                                
+                                <p>{applicant.datesubmitted}</p>
                                 <p> 
                                     <FontAwesomeIcon icon={faCheck} size="sm" style={{color: "#2ead43", margin:"0px 5px", cursor: "pointer"}} />
                                     <FontAwesomeIcon icon={faEye} size="sm" style={{color: "#66a5e2", margin:"0px 5px", cursor: "pointer"}}/>
