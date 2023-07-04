@@ -3,20 +3,20 @@ import {Switch} from 'react-router-dom';
 import Route from './route'
 import Dashboard from '../modules/dashboard/index'
 import Login from '../modules/auth/login'
-import Endorsedapplicant from '../modules/applications/endorsedapplicant';
-import Applicantlist from '../modules/applications/applicantlist';
-import Accountlist from '../modules/applications/accountlist';
-import AdminLeaveRequests from '../modules/applications/AdminLeaveRequests';
+import EndorsedApplicant from '../modules/applications/EndoresedApplicant'
+import ApplicantList from '../modules/applications/ApplicantList'
+import AccountList from '../modules/applications/AccountList'
+import AdminLeaveRequest from '../modules/applications/AdminLeaveRequest'
 
 export default function Routes(){
 	return(
 		<Switch>
 			<Route path="/" exact component={Login}/>
 			<Route path="/dashboard" exact component={Dashboard}/>
-			<Route path="/endorsedapplicant" exact component={Endorsedapplicant}/>
-			<Route path="/applicantlist" exact component={Applicantlist}/>
-			<Route path="/accountlist" exact component={Accountlist}/>
-			<Route path="/admin_leaverequest" exact component={AdminLeaveRequests}/>
+			<Route path="/endorsed_applicant" exact component={EndorsedApplicant}/>
+			<Route path="/applicant_list" exact component={ApplicantList}/>
+			<Route path="/account_list" exact component={AccountList}/>
+			<Route path="/admin_leaverequest" exact component={AdminLeaveRequest}/>
 		</Switch>
 	)
 }
