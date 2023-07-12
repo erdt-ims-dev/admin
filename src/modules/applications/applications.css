@@ -18,12 +18,12 @@
 .headerStyle{
     /* background-color: lightblue; */
     height: 100px;
-    width: 50%;
+    /* width: 100%;
     justify-content: left;
     align-items: center;
-    display: flex;
-    margin: 40px 40px;
+    display: flex; */
     color: #135faa;
+    margin: 40px 40px;
 }
 
 .applicanttitle {
