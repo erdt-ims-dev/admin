@@ -75,7 +75,7 @@
   .sidebarItem{
     display: flex;
     text-align: start;
-    padding: 10px;
+    padding: 20px;
     width: 250px
   }
   .sidebarItem:hover{
