@@ -64,10 +64,12 @@ export class SidebarFrame extends Component {
                                 // I used this.props.navigate here <Sidebar/> is being called by App.js directly. You can call this.props.navigate as is
                                 onClick={()=> this.props.navigate(item.route)}
                                 >
-                                <Icon >
+                                <Icon classes='' >
                                     <FontAwesomeIcon icon={item.icon}/>
                                 </Icon>
-                                <p classes='sidebarText'>{item.name}</p>
+                                <p style={{
+                                    marginLeft: 15
+                                }} classes='sidebarText sidebarMargin'>{item.name}</p>
                                 
                                 </Item>
                             )

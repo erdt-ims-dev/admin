@@ -6,7 +6,7 @@ import Login from '../modules/auth/login'
 import EndorsedApplicant from '../modules/applications/EndoresedApplicant'
 import ApplicantList from '../modules/applications/ApplicantList'
 import AccountList from '../modules/applications/AccountList'
-import AdminLeaveRequest from '../modules/applications/AdminLeaveRequest'
+import AdminLeaveRequest from '../modules/applications/AdminLeaveRequests'
 
 export default function Routes(){
 	return(

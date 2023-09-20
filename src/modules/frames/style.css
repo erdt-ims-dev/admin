@@ -243,3 +243,9 @@ input {
 ._2TMpC {
   float: right;
 }
+
+/* custom */
+
+.sidebarMargin{
+  margin: 10px !important;
+}
