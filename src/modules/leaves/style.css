@@ -1,0 +1,22 @@
+.tableContainer{
+    display: flex;
+    justify-content: center;
+    gap: 15%;
+}
+.mainContainer{
+    min-height: 75vh;
+    margin: 50px
+}
+.breadcrumbContainer{
+    width: 100%;
+    display: flex;
+}
+.tableRender{
+    display: flex;
+    justify-content: center;
+    gap: 15%;
+}
+.iconStyle{
+    display: flex;
+    justify-content: center;
+}

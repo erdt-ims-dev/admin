@@ -5,10 +5,13 @@ import Footer from './modules/frames/Footer';
 import Sidebar from './modules/frames/Sidebar';
 import {withRouter} from 'react-router-dom';
 import { createBrowserHistory } from "history";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+// import { AuthProvider, useAuth } from './context/AuthContext'; // Import AuthProvider and useAuth
 
 
 function App(props) {
+  // const {isLoggedIn, login, logout} = useAuth();
+  const {login, setLogin} = useState(true);
   // This basically creates a history stack. The stack is '/'
   let history = createBrowserHistory();
 
@@ -40,24 +43,30 @@ function App(props) {
   }
   return (
     <div className="App">
-      <React.Fragment>
-        <div>
-          <Header {...props}/>
-        </div>
-        <div>
-          <div className='mainContainer'>
-            <div className='sidebarContainer'>
-            <Sidebar {...props}
-            navigate={navigate}
-            />
-            </div>
-            <div className='pageContainer'>
-            <RouterList />
+      {/* <AuthProvider> */}
+        <React.Fragment>
+          <div>
+            <Header {...props}/>
+          </div>
+          <div>
+            <div className='mainContainer'>
+              <div className='sidebarContainer'>
+              {
+                login && (
+                  <Sidebar {...props}
+                  navigate={navigate}
+                  />
+                )
+              }
+              </div>
+              <div className='pageContainer'>
+              <RouterList />
+              </div>
             </div>
           </div>
-        </div>
-        <Footer />
-      </React.Fragment>
+          <Footer />
+        </React.Fragment>
+      {/* </AuthProvider> */}
     </div>
   );
 }
