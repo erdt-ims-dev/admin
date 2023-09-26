@@ -39,7 +39,7 @@ export class SidebarFrame extends Component {
         super(props);
         this.state = {
           data: null,
-          sidebarOpen: false
+          sidebarOpen: true
         };
         this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
       }
