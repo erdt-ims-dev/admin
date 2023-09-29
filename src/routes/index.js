@@ -11,6 +11,7 @@ import AdminViewScholar from '../modules/applications/AdminViewScholar.js'
 
 import Leaves from '../modules/leaves/index.js'
 import Accounts from '../modules/accounts/index.js'
+import Settings from '../modules/settings/index.js'
 
 import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
@@ -35,6 +36,7 @@ export default function Routes(){
 			{/* Replacements */}
 			<Route path="/leaves" exact component={Leaves}/>
 			<Route path="/accounts" exact component={Accounts}/>
+			<Route path="/settings" exact component={Settings}/>
 		</Switch>
 	)
 }

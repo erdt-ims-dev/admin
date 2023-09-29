@@ -1,0 +1,58 @@
+.pagename{
+    height: 48px;
+    width: 70%;
+    float: left;
+}
+.pagebutton{
+    height: 48px;
+    width: 30%;
+    float: right;
+    text-align: center;
+    justify-content: center;
+}
+.pagesearch{
+    width: 30%;
+    float: right;
+}
+
+.headerStyle{
+    /* background-color: lightblue; */
+    height: 100px;
+    /* width: 100%;
+    justify-content: left;
+    align-items: center;
+    display: flex; */
+    color: #135faa;
+    margin: 40px 40px;
+}
+
+.applicanttitle {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.applicanttitle p{
+    width: 29%;
+    
+}
+
+.applicantData{
+    height: 50vh;
+    margin: 0px 20px;
+    padding: 30px 20px;
+    background-color: #d9e8f6;
+    border-radius: 10px;
+    box-shadow: 2px 7px lightgray;
+
+} 
+.applicantData div{
+    width: 100%;
+    display: flex;
+    justify-content: center; 
+   border-bottom-style: solid;
+   border-bottom-color: #d9dbdd; 
+}
+.applicantData p{
+    width: 30%;
+    margin-top: 10px;
+}
