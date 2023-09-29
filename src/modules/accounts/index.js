@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import './style.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faEye, faX, faComment } from '@fortawesome/free-solid-svg-icons'
-import Details from './details';
 import Breadcrumb from '../generic/breadcrumb';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { faCheck, faEye, faX, faComment } from '@fortawesome/free-solid-svg-icons'
 
 const applicants = [
     {name: "Allison Smith", course: "MS-ME", datesubmitted: "2-23-2023"},
@@ -14,23 +15,16 @@ const applicants = [
 ];
 
 
-class Leaves extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-          showModal: false
-        };
-      }
+class AccountList extends Component {
+
     render() {
-        const {showModal} = this.state
         return (
             <div>
-                {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
-                
+                {/* <div className="headerStyle"><h2>List of Accounts</h2></div> */}
                 <Breadcrumb
-                    header={"Leave Requests"}
-                    subheader={"Here are all the submiited Requests"}/>
-
+                    header={"List of Accounts"}
+                    subheader={"Here are all the Accounts"}/>
+                
                 <div className='applicanttitle' >
                     <p>Name</p>
                     <p>Course</p>
@@ -47,7 +41,7 @@ class Leaves extends Component {
                                 <p>{applicant.datesubmitted}</p>
                                 <p> 
                                     <FontAwesomeIcon icon={faCheck} size="sm" style={{color: "#2ead43", margin:"0px 5px", cursor: "pointer"}} />
-                                    <FontAwesomeIcon icon={faEye} onClick={()=>this.setState({showModal:true})} size="sm" style={{color: "#66a5e2", margin:"0px 5px", cursor: "pointer"}}/>
+                                    <FontAwesomeIcon icon={faEye} size="sm" style={{color: "#66a5e2", margin:"0px 5px", cursor: "pointer"}}/>
                                     <FontAwesomeIcon icon={faX} size="sm" style={{color: "#ff0808", margin:"0px 5px", cursor: "pointer"}}/>
                                     <FontAwesomeIcon icon={faComment} size="sm" style={{color: "#71abe4", margin:"0px 5px", cursor: "pointer"}}/>
                                 </p>
@@ -56,17 +50,9 @@ class Leaves extends Component {
                     ))
                 }  
                 </div> 
-                {
-                    console.log("show", showModal)
-                }
-                {/* <Details
-                show={showModal}
-                onHide={()=>this.setState({
-                    showModal: false
-                })}/> */}
             </div>
         )
     }
 }
 
-export default Leaves
+export default AccountList

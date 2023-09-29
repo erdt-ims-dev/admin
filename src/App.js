@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react';
 
 function App(props) {
   // const {isLoggedIn, login, logout} = useAuth();
-  const {login, setLogin} = useState(true);
+  const {login, setLogin} = true;
   // This basically creates a history stack. The stack is '/'
   let history = createBrowserHistory();
 
@@ -59,6 +59,7 @@ function App(props) {
                 )
               }
               </div>
+              
               <div className='pageContainer'>
               <RouterList />
               </div>
