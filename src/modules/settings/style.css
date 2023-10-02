@@ -63,7 +63,13 @@
     border-top-left-radius: 50% 50%; border-top-right-radius: 50% 50%; border-bottom-right-radius: 50% 50%; border-bottom-left-radius: 50% 50%; 
 }
 .imageText{
-    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Input */
+
+.Row{
+    margin-top: 25px;
+}

@@ -41,21 +41,22 @@ class Settings extends Component {
                     subheader={"View Account Settings"}/>
 
                 <div className='containerBlue'>
-                    <Container>
                         <Row className='break'>
                             <Col md={3}>
                             <h4>General Setting</h4>
                             </Col>
                         </Row>
-                        <Row>
+                    <Container>
+                        
+                        <Row className='Row'>
                             <Col className='imageCircle'>
                                 <img className='circle' src={placeholder}></img>
                             </Col>
-                            <Col>
-                                <span className='imageText'>This will be the profile picture displayed</span>
+                            <Col className='imageText'>
+                                <p className=''>This will be the profile picture displayed</p>
                             </Col>
                         </Row>
-                        <Row>
+                        <Row className='Row'>
                             <Col className=''>
                                 <InputField
                                 id={1}
@@ -72,7 +73,7 @@ class Settings extends Component {
                             </Col>
                             <Col>
                             <InputField
-                                id={1}
+                                id={2}
                                 type={'email'}
                                 label={'Email'}
                                 locked={false}
@@ -82,6 +83,27 @@ class Settings extends Component {
                                         email, errorEmail
                                     })
                                   }}
+                                />
+                            </Col>
+                        </Row>
+                        <Row className='Row'>
+                            <Col>
+                            <InputField
+                                id={3}
+                                type={'field'}
+                                label={'Admin'}
+                                locked={true}
+                                active={false}
+                                />
+                            </Col>
+                            <Col>
+                            <InputField
+                                id={3}
+                                type={'field'}
+                                label={'Active'}
+                                locked={true}
+                                active={false}
+                                
                                 />
                             </Col>
                         </Row>
