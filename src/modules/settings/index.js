@@ -17,7 +17,20 @@ const applicants = [
     {name: "Edward Rose", course: "MS-ME", datesubmitted: "11-12-2023"},
     {name: "Kylie Bradley", course: "MS-CE", datesubmitted: "11-12-2023"},
 ];
-
+const notification = [
+    {
+        title: "Show Notifications for Incoming Applicants",
+        disabled: false
+    },
+    {
+        title: "Show Notifications for Endorsed Applicants",
+        disabled: false
+    },
+    {
+        title: "Show Notifications for Coordinator Approved Applicants",
+        disabled: false
+    },
+]
 
 class Settings extends Component {
     constructor(props) {
@@ -41,13 +54,14 @@ class Settings extends Component {
                     subheader={"View Account Settings"}/>
 
                 <div className='containerBlue'>
-                        <Row className='break'>
-                            <Col md={3}>
-                            <h4>General Setting</h4>
-                            </Col>
-                        </Row>
-                    <Container>
                         
+                    <Container>
+                        <Row className='sectionHeader'>
+                        <p>General Settings</p>
+
+                        </Row>
+                        <hr className='break'/>
+
                         <Row className='Row'>
                             <Col className='imageCircle'>
                                 <img className='circle' src={placeholder}></img>
@@ -107,13 +121,35 @@ class Settings extends Component {
                                 />
                             </Col>
                         </Row>
+                    <hr className='break'/>
+                    <Row className='sectionHeader'>
+                        <p>Notification Settings</p>
+                    </Row>
+                    {
+                        notification.map((item, index)=>{
+                            return(
+                                <div>
+                                    
+                                        <Row className='Row'>
+                                            <Col md={4}>
+                                                <p>{item.title}</p>
+                                            </Col>
+                                            <Col md={4}>
+                                            
+                                            </Col>
+                                            <Col md={4} className='switch'>
+                                            <input className="tgl tgl-skewed" id={"cb" + index} type="checkbox"/>
+                                            <label class="tgl-btn" data-tg-off="OFF" data-tg-on="ON" for={"cb" + index}></label>
+                                            </Col>
+                                        </Row>
+                                </div>
+                            )
+                        })
+                    }
                     </Container>
+                   
+                    
                 </div> 
-                {/* <Details
-                show={showModal}
-                onHide={()=>this.setState({
-                    showModal: false
-                })}/> */}
             </div>
         )
     }
