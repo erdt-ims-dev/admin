@@ -36,7 +36,7 @@
     
 }
 
-.applicantData{
+.containerBlue{
     height: 50vh;
     margin: 0px 20px;
     padding: 30px 20px;
@@ -56,3 +56,14 @@
     width: 30%;
     margin-top: 10px;
 }
+
+.circle{
+    height: 15vh;
+    width: 15vh;
+    border-top-left-radius: 50% 50%; border-top-right-radius: 50% 50%; border-bottom-right-radius: 50% 50%; border-bottom-left-radius: 50% 50%; 
+}
+.imageText{
+    margin-top: 10%;
+}
+
+/* Input */
