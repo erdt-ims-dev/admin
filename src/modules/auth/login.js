@@ -7,49 +7,78 @@ import Circuit from '../../assets/img/circuitboard.png'
 import './style.css'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+
+import InputField from '../generic/input';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+import { GoogleLogin } from '@react-oauth/google';
+// Import history for every new page you create
 import history from "history/browser";
 class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          data: null
+          data: null,
+          email: null,
+          errorEmail: null,
+          password: null,
+          errorPassword: null
         };
       }
-    navigate(route){
-      this.history.push(route)
-    }
+      
     render() {
+      const {email, errorEmail, password, errorPassword} = this.state;
         return (
            <div className='loginContainer'>
             <div className='loginForm'>
-            <Form style={{
-              display: 'flex',
-              justifyContent: 'center',
-              "flex-direction": 'column'
-            }}>
-              <Form.Group className="mb-3" controlId="formBasicEmail" style={{
-              }}>
-                <h2>LOGIN</h2>
-                <Form.Label></Form.Label>
-                <Form.Control type="email" placeholder="Enter email" />
-                <Form.Text className="text-muted">
-                  Input Registered Email
-                </Form.Text>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label></Form.Label>
-                <Form.Control type="password" placeholder="Password" />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                <Form.Check type="checkbox" label="Forgot pass?" />
-              </Form.Group>
-              <Button variant="light" type="submit" 
-                onClick={history.push("/dashboard")}
-              >
-                Enter
-              </Button>
-            </Form>
+            <Container>
+            <Row className='Row'>
+              <h3>Sign In to Your Account</h3>
+            </Row>
+            <Row className='Row mx-4'>
+            <InputField
+              id={1}
+              type={'email'}
+              label={'Email'}
+              locked={false}
+              active={false}
+              onChange={(email, errorEmail) => {
+                  this.setState({
+                    email, errorEmail
+                  })
+                }}
+              />
+            </Row>
+            <Row className='Row mx-4'>
+            <InputField
+              id={1}
+              type={'password'}
+              label={'Password'}
+              locked={false}
+              active={false}
+              onChange={(password, errorPassword) => {
+                  this.setState({
+                    password, errorPassword
+                  })
+                }}
+              />
+            </Row>
+            <Row className='Row mx-4'>
+              <Button variant='primary' size='lg'>Sign In</Button>
+            </Row>
+            <Row>
+              {/* Or */}
+            </Row>
+            <Row className='Row mx-4'>
+              <hr></hr>
+              <p>Or</p>
+            </Row>
+            <Row className='Row mx-4'>
+              <Button variant='primary' size='lg'>Sign in via Google</Button>
+            </Row>
+            </Container>
             </div>
            </div>
         )

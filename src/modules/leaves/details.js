@@ -15,7 +15,7 @@ class Details extends Component {
            <div>
             <Modal
             {...props}
-            size="lg"
+            size="lg"git
             aria-labelledby="contained-modal-title-vcenter"
             centered
             >

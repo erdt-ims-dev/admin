@@ -9,6 +9,7 @@
 }
 .mainContainer{
   display: flex;
+  margin: 0px!important;
 }
 .sidebarContainer{
   flex: 1 1 auto;

@@ -12,6 +12,7 @@ import AdminViewScholar from '../modules/applications/AdminViewScholar.js'
 import Leaves from '../modules/leaves/index.js'
 import Accounts from '../modules/accounts/index.js'
 import Settings from '../modules/settings/index.js'
+import Register from '../modules/auth/register.js'
 
 import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
@@ -19,7 +20,7 @@ export default function Routes(){
 	const {isLoggedIn} = true;
 	return(
 		<Switch>
-			<Route path="/" 
+			<Route path="/login" 
 			exact 
 			component={Login}/>
 			{/* Protected */}
@@ -37,6 +38,7 @@ export default function Routes(){
 			<Route path="/leaves" exact component={Leaves}/>
 			<Route path="/accounts" exact component={Accounts}/>
 			<Route path="/settings" exact component={Settings}/>
+			<Route path="/register" exact component={Register}/>
 		</Switch>
 	)
 }
