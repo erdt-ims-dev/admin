@@ -14,23 +14,12 @@ export class Header extends Component {
     render() {
         return (
             <div className='headerContainer'>
-              <div className='leftContainer'>
-                <div style={{
-                  marginLeft: 25,
-                  marginTop: 10
-                }}>
-                  <img src={erdt} className="logo"/>
-                </div>
-                <div className='name'>
-                  <h2>USC-ERDT</h2>
-                </div>
-              </div>
-              <div className='centerContainer'></div>
-              <div className='rightContainer'>
-              <div>
-                <FontAwesomeIcon icon={faBell}/>
-              </div>
-              </div>
+              <Container className='left-headerContainer'>
+                <img src={erdt} className="logo"/>
+              </Container>
+              <Container className='right-headerContainer'>
+                <FontAwesomeIcon icon={faBell} className='lg'/>
+              </Container>
               
             </div>
 

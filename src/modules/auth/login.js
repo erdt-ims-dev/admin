@@ -33,7 +33,7 @@ class Login extends Component {
         return (
            <div className='loginContainer'>
             <div className='loginForm'>
-            <Container>
+            <Container className=''>
             <Row className='Row'>
               <h3>Sign In to Your Account</h3>
             </Row>
@@ -76,8 +76,18 @@ class Login extends Component {
               <p>Or</p>
             </Row>
             <Row className='Row mx-4'>
-              <Button variant='primary' size='lg'>Sign in via Google</Button>
+              <Button variant='secondary' size='lg'>Sign in via Google</Button>
             </Row>
+            </Container>
+            <Container className=''>
+              <div className='rContainer'>
+              <Row className='Row'>
+                <p>About USC-ERDT:IMS</p>
+              </Row>
+              <Row className='Row'>
+                Lorem Ipsum Dolor Est
+              </Row>
+              </div>
             </Container>
             </div>
            </div>

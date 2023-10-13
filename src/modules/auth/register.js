@@ -28,7 +28,7 @@ class Register extends Component {
       const {email, errorEmail, password, errorPassword} = this.state;
         return (
            <div className='mainContainer'>
-            
+              
            </div>
         )
   // const handleSubmit = (event) => {
