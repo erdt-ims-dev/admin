@@ -67,7 +67,7 @@
   /* Sidebard */
   .sidebarContainer{
     border-right: 1px lightgrey solid;
-    padding-top: 10%;
+    padding-top: 3%;
   }
   .sidebarItem{
     display: flex;
@@ -245,4 +245,11 @@ input {
 
 .sidebarMargin{
   margin: 10px !important;
+}
+.headerFont{
+  color: black;
+}
+.headerFont:hover{
+  color: white;
+  cursor: pointer;
 }

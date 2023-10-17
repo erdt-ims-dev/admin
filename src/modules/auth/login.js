@@ -35,7 +35,7 @@ class Login extends Component {
             <div className='loginForm'>
             <Container className=''>
             <Row className='Row'>
-              <h3>Sign In to Your Account</h3>
+              <h3>Welcome Back</h3>
             </Row>
             <Row className='Row mx-4'>
             <InputField
@@ -85,7 +85,12 @@ class Login extends Component {
                 <p>About USC-ERDT:IMS</p>
               </Row>
               <Row className='Row'>
-                Lorem Ipsum Dolor Est
+                USC-ERDT:IMS is an information management system developed by students of DCISM in cooperation with USC-ERDT to manage ERDT Applicants and Scholars
+              </Row>
+              <Row className='Row'>
+                <p>
+                Don't have an Account, you can register <a href='#'>here</a>
+                </p>
               </Row>
               </div>
             </Container>

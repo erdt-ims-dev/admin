@@ -4,7 +4,7 @@ import erdt from '../../assets/img/erdtl.png'
 import {Sidebar, InputItem, DropdownItem, Icon, Item, Logo, LogoText} from 'react-sidebar-ui'
 import './style.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse, faListCheck, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faHouse, faListCheck, faGear, faRightFromBracket, faPerson, faPersonWalkingArrowRight, faBullhorn, faFileInvoice } from '@fortawesome/free-solid-svg-icons'
 
 // Modify 'item' as needed
 const item = [
@@ -14,18 +14,33 @@ const item = [
         icon: faHouse
     },
     {
-        name: "Applications",
+        name: "Applicant Management",
         route: "/applications",
         icon: faListCheck
     },
     {
-        name: "Student List",
+        name: "Scholar Management",
         route: "/list",
-        icon: faListCheck
+        icon: faPerson
+    },
+    {
+        name: "Leave Requests",
+        route: "/#",
+        icon: faPersonWalkingArrowRight
+    },
+    {
+        name: "System Announcements",
+        route: "/#",
+        icon: faBullhorn
+    },
+    {
+        name: "Account Management",
+        route: "/#",
+        icon: faFileInvoice
     },
     {
         name: "Settings",
-        route: "/settings",
+        route: "/#",
         icon: faGear
     },
     {
@@ -39,7 +54,7 @@ export class SidebarFrame extends Component {
         super(props);
         this.state = {
           data: null,
-          sidebarOpen: true
+          sidebarOpen: false
         };
         this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
       }
@@ -73,7 +88,6 @@ export class SidebarFrame extends Component {
                                 <p style={{
                                     "margin-left": "15%"
                                 }} classes='sidebarText sidebarMargin'>{item.name}</p>
-                                
                                 </Item>
                             )
                         })

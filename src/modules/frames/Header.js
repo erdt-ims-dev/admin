@@ -4,6 +4,8 @@ import erdt from '../../assets/img/erdtl.png'
 import './style.css'
 import { faBell } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 export class Header extends Component {
     constructor(props) {
         super(props);
@@ -18,7 +20,18 @@ export class Header extends Component {
                 <img src={erdt} className="logo"/>
               </Container>
               <Container className='right-headerContainer'>
-                <FontAwesomeIcon icon={faBell} className='lg'/>
+                <Col>
+                <p className='headerFont' href='#' onClick={()=> this.props.navigate("/contact")}>Contact us</p>
+                </Col>
+                <Col>
+                <p className='headerFont' href='#' onClick={()=> this.props.navigate("/faq")}>FAQs</p>
+                </Col>
+                <Col>
+                <p className='headerFont' href='#' onClick={()=> this.props.navigate("/faq")}>Documentation</p>
+                </Col>
+                {/* <Col>
+                  <FontAwesomeIcon icon={faBell} className='lg'/>
+                </Col> */}
               </Container>
               
             </div>
