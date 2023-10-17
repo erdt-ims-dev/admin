@@ -89,7 +89,7 @@ class Login extends Component {
               </Row>
               <Row className='Row'>
                 <p>
-                Don't have an Account, you can register <a href='#'>here</a>
+                Don't have an Account, you can register <a href='/register'>here</a>
                 </p>
               </Row>
               </div>

@@ -87,7 +87,7 @@ class Register extends Component {
                 <p>Already Have an Account?</p>
               </Row>
               <Row className='Row'>
-                <p>Sign in <a href='#'>here</a></p>
+                <p>Sign in <a href='/login'>here</a></p>
               </Row>
               </div>
             </Container>
