@@ -50,3 +50,9 @@
   width: 100%;
   height: 100%;
 }
+.Col-Gap-Left{
+  padding-left: 0px!important;
+}
+.Col-Gap-Right{
+  padding-right: 0px!important;
+}

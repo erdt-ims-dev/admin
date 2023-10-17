@@ -21,21 +21,70 @@ class Register extends Component {
         super(props);
         this.state = {
           data: null,
+          fname: null,
+          errorfName: null,
+          lname: null,
+          errorlName: null,
+          email: null,
+          errorEmail: null,
+          password: null,
+          errorPassword: null,
+          password: null,
+          errorPassword: null,
+          cpassword: null,
+          errorcPassword: null
         };
       }
       
     render() {
-      const {email, errorEmail, password, errorPassword} = this.state;
+      const {cpassword, errorcPassword, fName, errorfName, lName, errorlName, email, errorEmail, password, errorPassword} = this.state;
         return (
-           <div className=''>
+           <div className='loginContainer'>
               <div className='loginForm'>
-            <Container className=''>
+            <Container style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignContent: 'center',
+              flexDirection: 'column'
+            }} className=''>
             <Row className='Row'>
               <h3>Hi There</h3>
             </Row>
+            <Row className='Row mx-4' >
+            <Col className='Col-Gap-Left'>
+              <InputField
+                id={1}
+                type={'name'}
+                label={'First Name'}
+                locked={false}
+                active={false}
+                onChange={(fName, errorfName) => {
+                    this.setState({
+                      fName, errorfName
+                    })
+                  }}
+                />
+            </Col>
+
+            <Col className='Col-Gap-Right'>
+              <InputField
+                id={2}
+                type={'name'}
+                label={'Last Name'}
+                locked={false}
+                active={false}
+                onChange={(lName, errorlName) => {
+                    this.setState({
+                      lName, errorlName
+                    })
+                  }}
+                />
+            </Col>
+            </Row>
+
             <Row className='Row mx-4'>
             <InputField
-              id={1}
+              id={3}
               type={'email'}
               label={'Email'}
               locked={false}
@@ -49,7 +98,7 @@ class Register extends Component {
             </Row>
             <Row className='Row mx-4'>
             <InputField
-              id={1}
+              id={4}
               type={'password'}
               label={'Password'}
               locked={false}
@@ -62,17 +111,21 @@ class Register extends Component {
               />
             </Row>
             <Row className='Row mx-4'>
-              <Button variant='primary' size='lg'>Sign In</Button>
-            </Row>
-            <Row>
-              {/* Or */}
+            <InputField
+              id={5}
+              type={'password'}
+              label={'Confirm Password'}
+              locked={false}
+              active={false}
+              onChange={(cpassword, errorcPassword) => {
+                  this.setState({
+                    cpassword, errorcPassword
+                  })
+                }}
+              />
             </Row>
             <Row className='Row mx-4'>
-              <hr></hr>
-              <p>Or</p>
-            </Row>
-            <Row className='Row mx-4'>
-              <Button variant='secondary' size='lg'>Sign in via Google</Button>
+              <Button variant='primary' size='lg'>Register</Button>
             </Row>
             </Container>
             <Container className=''>
