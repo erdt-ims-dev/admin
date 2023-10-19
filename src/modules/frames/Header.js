@@ -4,6 +4,8 @@ import erdt from '../../assets/img/erdtl.png'
 import './style.css'
 import { faBell } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 export class Header extends Component {
     constructor(props) {
         super(props);
@@ -14,23 +16,23 @@ export class Header extends Component {
     render() {
         return (
             <div className='headerContainer'>
-              <div className='leftContainer'>
-                <div style={{
-                  marginLeft: 25,
-                  marginTop: 10
-                }}>
-                  <img src={erdt} className="logo"/>
-                </div>
-                <div className='name'>
-                  <h2>USC-ERDT</h2>
-                </div>
-              </div>
-              <div className='centerContainer'></div>
-              <div className='rightContainer'>
-              <div>
-                <FontAwesomeIcon icon={faBell}/>
-              </div>
-              </div>
+              <Container className='left-headerContainer'>
+                <img src={erdt} className="logo"/>
+              </Container>
+              <Container className='right-headerContainer'>
+                <Col>
+                <p className='headerFont' href='#' onClick={()=> this.props.navigate("/contact")}>Contact us</p>
+                </Col>
+                <Col>
+                <p className='headerFont' href='#' onClick={()=> this.props.navigate("/faq")}>FAQs</p>
+                </Col>
+                <Col>
+                <p className='headerFont' href='#' onClick={()=> this.props.navigate("/faq")}>Documentation</p>
+                </Col>
+                {/* <Col>
+                  <FontAwesomeIcon icon={faBell} className='lg'/>
+                </Col> */}
+              </Container>
               
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Switch } from "react-router-dom";
 import Route from "./route";
 import Dashboard from "../modules/dashboard/index";
@@ -13,6 +13,7 @@ import { ScholarList, ViewScholar } from "../modules/scholar";
 import Leaves from "../modules/leaves/index.js";
 import Accounts from "../modules/accounts/index.js";
 import Settings from "../modules/settings/index.js";
+import Register from "../modules/auth/register.js";
 
 export default function Routes() {
   const { isLoggedIn } = true;
@@ -36,6 +37,7 @@ export default function Routes() {
       <Route path="/leaves" exact component={Leaves} />
       <Route path="/accounts" exact component={Accounts} />
       <Route path="/settings" exact component={Settings} />
+      <Route path="/register" exact component={Register} />
     </Switch>
   );
 }

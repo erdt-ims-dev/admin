@@ -11,12 +11,6 @@ import Col from 'react-bootstrap/Col';
 import placeholder from '../../assets/img/placeholder.jpeg'
 
 
-const applicants = [
-    {name: "Allison Smith", course: "MS-ME", datesubmitted: "2-23-2023"},
-    {name: "Lorenzo Scott", course: "MS-CE", datesubmitted: "11-12-2023"},
-    {name: "Edward Rose", course: "MS-ME", datesubmitted: "11-12-2023"},
-    {name: "Kylie Bradley", course: "MS-CE", datesubmitted: "11-12-2023"},
-];
 const notification = [
     {
         title: "Show Notifications for Incoming Applicants",
@@ -40,7 +34,11 @@ class Settings extends Component {
           name: null,
           errorName: null,
           email: null,
-          errorEmail: null
+          errorEmail: null,
+          password: null,
+          errorPassowrd: null,
+          confirmPassowrd: null,
+          errorConfirm: null
         };
       }
     render() {
@@ -121,6 +119,42 @@ class Settings extends Component {
                                 />
                             </Col>
                         </Row>
+                    {/* Password */}
+                    <hr className='break'/>
+                    <Row className='sectionHeader'>
+                        <p>Password Settings</p>
+                    </Row>
+                    <Row className='Row'>
+                            <Col className=''>
+                                <InputField
+                                id={1}
+                                type={'password'}
+                                label={'Current Password'}
+                                locked={false}
+                                active={false}
+                                onChange={(password, errorPassword) => {
+                                    this.setState({
+                                        password, errorPassword
+                                    })
+                                  }}
+                                />
+                            </Col>
+                            <Col>
+                            <InputField
+                                id={2}
+                                type={'password'}
+                                label={'Confirm New Password'}
+                                locked={false}
+                                active={false}
+                                onChange={(confirmPassword, errorConfirm) => {
+                                    this.setState({
+                                        confirmPassword, errorConfirm
+                                    })
+                                  }}
+                                />
+                            </Col>
+                        </Row>
+                    {/* Notification */}
                     <hr className='break'/>
                     <Row className='sectionHeader'>
                         <p>Notification Settings</p>

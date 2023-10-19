@@ -16,30 +16,75 @@ import Col from 'react-bootstrap/Col';
 import { GoogleLogin } from '@react-oauth/google';
 // Import history for every new page you create
 import history from "history/browser";
-class Login extends Component {
+class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
           data: null,
+          fname: null,
+          errorfName: null,
+          lname: null,
+          errorlName: null,
           email: null,
           errorEmail: null,
           password: null,
-          errorPassword: null
+          errorPassword: null,
+          password: null,
+          errorPassword: null,
+          cpassword: null,
+          errorcPassword: null
         };
       }
       
     render() {
-      const {email, errorEmail, password, errorPassword} = this.state;
+      const {cpassword, errorcPassword, fName, errorfName, lName, errorlName, email, errorEmail, password, errorPassword} = this.state;
         return (
            <div className='loginContainer'>
-            <div className='loginForm'>
-            <Container className=''>
+              <div className='loginForm'>
+            <Container style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignContent: 'center',
+              flexDirection: 'column'
+            }} className=''>
             <Row className='Row'>
-              <h3>Welcome Back</h3>
+              <h3>Hi There</h3>
             </Row>
+            <Row className='Row mx-4' >
+            <Col className='Col-Gap-Left'>
+              <InputField
+                id={1}
+                type={'name'}
+                label={'First Name'}
+                locked={false}
+                active={false}
+                onChange={(fName, errorfName) => {
+                    this.setState({
+                      fName, errorfName
+                    })
+                  }}
+                />
+            </Col>
+
+            <Col className='Col-Gap-Right'>
+              <InputField
+                id={2}
+                type={'name'}
+                label={'Last Name'}
+                locked={false}
+                active={false}
+                onChange={(lName, errorlName) => {
+                    this.setState({
+                      lName, errorlName
+                    })
+                  }}
+                />
+            </Col>
+            </Row>
+
             <Row className='Row mx-4'>
             <InputField
-              id={1}
+              id={3}
               type={'email'}
               label={'Email'}
               locked={false}
@@ -53,7 +98,7 @@ class Login extends Component {
             </Row>
             <Row className='Row mx-4'>
             <InputField
-              id={1}
+              id={4}
               type={'password'}
               label={'Password'}
               locked={false}
@@ -66,31 +111,36 @@ class Login extends Component {
               />
             </Row>
             <Row className='Row mx-4'>
-              <Button variant='primary' size='lg'>Sign In</Button>
-            </Row>
-            <Row>
-              {/* Or */}
+            <InputField
+              id={5}
+              type={'password'}
+              label={'Confirm Password'}
+              locked={false}
+              active={false}
+              onChange={(cpassword, errorcPassword) => {
+                  this.setState({
+                    cpassword, errorcPassword
+                  })
+                }}
+              />
             </Row>
             <Row className='Row mx-4'>
-              <hr></hr>
-              <p>Or</p>
-            </Row>
-            <Row className='Row mx-4'>
-              <Button variant='secondary' size='lg'>Sign in via Google</Button>
+              <Button variant='primary' size='lg'>Register</Button>
             </Row>
             </Container>
             <Container className=''>
               <div className='rContainer'>
               <Row className='Row'>
-                <p>About USC-ERDT:IMS</p>
+                <p>Sign Up for USC-ERDt: IMS</p>
               </Row>
               <Row className='Row'>
-                USC-ERDT:IMS is an information management system developed by students of DCISM in cooperation with USC-ERDT to manage ERDT Applicants and Scholars
+                Create a new account to sign in to
               </Row>
               <Row className='Row'>
-                <p>
-                Don't have an Account, you can register <a href='/register'>here</a>
-                </p>
+                <p>Already Have an Account?</p>
+              </Row>
+              <Row className='Row'>
+                <p>Sign in <a href='/login'>here</a></p>
               </Row>
               </div>
             </Container>
@@ -104,4 +154,4 @@ class Login extends Component {
     }
 }
 
-export default Login
+export default Register

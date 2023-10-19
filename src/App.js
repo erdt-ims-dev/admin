@@ -6,12 +6,15 @@ import Sidebar from './modules/frames/Sidebar';
 import {withRouter} from 'react-router-dom';
 import { createBrowserHistory } from "history";
 import React, { useEffect, useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 // import { AuthProvider, useAuth } from './context/AuthContext'; // Import AuthProvider and useAuth
 
 
 function App(props) {
   // const {isLoggedIn, login, logout} = useAuth();
-  const {login, setLogin} = true;
+  const [login, setLogin] = useState(true);
   // This basically creates a history stack. The stack is '/'
   let history = createBrowserHistory();
 
@@ -45,26 +48,22 @@ function App(props) {
     <div className="App">
       {/* <AuthProvider> */}
         <React.Fragment>
-          <div>
             <Header {...props}/>
-          </div>
-          <div>
             <div className='mainContainer'>
-              <div className='sidebarContainer'>
               {
-                login && (
-                  <Sidebar {...props}
-                  navigate={navigate}
+                login && ( 
+                  <div className='sidebarContainer'>
+                    <Sidebar {...props}
+                    navigate={navigate}
                   />
+                    </div>
                 )
               }
-              </div>
-              
+      
               <div className='pageContainer'>
               <RouterList />
               </div>
             </div>
-          </div>
           <Footer />
         </React.Fragment>
       {/* </AuthProvider> */}
