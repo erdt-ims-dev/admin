@@ -7,7 +7,6 @@ const UserInfoCard = ({ imgSrc, name, course, yearLevel, size = 100 }) => {
         display: "flex",
         gap: "12px",
         alignItems: "center",
-        marginX: "24px",
       }}
     >
       <Avatar alt={name} src={imgSrc} sx={{ height: size, width: size }} />

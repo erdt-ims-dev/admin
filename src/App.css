@@ -7,18 +7,19 @@
   height: 40vmin;
   pointer-events: none;
 }
-.mainContainer{
+.mainContainer {
   display: flex;
-  margin: 0px!important;
+  margin: 0px !important;
 }
-.sidebarContainer{
+.sidebarContainer {
   flex: 1 1 auto;
 }
-.pageContainer{
+.pageContainer {
   flex: 11 1 auto;
-  min-height: 75vh!important;
+  min-height: 75vh !important;
+  padding: 24px;
 }
-.dsiplay-web{
+.dsiplay-web {
   display: block;
 }
 @media (prefers-reduced-motion: no-preference) {

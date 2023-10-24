@@ -31,8 +31,8 @@ export default function Routes() {
       <Route path="/account_list" exact component={AccountList} />
       <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} />
       <Route path="/admin_viewscholar" exact component={AdminViewScholar} />
-      <Route path="/scholar_list" exact component={ScholarList} />
-      <Route path="/view_scholar/:scholarId" exact component={ViewScholar} />
+      <Route path="/scholars" exact component={ScholarList} />
+      <Route path="/scholars/:scholarId" exact component={ViewScholar} />
       {/* Replacements */}
       <Route path="/leaves" exact component={Leaves} />
       <Route path="/accounts" exact component={Accounts} />

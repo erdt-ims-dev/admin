@@ -3,7 +3,27 @@ import "./style.scss";
 import UserInfoCard from "../generic/UserInfoCard";
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { Button } from "react-bootstrap";
+import { Button, Modal, Table } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faDownload,
+  faEye,
+  faTrash,
+  faUpload,
+} from "@fortawesome/free-solid-svg-icons";
+
+const TABLE_HEADERS = ["File", "Actions"];
+
+const MOCK_FILES = [
+  "Transcript of records",
+  "Birth certificate",
+  "Valid ID",
+  "Narrative essay",
+  "Medical certificate",
+  "NBI clearance",
+  "Admission notice",
+  "Program study",
+];
 
 const mockScholarData = [
   {
@@ -48,9 +68,12 @@ const mockGetScholarDetails = async (scholarId) => {
 };
 
 const ViewScholar = () => {
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [scholar, setScholar] = useState(null);
+  const [leaveApplications, setLeaveApplications] = useState([]);
   const { scholarId } = useParams();
 
+  // Calls API on render
   useEffect(() => {
     const getScholar = async () => {
       const response = await mockGetScholarDetails(scholarId);
@@ -70,28 +93,112 @@ const ViewScholar = () => {
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <UserInfoCard
-          name={scholar.name}
-          course={scholar.program}
-          yearLevel={scholar.yearLevel}
-          src=""
-        />
+      <div className="view-scholar container">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <UserInfoCard
+            name={scholar.name}
+            course={scholar.program}
+            yearLevel={scholar.yearLevel}
+            src=""
+          />
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <Button>Leave applications</Button>
-          <Box sx={{ display: "flex", gap: "8px" }}>
-            <Button>Portfolio</Button>
-            <Button>Submitted files</Button>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <Button onClick={() => setIsLeaveModalOpen(true)}>
+              Leave applications
+            </Button>
+            <Box sx={{ display: "flex", gap: "8px" }}>
+              <Button>Portfolio</Button>
+              <Button>Submitted files</Button>
+            </Box>
           </Box>
         </Box>
-      </Box>
+
+        <div className="table-container">
+          <Table>
+            <thead>
+              <tr>
+                {TABLE_HEADERS.map((header) => (
+                  <th key={header}>{header}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {MOCK_FILES.map((file) => (
+                <tr key={file}>
+                  <td>{file}</td>
+                  <td>
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faUpload}
+                      size="sm"
+                      onClick={() => {}}
+                    />
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faEye}
+                      size="sm"
+                      onClick={() => {}}
+                    />
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faTrash}
+                      size="sm"
+                      onClick={() => {}}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+
+      <Modal
+        size="lg"
+        show={isLeaveModalOpen}
+        onHide={() => setIsLeaveModalOpen(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Leave applications</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Table>
+            <thead>
+              <tr>
+                <th>Date submitted</th>
+                <th>Inclusive dates</th>
+                <th>Status</th>
+                <th>Leave request</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaveApplications.map(
+                ({ date_submitted, dates, status, id }) => (
+                  <tr key={id}>
+                    <td>{date_submitted}</td>
+                    <td>{dates}</td>
+                    <td>{status}</td>
+                    <td>
+                      <FontAwesomeIcon
+                        className="icon"
+                        icon={faDownload}
+                        size="sm"
+                        onClick={() => {}}
+                      />
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </Table>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

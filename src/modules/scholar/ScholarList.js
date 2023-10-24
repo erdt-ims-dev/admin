@@ -66,7 +66,7 @@ const ScholarList = () => {
     fetchData();
   }, []);
 
-  const handleView = (id) => history.push("/view_scholar/" + id);
+  const handleView = (id) => history.push("/scholars/" + id);
   const handleDelete = (id) => console.log("delete", id);
 
   return (
