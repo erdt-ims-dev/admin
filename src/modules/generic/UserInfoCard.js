@@ -13,7 +13,7 @@ const UserInfoCard = ({ imgSrc, name, course, yearLevel, size = 100 }) => {
       <Box sx={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
         <h5 className="user-info-name">{name}</h5>
         <p>{course}</p>
-        <p>{yearLevel} year</p>
+        {yearLevel && <p>{yearLevel} year</p>}
       </Box>
     </Box>
   );

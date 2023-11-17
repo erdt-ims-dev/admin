@@ -22,6 +22,7 @@ import {
   faBullhorn,
   faFileInvoice,
 } from "@fortawesome/free-solid-svg-icons";
+import { withRouter } from "react-router-dom";
 
 // Modify 'item' as needed
 const item = [
@@ -32,7 +33,7 @@ const item = [
   },
   {
     name: "Applicant Management",
-    route: "/applications",
+    route: "/applicants",
     icon: faListCheck,
   },
   {
@@ -47,7 +48,7 @@ const item = [
   },
   {
     name: "System Announcements",
-    route: "/#",
+    route: "/announcements",
     icon: faBullhorn,
   },
   {
@@ -80,6 +81,7 @@ export class SidebarFrame extends Component {
   }
   render() {
     const { sidebarOpen } = this.state;
+    const { history } = this.props;
     return (
       <div>
         <Sidebar
@@ -97,7 +99,7 @@ export class SidebarFrame extends Component {
                 bgColor="white"
                 classes="sidebarItem"
                 // I used this.props.navigate here <Sidebar/> is being called by App.js directly. You can call this.props.navigate as is
-                onClick={() => this.props.navigate(item.route)}
+                onClick={() => history.push(item.route)}
                 key={index}
               >
                 <Icon
@@ -125,4 +127,4 @@ export class SidebarFrame extends Component {
   }
 }
 
-export default SidebarFrame;
+export default withRouter(SidebarFrame);

@@ -14,6 +14,12 @@ import Leaves from "../modules/leaves/index.js";
 import Accounts from "../modules/accounts/index.js";
 import Settings from "../modules/settings/index.js";
 import Register from "../modules/auth/register.js";
+import {
+  AddApplicant,
+  ApplicantList,
+  ViewApplicant,
+} from "../modules/applicants";
+import { SystemAnnouncements } from "../modules/announcements";
 
 export default function Routes() {
   const { isLoggedIn } = true;
@@ -32,7 +38,11 @@ export default function Routes() {
       <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} />
       <Route path="/admin_viewscholar" exact component={AdminViewScholar} />
       <Route path="/scholars" exact component={ScholarList} />
-      <Route path="/scholars/:scholarId" exact component={ViewScholar} />
+      <Route path="/scholars/:scholarId" component={ViewScholar} />
+      <Route path="/applicants" exact component={ApplicantList} />
+      <Route path="/applicants/add" exact component={AddApplicant} />
+      <Route path="/applicants/:applicantId" component={ViewApplicant} />
+      <Route path="/announcements" exact component={SystemAnnouncements} />
       {/* Replacements */}
       <Route path="/leaves" exact component={Leaves} />
       <Route path="/accounts" exact component={Accounts} />

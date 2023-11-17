@@ -67,10 +67,29 @@ const mockGetScholarDetails = async (scholarId) => {
   });
 };
 
+const mockGetApplications = async () =>
+  new Promise((resolve) => {
+    setTimeout(
+      () =>
+        resolve({
+          status: 200,
+          data: [
+            {
+              id: "test_id_0",
+              date_submitted: "February 23, 2023",
+              dates: "February 23, 24, 25, 2023",
+              status: "APPROVED",
+            },
+          ],
+        }),
+      250
+    );
+  });
+
 const ViewScholar = () => {
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [scholar, setScholar] = useState(null);
-  const [leaveApplications, setLeaveApplications] = useState([]);
+  const [leaveApplications, setLeaveApplications] = useState(null);
   const { scholarId } = useParams();
 
   // Calls API on render
@@ -88,6 +107,24 @@ const ViewScholar = () => {
 
     getScholar();
   }, [scholarId]);
+
+  // Fetches leave applications on modal open
+  useEffect(() => {
+    const getApplications = async () => {
+      const response = await mockGetApplications();
+
+      if (response.status !== 200) {
+        console.error("There was an error in fetching applications.");
+        return;
+      }
+
+      setLeaveApplications(response.data);
+    };
+
+    if (isLeaveModalOpen && leaveApplications === null) {
+      getApplications();
+    }
+  }, [isLeaveModalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!scholar) return <>Loading...</>;
 
@@ -178,7 +215,7 @@ const ViewScholar = () => {
               </tr>
             </thead>
             <tbody>
-              {leaveApplications.map(
+              {leaveApplications?.map(
                 ({ date_submitted, dates, status, id }) => (
                   <tr key={id}>
                     <td>{date_submitted}</td>
