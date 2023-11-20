@@ -1,0 +1,25 @@
+let LIVE_BACKEND_URL = null
+let DEV_BACKEND_URL = 'http://localhost/api/app'
+let PRODUCTION_BACKEND_URL = ''
+let SANDBOX_BACKEND_URL = ''
+let BACKEND_URL = null
+switch(0){
+  case 0:
+    BACKEND_URL = DEV_BACKEND_URL
+    break
+  case 1:
+    BACKEND_URL = SANDBOX_BACKEND_URL
+    break   
+  case 2:
+    BACKEND_URL = PRODUCTION_BACKEND_URL
+    break
+}
+export default {
+  IS_DEV: BACKEND_URL,
+  API_URL: BACKEND_URL + '/',
+  BACKEND_URL: BACKEND_URL,
+  TEST: false,
+  HOST: 'http://localhost:3004',
+//   background: "url('https://api.production.payhiram.ph/public/increment/v1/storage/logo/background.jpg')",
+  
+}

@@ -1,0 +1,29 @@
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.table-container {
+  margin: 20px;
+  padding-block: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 24%);
+
+  th,
+  td {
+    background-color: #d9e8f6;
+  }
+}
+
+.icon {
+  color: #66a5e2;
+  margin: 0px 5px;
+  cursor: pointer;
+}
+
+// view scholar
+.view-scholar {
+  margin-top: 24px;
+}
