@@ -53,11 +53,11 @@ class Register extends Component {
     console.log("1:",firstName, lastName, email, password, confirmPassword)
     console.log("2:",errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword)
     
-    if(errorFirstName !== null || firstName !== null || firstName == '') {return false}
-    if(errorLastName !== null || lastName !== null || lastName == '') { return false}
-    if(errorEmail !== null || email !== null || email == '') { return false}
-    if(errorPassword !== null || password !== null || password == '') { return false}
-    if(errorConfirmPassword !== null || confirmPassword !== null || confirmPassword == '') { return false}
+    if(errorFirstName !== null || firstName !== null || firstName == '') { console.log("1")}
+    if(errorLastName !== null || lastName !== null || lastName == '') { console.log("2")}
+    if(errorEmail !== null || email !== null || email == '') { console.log("3")}
+    if(errorPassword !== null || password !== null || password == '') { console.log("4")}
+    if(errorConfirmPassword !== null || confirmPassword !== null || confirmPassword == '') { console.log("5")}
     
     // Validate Password
     if(this.validatePassword(password) === false) {
@@ -76,7 +76,7 @@ class Register extends Component {
       return false
     }
     // Requests
-    API.request('/register', {
+    API.request('register', {
       email, password,
       first_name: firstName,
       last_name: lastName,
@@ -105,13 +105,14 @@ class Register extends Component {
           >
             <Row className="Row">
               <h3>Hi There</h3>
-              <h3 style={{
-                color: "red"
+              <p style={{
+                color: "red",
+                fontSize: 10
               }}>
                 {
-                  this.loginError
+                  errorMessage
                 }
-              </h3>
+              </p>
             </Row>
             <Row className="Row mx-4">
               <Col className="Col-Gap-Left">
