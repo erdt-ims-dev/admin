@@ -8,7 +8,7 @@ import "./style.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-import InputField from "../generic/input";
+import InputField from "../generic/inputV2";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -16,39 +16,81 @@ import Col from "react-bootstrap/Col";
 import { GoogleLogin } from "@react-oauth/google";
 import { withRouter } from "react-router-dom";
 
+import API from '../../services/Api'
+
 class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: null,
-      fname: null,
-      errorfName: null,
-      lname: null,
-      errorlName: null,
+      firstName: null,
+      errorFirstName: null,
+      lastName: null,
+      errorLastName: null,
       email: null,
       errorEmail: null,
       password: null,
       errorPassword: null,
-      password: null,
-      errorPassword: null,
-      cpassword: null,
-      errorcPassword: null,
+      confirmPassword: null,
+      errorConfirmPassword: null,
+
+      errorMessage: ''
     };
   }
+  validatePassword(password) {
+    const reg = /^(?=(?:.*[A-Z]){1,})(?=(?:.*[a-z]){1,})(?=(?:.*\d){1,})(?=(?:.*[!@#$%^&*()\-_=+{};:,<.>]){1,})([A-Za-z0-9!@#$%^&*()\-_=+{};:,<.>]{6,})$/
+    if (reg.test(password) === false) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
+  submit(){
+    const { firstName, lastName, email, password, confirmPassword} = this.state;
+    const { errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword, errorMessage} = this.state;
+    
+    console.log("1:",firstName, lastName, email, password, confirmPassword)
+    console.log("2:",errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword)
+    
+    if(errorFirstName !== null || firstName !== null || firstName == '') {return false}
+    if(errorLastName !== null || lastName !== null || lastName == '') { return false}
+    if(errorEmail !== null || email !== null || email == '') { return false}
+    if(errorPassword !== null || password !== null || password == '') { return false}
+    if(errorConfirmPassword !== null || confirmPassword !== null || confirmPassword == '') { return false}
+    
+    // Validate Password
+    if(this.validatePassword(password) === false) {
+      this.setState({errorMessage: 'Passwords should be atleast 8 characters. It must be alphanumeric characters. It should contain 1 number, 1 special character and 1 capital letter.'})
+      console.log("error validation")
+      return
+    } else {
+      this.setState({errorMessage: null})
+    }
+    // Check if CPass matches pass
+    if (password !== confirmPassword) {
+      this.setState({
+        errorConfirmPassword: 'Password not match'
+      })
+      console.log("error password match")
+      return false
+    }
+    // Requests
+    API.request('/register', {
+      email, password,
+      first_name: firstName,
+      last_name: lastName,
+    }, response => {
+      if (response && response.data) (
+        console.log(response)
+      )
+    }, error => {
+      console.log(error)
+    })
+  }
   render() {
-    const {
-      cpassword,
-      errorcPassword,
-      fName,
-      errorfName,
-      lName,
-      errorlName,
-      email,
-      errorEmail,
-      password,
-      errorPassword,
-    } = this.state;
+    const { firstName, lastName, email, password, confirmPassword} = this.state;
+    const { errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword, errorMessage} = this.state;
     return (
       <div className="loginContainer">
         <div className="loginForm">
@@ -63,6 +105,13 @@ class Register extends Component {
           >
             <Row className="Row">
               <h3>Hi There</h3>
+              <h3 style={{
+                color: "red"
+              }}>
+                {
+                  this.loginError
+                }
+              </h3>
             </Row>
             <Row className="Row mx-4">
               <Col className="Col-Gap-Left">
@@ -72,10 +121,10 @@ class Register extends Component {
                   label={"First Name"}
                   locked={false}
                   active={false}
-                  onChange={(fName, errorfName) => {
+                  onChange={(firstName, errorFirstName) => {
                     this.setState({
-                      fName,
-                      errorfName,
+                      firstName,
+                      errorFirstName,
                     });
                   }}
                 />
@@ -88,10 +137,10 @@ class Register extends Component {
                   label={"Last Name"}
                   locked={false}
                   active={false}
-                  onChange={(lName, errorlName) => {
+                  onChange={(lastName, errorLastName) => {
                     this.setState({
-                      lName,
-                      errorlName,
+                      lastName,
+                      errorLastName,
                     });
                   }}
                 />
@@ -135,16 +184,18 @@ class Register extends Component {
                 label={"Confirm Password"}
                 locked={false}
                 active={false}
-                onChange={(cpassword, errorcPassword) => {
+                onChange={(confirmPassword, errorConfirmPassword) => {
                   this.setState({
-                    cpassword,
-                    errorcPassword,
+                    confirmPassword,
+                    errorConfirmPassword,
                   });
                 }}
               />
             </Row>
             <Row className="Row mx-4">
-              <Button variant="primary" size="lg">
+              <Button variant="primary" size="lg" onClick={()=>{
+                this.submit()
+              }}>
                 Register
               </Button>
             </Row>
