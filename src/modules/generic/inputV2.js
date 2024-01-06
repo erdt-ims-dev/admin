@@ -23,7 +23,7 @@ class InputField extends Component {
         return this.props.onChange(value, error);
       }
     render() {
-        const {id, type, placeholder, locked} = this.props;
+        const {id, type, placeholder, locked, border} = this.props;
         const { focussed, value, error, label } = this.state;
         const fieldClassName = `field ${(locked ? focussed : focussed || value) && 'focussed'} ${locked && !focussed && 'locked'}`;
         return (
@@ -31,7 +31,7 @@ class InputField extends Component {
                 <input 
                 id={id}
                 value={value} 
-                className=''  
+                className=""
                 type={type} 
                 placeholder={focussed ? '' : label}
                 onChange={this.onChange}

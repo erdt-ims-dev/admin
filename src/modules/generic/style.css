@@ -90,3 +90,7 @@
 .inputField {
   color: rgb(158, 156, 156) !important;
 }
+
+.borderRed{
+  border-color: red;
+}

@@ -50,19 +50,19 @@ class Register extends Component {
     const { firstName, lastName, email, password, confirmPassword} = this.state;
     const { errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword, errorMessage} = this.state;
     
+    
     console.log("1:",firstName, lastName, email, password, confirmPassword)
     console.log("2:",errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword)
+    // Check for missing fields
+    if(firstName == null || firstName == '' || lastName == null || lastName == '' || email == null || email == '' || password == null || password == '' || confirmPassword == null || confirmPassword == ''){
+      this.setState({errorMessage: 'Please fill in missing fields'})
+      return false
+    }
     
-    if(errorFirstName !== null || firstName !== null || firstName == '') { console.log("1")}
-    if(errorLastName !== null || lastName !== null || lastName == '') { console.log("2")}
-    if(errorEmail !== null || email !== null || email == '') { console.log("3")}
-    if(errorPassword !== null || password !== null || password == '') { console.log("4")}
-    if(errorConfirmPassword !== null || confirmPassword !== null || confirmPassword == '') { console.log("5")}
     
     // Validate Password
     if(this.validatePassword(password) === false) {
       this.setState({errorMessage: 'Passwords should be atleast 8 characters. It must be alphanumeric characters. It should contain 1 number, 1 special character and 1 capital letter.'})
-      console.log("error validation")
       return
     } else {
       this.setState({errorMessage: null})
@@ -70,9 +70,8 @@ class Register extends Component {
     // Check if CPass matches pass
     if (password !== confirmPassword) {
       this.setState({
-        errorConfirmPassword: 'Password not match'
+        errorMessage: 'Passwords do not match'
       })
-      console.log("error password match")
       return false
     }
     // Requests

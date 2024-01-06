@@ -1,5 +1,5 @@
 let LIVE_BACKEND_URL = null
-let DEV_BACKEND_URL = 'http://localhost/api/app'
+let DEV_BACKEND_URL = 'http://localhost:8000/api/app'
 let PRODUCTION_BACKEND_URL = ''
 let SANDBOX_BACKEND_URL = ''
 let BACKEND_URL = null
@@ -19,7 +19,7 @@ export default {
   API_URL: BACKEND_URL + '/',
   BACKEND_URL: BACKEND_URL,
   TEST: false,
-  HOST: 'http://localhost:3004',
+  HOST: 'http://localhost:8000',
 //   background: "url('https://api.production.payhiram.ph/public/increment/v1/storage/logo/background.jpg')",
   
 }

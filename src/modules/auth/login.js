@@ -15,6 +15,9 @@ import Col from "react-bootstrap/Col";
 
 import { GoogleLogin } from "@react-oauth/google";
 import { withRouter } from "react-router-dom";
+
+import API from '../../services/Api'
+
 // Import history for every new page you create
 class Login extends Component {
   constructor(props) {
@@ -27,7 +30,20 @@ class Login extends Component {
       errorPassword: null,
     };
   }
-
+  login(){
+    const {email, password} = this.state;
+    const {isLoggedin} = this.props;
+    API.request('login', {
+      email, password,
+    }, response => {
+      if (response && response.data) (
+        // this.props.isLoggedin == true,
+        this.history.push("/dashboard")
+      )
+    }, error => {
+      console.log(error)
+    })
+  }
   render() {
     const { email, errorEmail, password, errorPassword } = this.state;
     const { history } = this.props;
@@ -69,7 +85,7 @@ class Login extends Component {
               />
             </Row>
             <Row className="Row mx-4">
-              <Button variant="primary" size="lg">
+              <Button variant="primary" size="lg" onClick={this.login()}>
                 Sign In
               </Button>
             </Row>

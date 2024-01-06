@@ -22,7 +22,7 @@ import {
 import { SystemAnnouncements } from "../modules/announcements";
 
 export default function Routes() {
-  const { isLoggedIn } = true;
+  // const { isLoggedIn } = true;
   return (
     <Switch>
       <Route path="/" exact component={Login} />
