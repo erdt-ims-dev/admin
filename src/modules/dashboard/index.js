@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Card from 'react-bootstrap/Card';
 import './style.css'
-import Breadcrumb from '../generic/breadcrumb';
+import Breadcrumb from 'modules/generic/breadcrumb';
 // temporary data, will be using API to retrieve future data
 const data = [
   {

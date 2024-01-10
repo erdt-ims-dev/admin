@@ -8,7 +8,7 @@ import "./style.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-import InputField from "../generic/input";
+import InputField from "../generic/inputV2";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -16,7 +16,7 @@ import Col from "react-bootstrap/Col";
 import { GoogleLogin } from "@react-oauth/google";
 import { withRouter } from "react-router-dom";
 
-import API from '../../services/Api'
+import API from 'services/Api'
 
 // Import history for every new page you create
 class Login extends Component {
@@ -32,21 +32,20 @@ class Login extends Component {
   }
   login(){
     const {email, password} = this.state;
-    const {isLoggedin} = this.props;
+    const {onLogin, history} = this.props;
     API.request('login', {
       email, password,
     }, response => {
-      if (response && response.data) (
-        // this.props.isLoggedin == true,
-        this.history.push("/dashboard")
-      )
+      if (response && response.data) {
+        onLogin(); // Call the onLogin function passed from the parent
+        history.push("/dashboard");
+      }
+
     }, error => {
       console.log(error)
     })
   }
   render() {
-    const { email, errorEmail, password, errorPassword } = this.state;
-    const { history } = this.props;
     return (
       <div className="loginContainer">
         <div className="loginForm">
@@ -85,7 +84,9 @@ class Login extends Component {
               />
             </Row>
             <Row className="Row mx-4">
-              <Button variant="primary" size="lg" onClick={this.login()}>
+              <Button variant="primary" size="lg" onClick={()=>{
+                this.login()
+              }} >
                 Sign In
               </Button>
             </Row>
@@ -107,7 +108,7 @@ class Login extends Component {
               </Row>
               <Row className="Row">
                 USC-ERDT:IMS is an information management system developed by
-                students of DCISM in cooperation with USC-ERDT to manage ERDT
+                DCISM in cooperation with USC-ERDT to manage ERDT
                 Applicants and Scholars
               </Row>
               <Row className="Row">

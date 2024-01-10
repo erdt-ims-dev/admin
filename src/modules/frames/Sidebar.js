@@ -33,7 +33,7 @@ const item = [
   },
   {
     name: "Applicant Management",
-    route: "/applicants",
+    route: "/applications",
     icon: faListCheck,
   },
   {
@@ -58,7 +58,7 @@ const item = [
   },
   {
     name: "Settings",
-    route: "/#",
+    route: "/settings",
     icon: faGear,
   },
   {
