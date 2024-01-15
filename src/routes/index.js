@@ -33,7 +33,7 @@ export default function Routes() {
   return (
     <Switch>
       <Route
-        path="/"
+        path="/login"
         isLoggedIn={isLoggedIn}
         onLogin={handleLogin}
         exact

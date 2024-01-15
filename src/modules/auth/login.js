@@ -15,6 +15,7 @@ import Col from "react-bootstrap/Col";
 
 import { GoogleLogin } from "@react-oauth/google";
 import { withRouter } from "react-router-dom";
+// import { useAuth, withAuth } from 'context/AuthContext';
 
 import API from 'services/Api'
 
@@ -32,15 +33,15 @@ class Login extends Component {
   }
   login(){
     const {email, password} = this.state;
-    const {onLogin, history} = this.props;
+    const { history} = this.props;
     API.request('login', {
       email, password,
     }, response => {
       if (response && response.data) {
-        onLogin(); // Call the onLogin function passed from the parent
-        history.push("/dashboard");
-      }
+        localStorage.setItem('token', response.token)
 
+        // history.push("/dashboard");
+      }
     }, error => {
       console.log(error)
     })
@@ -49,9 +50,9 @@ class Login extends Component {
     return (
       <div className="loginContainer">
         <div className="loginForm">
-          <Container className="">
+          <Container className="LeftFlex">
             <Row className="Row">
-              <h3>Welcome Back</h3>
+              <h3>Welcome</h3>
             </Row>
             <Row className="Row mx-4">
               <InputField
@@ -70,7 +71,7 @@ class Login extends Component {
             </Row>
             <Row className="Row mx-4">
               <InputField
-                id={1}
+                id={2}
                 type={"password"}
                 label={"Password"}
                 locked={false}
@@ -91,7 +92,7 @@ class Login extends Component {
               </Button>
             </Row>
             <Row>{/* Or */}</Row>
-            <Row className="Row mx-4">
+            {/* <Row className="Row mx-4">
               <hr></hr>
               <p>Or</p>
             </Row>
@@ -99,7 +100,7 @@ class Login extends Component {
               <Button variant="secondary" size="lg">
                 Sign in via Google
               </Button>
-            </Row>
+            </Row> */}
           </Container>
           <Container className="">
             <div className="rContainer">

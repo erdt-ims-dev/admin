@@ -21,7 +21,7 @@ import {
   import Config from '../config.js'
   const helper = {
     company: 'USC',
-    APP_NAME: 'USC-ERDT:IMS',
+    APP_NAME: 'ERDT-IMS',
     APP_NAME_BASIC: 'ERDT-IMS',
     APP_EMAIL: '',
     APP_WEBSITE: '',

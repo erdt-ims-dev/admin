@@ -56,3 +56,9 @@
 .Col-Gap-Right{
   padding-right: 0px!important;
 }
+
+.LeftFlex{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
