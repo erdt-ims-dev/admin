@@ -1,9 +1,7 @@
 import React, { Component } from "react";
+import {connect, useDispatch} from 'react-redux'
+
 import { ListGroup } from "react-bootstrap";
-import ERDT from "../../assets/img/erdtl.png";
-import USCLogo from "../../assets/img/usc.png";
-import DCISM from "../../assets/img/dcism.png";
-import Circuit from "../../assets/img/circuitboard.png";
 import "./style.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -31,16 +29,18 @@ class Login extends Component {
       errorPassword: null,
     };
   }
-  login(){
+  startLogin(){
     const {email, password} = this.state;
-    const { history} = this.props;
+    
     API.request('login', {
       email, password,
     }, response => {
       if (response && response.data) {
-        localStorage.setItem('token', response.token)
+        const user = response.data
+        const token = response.token
 
-        // history.push("/dashboard");
+        this.props.login(user, token)
+        // this.props.history.push("/dashboard");
       }
     }, error => {
       console.log(error)
@@ -85,9 +85,9 @@ class Login extends Component {
               />
             </Row>
             <Row className="Row mx-4">
-              <Button variant="primary" size="lg" onClick={()=>{
-                this.login()
-              }} >
+              <Button type="button" variant="primary" size="lg" onClick={
+                this.startLogin()
+              } >
                 Sign In
               </Button>
             </Row>
@@ -123,10 +123,15 @@ class Login extends Component {
         </div>
       </div>
     );
-    // const handleSubmit = (event) => {
-    //   event.preventDefault();
-    //   console.log(`Email: ${email}, Password: ${password}`);
   }
 }
+const mapStateToProps = (state) => ({ state: state });
 
-export default withRouter(Login);
+const mapDispatchToProps = (dispatch) => {
+  const { actions } = require('reduxhandler');
+  return {
+    login: (user, token) => {dispatch(actions.login(user, token))}
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

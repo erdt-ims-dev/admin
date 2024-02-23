@@ -34,17 +34,15 @@ export default function Routes() {
     <Switch>
       <Route
         path="/login"
-        isLoggedIn={isLoggedIn}
-        onLogin={handleLogin}
         exact
-        component={(props) => <Login {...props} onLogin={handleLogin} />}
+        component={Login}
       />
        {/* Protected */}
-      <Route path="/dashboard" 
+      {/* <Route path="/dashboard" 
 			exact 
 			component={isLoggedIn ? Dashboard: () => <Redirect to="/"/>}
-			/>
-      {/* <Route path="/dashboard" exact component={Dashboard} /> */}
+			/> */}
+      <Route path="/dashboard" exact component={Dashboard} />
       {/* Applicant Management */}
       <Route path="/applications" exact component={ApplicantList}/>
       <Route path="/new_application" exact component={NewApplicant}/>

@@ -1,4 +1,4 @@
-import API from 'services/api'
+import API from 'services/Api'
 import Routes from 'common/Routes'
 const api = {
 	async authenticate(username, password, callback, errorCallback){

@@ -1,5 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+
 import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
@@ -9,43 +13,22 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import { createStore } from 'redux';
-import rootReducer from './reduxhandler';
+
 import { Provider } from 'react-redux'
-import { persistStore, persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage' 
-import { PersistGate } from 'redux-persist/integration/react'
+import store from './reduxhandler/index'
 
-const persistConfig = {
-  key: 'root',
-  storage,
-}
-
-const persistedReducer = persistReducer(persistConfig, rootReducer)
-const store = createStore(persistedReducer);
-let persistor = persistStore(store)
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement);
 
 function WrappedApp(){
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </PersistGate>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </Provider>
   )
 }
 
-ReactDOM.render(<WrappedApp />, document.getElementById('root'));
+root.render(<WrappedApp />, document.getElementById('root'));
 
-
-
-// const root = ReactDOM.createRoot(document.getElementById("root"));
-// root.render(
-//   <React.StrictMode>
-//     <BrowserRouter>
-//       <App />
-//     </BrowserRouter>
-//   </React.StrictMode>
-// );
