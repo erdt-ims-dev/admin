@@ -60,8 +60,8 @@ export default function Routes() {
       <Route path="/scholars/:scholarId" component={ViewScholar} />
       <Route path="/applicants" exact component={ApplicantList} />
       <Route path="/applicants/add" exact component={AddApplicant} />
-      <Route path="/applicants/:applicantId" component={ViewApplicant} />
-      <Route path="/announcements" exact component={SystemAnnouncements} /> */}
+      <Route path="/applicants/:applicantId" component={ViewApplicant} />*/}
+      <Route path="/announcements" exact component={SystemAnnouncements} /> 
       {/* Replacements */}
       <Route path="/leaves" exact component={Leaves} />
       <Route path="/accounts" exact component={Accounts} />

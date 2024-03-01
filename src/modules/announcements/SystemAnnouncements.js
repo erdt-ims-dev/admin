@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fontawesome/react-fontawesome";
 import { faEye, faTrash } from "@fontawesome/free-solid-svg-icons";
 import UserInfoCard from "../generic/UserInfoCard";
+import { Api } from "@mui/icons-material";
 
 const TABLE_HEADERS = ["Title", "Date", "Actions"];
 
@@ -86,6 +87,18 @@ const SystemAnnouncements = () => {
       console.error(error);
     }
   };
+
+  Api.request('retrieveAll', response => 
+  {
+    if (response && response.data )
+    {
+      console.log(response)
+    }, 
+    error => 
+    {
+      console.log(error)
+    }
+  })
 
   return (
     <div className="system-announcements">
