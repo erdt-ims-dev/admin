@@ -3,8 +3,8 @@ import Breadcrumbs from "../generic/breadcrumb";
 import { Box } from "@mui/material";
 import "./style.scss";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fontawesome/react-fontawesome";
+import { faEye, faTrash } from "@fontawesome/free-solid-svg-icons";
 import UserInfoCard from "../generic/UserInfoCard";
 
 const TABLE_HEADERS = ["Title", "Date", "Actions"];

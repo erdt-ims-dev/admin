@@ -14,8 +14,9 @@ function RouteWrapper({
 
     if(user == null && token){
         const { setIsLoading } = rest
-        setIsLoading(true)
+        // setIsLoading(true)
         CommonApi.getAuthenticatedUser(user => {
+            console.log(user)
             setIsLoading(false)
             const { login, logout } = rest;
             if(user){

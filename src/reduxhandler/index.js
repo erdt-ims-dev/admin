@@ -30,7 +30,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  const { type, user, token, isLoading } = action;
+  const { type, user, token, flag, isLoading } = action;
   switch (type) {
     case types.LOGOUT:
       localStorage.removeItem(`${Helper.APP_NAME}token`);

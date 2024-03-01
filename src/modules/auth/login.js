@@ -40,12 +40,16 @@ class Login extends Component {
         const token = response.token
 
         this.props.login(user, token)
-        // this.props.history.push("/dashboard");
+        this.navigate("/dashboard");
       }
     }, error => {
       console.log(error)
     })
   }
+  navigate = (route) => {
+    this.props.history.push(route)
+  }
+
   render() {
     return (
       <div className="loginContainer">
