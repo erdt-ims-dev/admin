@@ -88,17 +88,18 @@ const SystemAnnouncements = () => {
     }
   };
 
-  Api.request('retrieveAll', response => 
-  {
+  Api.request('retrieveAll', {
+
+  }, response => {
     if (response && response.data )
-    {
-      console.log(response)
-    }, 
-    error => 
-    {
-      console.log(error)
-    }
-  })
+      {
+        console.log(response)
+      }
+    }, error => 
+      {
+        console.log(error)
+      }
+  )
 
   return (
     <div className="system-announcements">
