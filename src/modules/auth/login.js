@@ -15,6 +15,8 @@ import { GoogleLogin } from "@react-oauth/google";
 import { withRouter } from "react-router-dom";
 // import { useAuth, withAuth } from 'context/AuthContext';
 
+import Helper from 'common/Helper';
+
 import API from 'services/Api'
 
 // Import history for every new page you create
@@ -38,7 +40,7 @@ class Login extends Component {
       if (response && response.data) {
         const user = response.data
         const token = response.token
-
+        localStorage.setItem(`${Helper.APP_NAME}token`, token)
         // this.props.login(user, token)
         this.navigate("/dashboard");
       }
@@ -89,9 +91,7 @@ class Login extends Component {
               />
             </Row>
             <Row className="Row mx-4">
-              <Button type="button" variant="primary" size="lg" onClick={
-                this.startLogin()
-              } >
+              <Button type="button" variant="primary" size="lg" >
                 Sign In
               </Button>
             </Row>
