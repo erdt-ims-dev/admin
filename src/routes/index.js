@@ -14,6 +14,7 @@ import Leaves from "modules/leaves/index.js";
 import Accounts from "modules/accounts/index.js";
 import Settings from "modules/settings/index.js";
 import Register from "modules/auth/register.js";
+import Home from "home/index.js";
 
 import ApplicantList from "modules/applications/index";
 import NewApplicant from "modules/applications/newApplicant";
@@ -67,6 +68,7 @@ export default function Routes() {
       <Route path="/accounts" exact component={Accounts} />
       <Route path="/settings" exact component={Settings} />
       <Route path="/register" exact component={Register} />
+      <Route path="/home" exact component={Home} />
     </Switch>
   );
 }

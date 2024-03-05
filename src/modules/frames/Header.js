@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Navbar, Container, Breadcrumb } from 'react-bootstrap'
 import erdt from '../../assets/img/erdt-logo-black.png'
 import './style.css'
-import { faArrowRightFromBracket, faBell, faEllipsisV, faGear, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRightFromBracket, faBars, faBell, faEllipsisV, faGear, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,7 +16,14 @@ export class Header extends Component {
     render() {
         return (
             <div className='headerContainer'>
-              
+              <Container className='left-headerContainer'>
+              <FontAwesomeIcon icon={faBars} 
+              className='white fa-lg' 
+              style={{
+                padding: 10
+              }}
+              onClick={this.props.handleOpenSidebar}/>
+              </Container>
               <Container className='right-headerContainer' fluid>
                 <Col style={{
                   display: "flex",

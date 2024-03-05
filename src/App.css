@@ -16,7 +16,7 @@
 }
 .pageContainer {
   flex: 11 1 auto;
-  min-height: 75vh !important;
+  min-height: auto !important;
   padding: 24px;
 }
 .dsiplay-web {

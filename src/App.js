@@ -18,7 +18,8 @@ function App(props) {
   const history = useHistory()
 
   const user = useSelector(state => state.user)
-
+  const [isLoggedIn, setIsLoggedIn ] = useState(false)
+  const [openSidebar, setOpenSidebar ] = useState(false)
   const navigate = (route) => {
     if(route == '/logout'){
       const{ logout } = props;
@@ -27,15 +28,20 @@ function App(props) {
       history.push(route)
     }
   }
+  const handleOpenSidebar = () => {
+    console.log('fire')
+    setOpenSidebar(!openSidebar);
+    
+ };
   
   return (
     <div className="App">
       <React.Fragment>
-        <Header {...props} />
+        <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
         <div className="mainContainer">
           {
             <div className="sidebarContainer">
-              <Sidebar {...props} />
+              <Sidebar show={openSidebar} {...props} />
             </div>
           }
 

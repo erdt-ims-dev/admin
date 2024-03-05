@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Navbar, Container, Breadcrumb } from "react-bootstrap";
-import erdt from "../../assets/img/erdtl.png";
+import erdt from "../../assets/img/erdt-logo-black.png";
 import {
   Sidebar,
   InputItem,
@@ -21,6 +21,7 @@ import {
   faPersonWalkingArrowRight,
   faBullhorn,
   faFileInvoice,
+  faGripHorizontal,
 } from "@fortawesome/free-solid-svg-icons";
 import { withRouter } from "react-router-dom";
 
@@ -29,7 +30,7 @@ const item = [
   {
     name: "Dashboard",
     route: "/dashboard",
-    icon: faHouse,
+    icon: faGripHorizontal,
   },
   {
     name: "Applicant Management",
@@ -72,27 +73,39 @@ export class SidebarFrame extends Component {
     super(props);
     this.state = {
       data: null,
-      sidebarOpen: false,
+      sidebarOpen: props.openSidebar || null
     };
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
   }
-  onSetSidebarOpen(open) {
+  componentDidUpdate(prevProps) {
+    // Update state if openSidebar prop changes
+    if (this.props.openSidebar !== prevProps.openSidebar) {
+      this.setState({ sidebarOpen: this.props.openSidebar });
+    }
+ }
+
+ onSetSidebarOpen(open) {
     this.setState({ sidebarOpen: open });
-  }
+ }
   render() {
     const { sidebarOpen } = this.state;
-    const { history } = this.props;
+    const { history, show } = this.props;
     return (
       <div>
         <Sidebar
           classes="sidebarStyles"
           bgColor="white"
-          isCollapsed={sidebarOpen}
+          isCollapsed={show}
         >
           {/* <Logo
-                    image={erdt}
-                    imageName='react logo'/> */}
-          {/* <LogoText>Sidebar Test</LogoText> */}
+            image={erdt}
+            imageName='react logo'
+            style={{
+              height: 'auto',
+              width: '50%'
+            }}
+            /> */}
+          <LogoText>eSMP</LogoText>
           {item.map((item, index) => {
             return (
               <Item
