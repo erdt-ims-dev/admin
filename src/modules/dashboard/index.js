@@ -68,10 +68,11 @@ class Dashboard extends Component {
         },
       ]
         return (
-            <div className='dashboardContainer'>
+            <div className=''>
               <Breadcrumb
-              header={"Welcome to ERDT Information Management System"}
+              header={"Welcome to your Dashboard"}
               subheader={"Heres the current statistics"}/>
+              {/* Start Graph */}
               <Container>
               <BarChart
                 series={[
@@ -83,6 +84,8 @@ class Dashboard extends Component {
                 margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
               />
               </Container>
+             {/* End Graph */}
+              {/* Start Cards */}
               <Container className='cardContainer'>
                 {
                   // See dynamic list rendering in react. .map() function in JS also documents this method
@@ -101,8 +104,9 @@ class Dashboard extends Component {
                     )
                   })
                 }
+              </Container>
+              {/* End Cards */}
               
-        </Container>
             </div>
 
         )

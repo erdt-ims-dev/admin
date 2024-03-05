@@ -91,7 +91,7 @@ export class SidebarFrame extends Component {
     const { sidebarOpen } = this.state;
     const { history, show } = this.props;
     return (
-      <div>
+      <div className="sidebarContainer">
         <Sidebar
           classes="sidebarStyles"
           bgColor="white"
