@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import Card from 'react-bootstrap/Card';
 import './style.css'
 import Breadcrumb from 'modules/generic/breadcrumb';
 
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import { BarChart } from '@mui/x-charts/BarChart';
 import API from 'services/Api'
 // temporary data, will be using API to retrieve future data
 
@@ -28,6 +30,7 @@ class Dashboard extends Component {
         value: 'applicant',
       }, response => {
         if (response && response.data) {
+          console.log('::',response)
          this.setState({
           applicant_count: response.data.count()
          })
@@ -69,7 +72,18 @@ class Dashboard extends Component {
               <Breadcrumb
               header={"Welcome to ERDT Information Management System"}
               subheader={"Heres the current statistics"}/>
-              <div className='cardContainer'>
+              <Container>
+              <BarChart
+                series={[
+                  { data: [applicant_count, endorsed_count, total_scholars, pending_applications, pending_applications, new_scholars] },
+                  
+                ]}
+                height={290}
+                xAxis={[{ data: ['Total Applicants', 'Total Endorsed Applicants', 'Total Scholars', 'Pending Applications', 'Total Applicants', 'New Scholars This Semester'], scaleType: 'band' }]}
+                margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+              />
+              </Container>
+              <Container className='cardContainer'>
                 {
                   // See dynamic list rendering in react. .map() function in JS also documents this method
                   data.map((item, index)=>{
@@ -88,7 +102,7 @@ class Dashboard extends Component {
                   })
                 }
               
-        </div>
+        </Container>
             </div>
 
         )

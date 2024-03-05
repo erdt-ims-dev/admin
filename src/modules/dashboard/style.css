@@ -1,7 +1,7 @@
 .cardContainer{
     width: 100%;
     display: flex;
-    justify-content: left;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 20px;
 }
