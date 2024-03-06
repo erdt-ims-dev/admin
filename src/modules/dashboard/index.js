@@ -6,24 +6,27 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import { BarChart } from '@mui/x-charts/BarChart';
 import API from 'services/Api'
-// temporary data, will be using API to retrieve future data
+
+import { isAfter, subMonths } from 'date-fns';
 
 class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
           data: null,
-          applicant_count: 0,
+          applicant_count: 0, // how many applied this sem
           endorsed_count: 0,
           total_scholars: 0,
           pending_applications: 0,
-          total_applicants: 0,
+          total_applicants: 0, // how many applications overall
           new_scholars: 0
         };
       }
     componentDidMount() {
       this.getApplicantCount()
       this.getScholarCount()
+      this.getPendingApplications()
+      this.getEndorsedApplications()
     }
     getApplicantCount(){
       API.request('user/retrieveByParameter', {
@@ -43,18 +46,78 @@ class Dashboard extends Component {
         console.log(error)
       })
     }
+    getPendingApplications(){
+      API.request('scholar_request/retrieveByParameter', {
+        col: 'account_type',
+        value: 'pending',
+      }, response => {
+        if (response && response.data) {
+         this.setState({
+          pending_applications: response.data.length
+         })
+        }else{
+          this.setState({
+            pending_applications: 0
+           })
+        }
+      }, error => {
+        console.log(error)
+      })
+    }
+    getEndorsedApplications(){
+      API.request('scholar_request/retrieveByParameter', {
+        col: 'account_type',
+        value: 'endorsed',
+      }, response => {
+        if (response && response.data) {
+         this.setState({
+          endorsed_count: response.data.length
+         })
+        }else{
+          this.setState({
+            endorsed_count: 0
+           })
+        }
+      }, error => {
+        console.log(error)
+      })
+    }
     getScholarCount(){
       API.request('user/retrieveByParameter', {
         col: 'account_type',
         value: 'scholar',
       }, response => {
         if (response && response.data) {
+          // For now takes current date, replace with when a sem starts
+          const fourMonthsAgo = subMonths(new Date(), 4);
+          const filteredData = response.data.filter(item => {
+          const createdAt = new Date(item.created_at);
+          return isAfter(createdAt, fourMonthsAgo);
+         })
          this.setState({
-          total_scholars: response.data.length
+          total_scholars: response.data.length,
+          new_scholars: filteredData.length  
          })
         }else{
           this.setState({
             total_scholars: 0
+           })
+        }
+      }, error => {
+        console.log(error)
+      })
+    }
+    getTotalApplicant(){
+      API.request('scholar_request/retrieveAll', {
+        
+      }, response => {
+        if (response && response.data) {
+         this.setState({
+          total_applicants: response.data.length
+         })
+        }else{
+          this.setState({
+            total_applicants: 0
            })
         }
       }, error => {
