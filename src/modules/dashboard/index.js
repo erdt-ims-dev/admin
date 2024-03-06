@@ -66,7 +66,7 @@ class Dashboard extends Component {
     }
     getEndorsedApplications(){
       API.request('scholar_request/retrieveByParameter', {
-        col: 'account_type',
+        col: 'status',
         value: 'endorsed',
       }, response => {
         if (response && response.data) {
