@@ -48,7 +48,7 @@ class Dashboard extends Component {
     }
     getPendingApplications(){
       API.request('scholar_request/retrieveByParameter', {
-        col: 'account_type',
+        col: 'status',
         value: 'pending',
       }, response => {
         if (response && response.data) {
