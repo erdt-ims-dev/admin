@@ -23,17 +23,39 @@ class Dashboard extends Component {
       }
     componentDidMount() {
       this.getApplicantCount()
+      this.getScholarCount()
     }
     getApplicantCount(){
-      API.request('users/retrieveByParameter', {
+      API.request('user/retrieveByParameter', {
         col: 'account_type',
         value: 'applicant',
       }, response => {
         if (response && response.data) {
-          console.log('::',response)
          this.setState({
-          applicant_count: response.data.count()
+          applicant_count: response.data.length
          })
+        }else{
+          this.setState({
+            applicant_count: 0
+           })
+        }
+      }, error => {
+        console.log(error)
+      })
+    }
+    getScholarCount(){
+      API.request('user/retrieveByParameter', {
+        col: 'account_type',
+        value: 'scholar',
+      }, response => {
+        if (response && response.data) {
+         this.setState({
+          total_scholars: response.data.length
+         })
+        }else{
+          this.setState({
+            total_scholars: 0
+           })
         }
       }, error => {
         console.log(error)
