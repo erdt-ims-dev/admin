@@ -110,7 +110,7 @@ export class SidebarFrame extends Component {
             {item.map((item, index) => {
               if (item.type === 'dropdown') {
                 return (
-                    <SubMenu icon={<FontAwesomeIcon icon={item.icon} />} key={index} label={item.name}>
+                    <SubMenu icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index} label={item.name}>
                       {item.list.map((element, idx) => (
                         <MenuItem  key={idx}>{element.title}</MenuItem>
                       ))}
@@ -118,7 +118,7 @@ export class SidebarFrame extends Component {
                 );
               } else {
                 return (
-                    <MenuItem icon={<FontAwesomeIcon icon={item.icon} />} key={index}>{item.name}</MenuItem>
+                    <MenuItem icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
                 );
               }
             })}

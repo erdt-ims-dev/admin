@@ -91,6 +91,11 @@
   }
   .sidebarStyles{
   }
+
+  /* Colors */
+  .primaryBlue{
+    color: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
+  }
   /* Imported CSS - Sidebar */
   @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
