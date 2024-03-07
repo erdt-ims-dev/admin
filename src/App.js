@@ -40,7 +40,7 @@ function App(props) {
         <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
         <div className="mainContainer">
           {
-            <div className={"sidebarContainer" + openSidebar ? "": "hidden"}>
+            <div className={"sidebarContainer" + openSidebar ? "sidebarContainer": "hidden"}>
               <Sidebar show={openSidebar} {...props} />
             </div>
           }

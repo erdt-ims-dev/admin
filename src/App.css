@@ -13,6 +13,7 @@
 }
 .sidebarContainer {
   flex: 1 1 auto;
+  border-right: 1px lightgrey solid;
 }
 .pageContainer {
   flex: 11 1 auto;
@@ -38,9 +39,11 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
 .App-link {
   color: #61dafb;
+}
+.hidden{
+  display: none;
 }
 
 @keyframes App-logo-spin {

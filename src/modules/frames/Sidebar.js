@@ -37,13 +37,12 @@ const item = [
   },
   {
     name: "Application Management",
-    route: "/applications",
     icon: faListCheck,
     type: "dropdown",
     list: [
       {
         title: "Applications Submitted",
-        route: ""
+        route: "/applications",
       }
     ]
   },
@@ -112,13 +111,13 @@ export class SidebarFrame extends Component {
                 return (
                     <SubMenu icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index} label={item.name}>
                       {item.list.map((element, idx) => (
-                        <MenuItem  key={idx}>{element.title}</MenuItem>
+                        <MenuItem  key={idx}>{element.title} onClick={()=>{history.push(element.route)}} </MenuItem>
                       ))}
                     </SubMenu>
                 );
               } else {
                 return (
-                    <MenuItem icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
+                    <MenuItem onClick={()=>{history.push(item.route)}} icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
                 );
               }
             })}

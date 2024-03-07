@@ -173,10 +173,9 @@ class Dashboard extends Component {
               {/* Start Cards */}
               <Container className='cardContainer'>
                 {
-                  // See dynamic list rendering in react. .map() function in JS also documents this method
                   data.map((item, index)=>{
                     return(
-                      <Card style={{ width: '18rem' }}>
+                      <Card style={{ width: '18rem' }} key={index}>
                         <Card.Body>
                           <Card.Title>{item.count}</Card.Title>
                           <Card.Text>
