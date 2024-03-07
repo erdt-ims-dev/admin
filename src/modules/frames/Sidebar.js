@@ -100,7 +100,7 @@ export class SidebarFrame extends Component {
     const { sidebarOpen } = this.state;
     const { history, show } = this.props;
     return (
-      <div className="sidebarContainer">
+      <div className="">
         <Sidebar collapsed={show} collapsedWidth="0" 
         rootStyles={{
           textAlign: "left"
@@ -111,7 +111,7 @@ export class SidebarFrame extends Component {
                 return (
                     <SubMenu icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index} label={item.name}>
                       {item.list.map((element, idx) => (
-                        <MenuItem  key={idx}>{element.title} onClick={()=>{history.push(element.route)}} </MenuItem>
+                        <MenuItem  key={idx} onClick={()=>{history.push(element.route)}}>{element.title} </MenuItem>
                       ))}
                     </SubMenu>
                 );
