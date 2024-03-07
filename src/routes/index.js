@@ -17,7 +17,7 @@ import Register from "modules/auth/register.js";
 import Home from "home/index.js";
 
 import ApplicantList from "modules/applications/index";
-import NewApplicant from "modules/applications/newApplicant";
+import NewApplicant from "modules/applications/new_application/newApplicant";
 // import {
 //   AddApplicant,
 //   ApplicantList,

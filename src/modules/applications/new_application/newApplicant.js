@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import './applications.css'
+import 'modules/applications/applications.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
-import Breadcrumb from '../generic/breadcrumb';
-import InputField from '../generic/input';
+import Breadcrumb from 'modules/generic/breadcrumb';
+import InputField from 'modules/generic/input';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import placeholder from '../../assets/img/placeholder.jpeg'
+import placeholder from 'assets/img/placeholder.jpeg'
 import { Button } from 'react-bootstrap';
 
 

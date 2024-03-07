@@ -7,10 +7,10 @@ import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 
 import { Box } from "@mui/material";
 import Breadcrumbs from "../generic/breadcrumb";
-import { Button, Table } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-
+import  TableComponent  from './table/index';
 const applicants = [
     {name: "Allison Smith", course: "MS-ME", gmail: "jackjones@gmail.com"},
     {name: "Lorenzo Scott", course: "MS-CE", gmail: "georgejones@gmail.com"},
@@ -18,12 +18,35 @@ const applicants = [
 ];
 
 
-class Endorsedapplicant extends Component {
-
+class Applications extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        columns: [
+          {
+            Header: 'Name',
+            accessor: 'name',
+          },
+          {
+            Header: 'Program of Study',
+            accessor: 'pos',
+          },
+          {
+            Header: 'Actions',
+            accessor: 'actions',
+          },
+        ],
+        data: [
+          { name: 'John', age: 25, status: 'Active' },
+          { name: 'Jane', age: 30, status: 'Inactive' },
+        ],
+      };
+    }
     render() {
-        const {history} = this.props;
-        return (
-            <div className="container">
+      const { columns, data } = this.state;
+      const {history} = this.props;
+      return (
+      <div className="container">
       <Box
         sx={{
           display: "flex",
@@ -38,47 +61,12 @@ class Endorsedapplicant extends Component {
       </Box>
 
       <div className="table-container">
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Program</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {applicants.map(({ id, name, program }) => (
-              <tr key={id}>
-                <td>{name}</td>
-                <td>{program}</td>
-                <td>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: "8px",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      className="icon"
-                      icon={faThumbsUp}
-                      size="sm"
-                    />
-                    <FontAwesomeIcon
-                      className="icon"
-                      icon={faEye}
-                      size="sm"
-                    />
-                  </Box>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <TableComponent columns={columns} data={data}/>
+        
       </div>
     </div>
         )
     }
 }
 
-export default Endorsedapplicant
+export default Applications
