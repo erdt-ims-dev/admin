@@ -102,73 +102,29 @@ export class SidebarFrame extends Component {
     const { history, show } = this.props;
     return (
       <div className="sidebarContainer">
-        {/* <Sidebar
-          classes="sidebarStyles"
-          bgColor="white"
-          isCollapsed={show}
-        >
-          <Logo
-            image={erdt}
-            imageName='react logo'
-            style={{
-              height: 'auto',
-              width: '50%'
-            }}
-            />
-          <LogoText>eSMP</LogoText>
-          {item.map((item, index) => {
-            return (
-              <Item
-                bgColor="white"
-                classes="sidebarItem"
-                // I used this.props.navigate here <Sidebar/> is being called by App.js directly. You can call this.props.navigate as is
-                onClick={() => history.push(item.route)}
-                key={index}
-              >
-                <Icon
-                  style={{
-                    "margin-left": "10%",
-                  }}
-                >
-                  <FontAwesomeIcon icon={item.icon} />
-                </Icon>
-                <p
-                  style={{
-                    "margin-left": "15%",
-                  }}
-                  classes="sidebarText sidebarMargin"
-                >
-                  {item.name}
-                </p>
-              </Item>
-            );
-          })}
-          <InputItem type='text' placeholder={'Search...'}/>
-        </Sidebar> */}
-
-    <Sidebar collapsed={show} collapsedWidth="0" 
-    rootStyles={{
-      textAlign: "left"
-    }}>
-    <Menu closeOnClick={true}>
-        {item.map((item, index) => {
-          if (item.type === 'dropdown') {
-            return (
-                <SubMenu icon={<FontAwesomeIcon icon={item.icon} />} key={index} label={item.name}>
-                  {item.list.map((element, idx) => (
-                    <MenuItem  key={idx}>{element.title}</MenuItem>
-                  ))}
-                </SubMenu>
-            );
-          } else {
-            return (
-                <MenuItem icon={<FontAwesomeIcon icon={item.icon} />} key={index}>{item.name}</MenuItem>
-            );
-          }
-        })}
-    </Menu>
-    </Sidebar>
-    </div>
+        <Sidebar collapsed={show} collapsedWidth="0" 
+        rootStyles={{
+          textAlign: "left"
+        }}>
+        <Menu closeOnClick={true}>
+            {item.map((item, index) => {
+              if (item.type === 'dropdown') {
+                return (
+                    <SubMenu icon={<FontAwesomeIcon icon={item.icon} />} key={index} label={item.name}>
+                      {item.list.map((element, idx) => (
+                        <MenuItem  key={idx}>{element.title}</MenuItem>
+                      ))}
+                    </SubMenu>
+                );
+              } else {
+                return (
+                    <MenuItem icon={<FontAwesomeIcon icon={item.icon} />} key={index}>{item.name}</MenuItem>
+                );
+              }
+            })}
+        </Menu>
+        </Sidebar>
+      </div>
     );
   }
 }
