@@ -31,7 +31,7 @@ class Endorsedapplicant extends Component {
           alignItems: "center",
         }}
       >
-        <Breadcrumbs header="List of Applicants" />
+        <Breadcrumbs header="Applications" />
         <Button onClick={()=>{ history.push('/new_application')}}>
           Add New Applicant
         </Button>

@@ -1,15 +1,18 @@
 import React, { Component } from "react";
 import { Navbar, Container, Breadcrumb } from "react-bootstrap";
 import erdt from "../../assets/img/erdt-logo-black.png";
-import {
-  Sidebar,
-  InputItem,
-  DropdownItem,
-  Icon,
-  Item,
-  Logo,
-  LogoText,
-} from "react-sidebar-ui";
+// import {
+//   Sidebar,
+//   InputItem,
+//   DropdownItem,
+//   Icon,
+//   Item,
+//   Logo,
+//   LogoText,
+// } from "react-sidebar-ui";
+
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+
 import "./style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,9 +36,16 @@ const item = [
     icon: faGripHorizontal,
   },
   {
-    name: "Applicant Management",
+    name: "Application Management",
     route: "/applications",
     icon: faListCheck,
+    type: "dropdown",
+    list: [
+      {
+        title: "Applications Submitted",
+        route: ""
+      }
+    ]
   },
   {
     name: "Scholar Management",
@@ -92,19 +102,19 @@ export class SidebarFrame extends Component {
     const { history, show } = this.props;
     return (
       <div className="sidebarContainer">
-        <Sidebar
+        {/* <Sidebar
           classes="sidebarStyles"
           bgColor="white"
           isCollapsed={show}
         >
-          {/* <Logo
+          <Logo
             image={erdt}
             imageName='react logo'
             style={{
               height: 'auto',
               width: '50%'
             }}
-            /> */}
+            />
           <LogoText>eSMP</LogoText>
           {item.map((item, index) => {
             return (
@@ -133,9 +143,32 @@ export class SidebarFrame extends Component {
               </Item>
             );
           })}
-          {/* <InputItem type='text' placeholder={'Search...'}/> */}
-        </Sidebar>
-      </div>
+          <InputItem type='text' placeholder={'Search...'}/>
+        </Sidebar> */}
+
+    <Sidebar collapsed={show} collapsedWidth="0" 
+    rootStyles={{
+      textAlign: "left"
+    }}>
+    <Menu closeOnClick={true}>
+        {item.map((item, index) => {
+          if (item.type === 'dropdown') {
+            return (
+                <SubMenu icon={<FontAwesomeIcon icon={item.icon} />} key={index} label={item.name}>
+                  {item.list.map((element, idx) => (
+                    <MenuItem  key={idx}>{element.title}</MenuItem>
+                  ))}
+                </SubMenu>
+            );
+          } else {
+            return (
+                <MenuItem icon={<FontAwesomeIcon icon={item.icon} />} key={index}>{item.name}</MenuItem>
+            );
+          }
+        })}
+    </Menu>
+    </Sidebar>
+    </div>
     );
   }
 }
