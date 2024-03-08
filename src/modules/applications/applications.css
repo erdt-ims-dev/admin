@@ -392,3 +392,15 @@ h4 {
     display: flex;
     justify-content: center;
 }
+
+
+.link:hover{
+    cursor: pointer;
+    color: #66a5e2;
+    text-decoration: underline;
+}
+.flex{
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+}

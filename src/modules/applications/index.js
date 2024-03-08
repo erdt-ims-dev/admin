@@ -34,13 +34,29 @@ class Applications extends Component {
           {
             Header: 'Actions',
             accessor: 'actions',
+            Cell: ({ cell: { value } }) => (
+              <div className='flex'>
+                <span className='link' onClick={() => this.handleView(value)}>View</span>
+                <span className='link'onClick={() => this.handleEdit(value)}>Edit</span>
+              </div>
+            ),
           },
-        ],
-        data: [
-          { name: 'John', age: 25, status: 'Active' },
-          { name: 'Jane', age: 30, status: 'Inactive' },
-        ],
+          ],
+          data: [
+              { name: 'John', pos: "MS-ME", actions: ['View', 'Edit'] },
+              { name: 'Jane', pos: "MS-CE", actions: ['View', 'Edit'] },
+              // Add more objects as needed
+          ],
+          };
       };
+    handleView(){
+      console.log("view");
+    }
+    handleEdit(){
+      console.log('edit')
+    }
+    componentDidMount(){
+      
     }
     render() {
       const { columns, data } = this.state;
