@@ -11,6 +11,8 @@ import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import  TableComponent  from './table/index';
+
+import API from 'services/Api'
 const applicants = [
     {name: "Allison Smith", course: "MS-ME", gmail: "jackjones@gmail.com"},
     {name: "Lorenzo Scott", course: "MS-CE", gmail: "georgejones@gmail.com"},
@@ -22,6 +24,7 @@ class Applications extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        applicant_list: [],
         columns: [
           {
             Header: 'Name',
@@ -29,7 +32,7 @@ class Applications extends Component {
           },
           {
             Header: 'Program of Study',
-            accessor: 'pos',
+            accessor: 'program',
           },
           {
             Header: 'Actions',
@@ -42,11 +45,7 @@ class Applications extends Component {
             ),
           },
           ],
-          data: [
-              { name: 'John', pos: "MS-ME", actions: ['View', 'Edit'] },
-              { name: 'Jane', pos: "MS-CE", actions: ['View', 'Edit'] },
-              // Add more objects as needed
-          ],
+          data: [],
           };
       };
     handleView(){
@@ -56,8 +55,46 @@ class Applications extends Component {
       console.log('edit')
     }
     componentDidMount(){
-      
+      this.getList()
     }
+    getList(){
+      API.request('scholar_request/retrieveMultiple', {
+        col: 'status',
+        value: 'pending'
+      }, response => {
+        if (response && response.data) {
+          response.data.forEach((element, index )=> {
+            this.getDetails(element.account_details_id)
+          });
+        }else{
+          console.log('error on retrieve')
+        }
+      }, error => {
+        console.log(error)
+      })
+    }
+    getDetails(detail_id){
+      API.request('account_details/retrieveOne', {
+        col: 'id',
+        value: detail_id
+      }, response => {
+        if (response && response.data) {
+          console.log('::', response.data)
+          const formattedData = {
+            name: response.data.last_name + " " + response.data.first_name, 
+            program: response.data.program, // Adjusted to match the data structure
+          };
+          this.setState(prevState => ({
+            data: [...prevState.data, formattedData]
+          }));
+        } else {
+          console.log('error on retrieve');
+        }
+      }, error => {
+        console.log(error);
+      });
+    }
+    
     render() {
       const { columns, data } = this.state;
       const {history} = this.props;
