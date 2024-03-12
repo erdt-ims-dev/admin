@@ -34,7 +34,7 @@ class Applications extends Component {
             accessor: 'actions',
             Cell: ({ cell: { value } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.openView(value)}>View</span>
+                <span className='link' onClick={() => this.handleView(value)}>View</span>
                 <span className='link'onClick={() => this.handleEdit(value)}>Edit</span>
               </div>
             ),
@@ -44,11 +44,6 @@ class Applications extends Component {
           };
       };
     handleView(){
-      this.setState({
-        modalShow: !this.state.modalShow
-      })
-    }
-    openView(){
       console.log('open')
       this.setState({
         modalShow: true
