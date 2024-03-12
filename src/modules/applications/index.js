@@ -8,16 +8,10 @@ import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { Box } from "@mui/material";
 import Breadcrumbs from "../generic/breadcrumb";
 import { Button } from "react-bootstrap";
-import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import  TableComponent  from './table/index';
-
+import ViewModal from './modal/index'
 import API from 'services/Api'
-const applicants = [
-    {name: "Allison Smith", course: "MS-ME", gmail: "jackjones@gmail.com"},
-    {name: "Lorenzo Scott", course: "MS-CE", gmail: "georgejones@gmail.com"},
-    {name: "Edward Rose", course: "MS-ME", gmail: "georgejones@gmail.com"},
-];
 
 
 class Applications extends Component {
@@ -25,6 +19,7 @@ class Applications extends Component {
       super(props);
       this.state = {
         applicant_list: [],
+        modalShow: false,
         columns: [
           {
             Header: 'Name',
@@ -39,7 +34,7 @@ class Applications extends Component {
             accessor: 'actions',
             Cell: ({ cell: { value } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.handleView(value)}>View</span>
+                <span className='link' onClick={() => this.openView(value)}>View</span>
                 <span className='link'onClick={() => this.handleEdit(value)}>Edit</span>
               </div>
             ),
@@ -49,7 +44,15 @@ class Applications extends Component {
           };
       };
     handleView(){
-      console.log("view");
+      this.setState({
+        modalShow: !this.state.modalShow
+      })
+    }
+    openView(){
+      console.log('open')
+      this.setState({
+        modalShow: true
+      })
     }
     handleEdit(){
       console.log('edit')
@@ -82,7 +85,7 @@ class Applications extends Component {
           console.log('::', response.data)
           const formattedData = {
             name: response.data.last_name + " " + response.data.first_name, 
-            program: response.data.program, // Adjusted to match the data structure
+            program: response.data.program, 
           };
           this.setState(prevState => ({
             data: [...prevState.data, formattedData]
@@ -96,7 +99,7 @@ class Applications extends Component {
     }
     
     render() {
-      const { columns, data } = this.state;
+      const { columns, data, modalShow } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -117,6 +120,10 @@ class Applications extends Component {
         <TableComponent columns={columns} data={data}/>
         
       </div>
+      <ViewModal
+      show={modalShow}
+      onHide={()=>{this.handleView()}}
+      />
     </div>
         )
     }
