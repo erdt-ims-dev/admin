@@ -1,22 +1,21 @@
 import React, { Component } from 'react'
-import './applications.css'
+import './style.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 
 import { Box } from "@mui/material";
-import Breadcrumbs from "../generic/breadcrumb";
+import Breadcrumbs from "modules/generic/breadcrumb";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import  TableComponent  from 'modules/generic/table/index';
-import ViewModal from './viewModal/index'
-import EditModal from './editModal/index'
-import EndorseModal from './endorseModal/index'
+import ViewModal from 'modules/applications/viewModal/index'
+
 import API from 'services/Api'
 
 
-class Applications extends Component {
+class Endorsements extends Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -43,8 +42,6 @@ class Applications extends Component {
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
                 <span className='link' onClick={() => this.handleView(row.original)}>View</span>
-                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
-                <span className='link'onClick={() => this.handleEndorse(row.original)}>Endorse</span>
               </div>
             ),
           },
@@ -69,36 +66,7 @@ class Applications extends Component {
       },() => {
      })
     }
-    handleEdit(rowData){
-      this.setState({
-        showEdit: !this.state.showEdit,
-        setData: rowData
-      },() => {
-        console.log("setData", this.state.setData);
-     })
-    }
-    closeEdit(){
-      this.setState({
-        showEdit: !this.state.showEdit,
-        setData: null
-      },() => {
-     })
-    }
-    handleEndorse(rowData){
-      this.setState({
-        showEndorse: !this.state.showEndorse,
-        setData: rowData
-      },() => {
-        console.log("setData", this.state.setData);
-     })
-    }
-    closeEndorse(){
-      this.setState({
-        showEndorse: !this.state.showEndorse,
-        setData: null
-      },() => {
-     })
-    }
+    
     // State
     componentDidMount(){
       this.getList()
@@ -106,7 +74,7 @@ class Applications extends Component {
     getList(){
       API.request('scholar_request/retrieveMultiple', {
         col: 'status',
-        value: 'pending'
+        value: 'endorsed'
       }, response => {
         if (response && response.data) {
           response.data.forEach((element, index )=> {
@@ -147,10 +115,7 @@ class Applications extends Component {
           alignItems: "center",
         }}
       >
-        <Breadcrumbs header="Applications" />
-        <Button onClick={()=>{ history.push('/new_application')}}>
-          Add New Applicant
-        </Button>
+        <Breadcrumbs header="Endorsements" />
       </Box>
 
       <div className="table-container">
@@ -162,19 +127,9 @@ class Applications extends Component {
       show={showView}
       onHide={()=>{this.closeView()}}
       />
-      <EndorseModal
-      setData={setData}
-      show={showEndorse}
-      onHide={()=>{this.closeEndorse()}}
-      />
-      <EditModal
-      setData={setData}
-      show={showEdit}
-      onHide={()=>{this.closeEdit()}}
-      />
     </div>
         )
     }
 }
 
-export default Applications
+export default Endorsements

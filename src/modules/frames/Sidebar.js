@@ -41,8 +41,16 @@ const item = [
     type: "dropdown",
     list: [
       {
-        title: "Applications Submitted",
+        title: "Create New Applicant",
+        route: "/new_application",
+      },
+      {
+        title: "Applications",
         route: "/applications",
+      },
+      {
+        title: "Endorsements",
+        route: "/endorsements",
       }
     ]
   },
@@ -63,7 +71,7 @@ const item = [
   },
   {
     name: "Account Management",
-    route: "/#",
+    route: "/accounts",
     icon: faFileInvoice,
   },
   {

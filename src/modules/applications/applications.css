@@ -391,6 +391,7 @@ h4 {
 .switch{
     display: flex;
     justify-content: center;
+    font-size: 14px;
 }
 
 

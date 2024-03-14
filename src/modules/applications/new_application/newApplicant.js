@@ -51,7 +51,7 @@ class newApplicant extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          showModal: false,
+          showModal: this.props,
           first_name: null,
           error_first_name: null,
           middle_name: null,
@@ -67,7 +67,6 @@ class newApplicant extends Component {
         };
       }
     render() {
-        const {showModal} = this.state
         return (
             <div>
                 {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -218,26 +217,20 @@ class newApplicant extends Component {
                                             
                                             </Col>
                                             <Col md={4} className='switch'>
-                                                <FontAwesomeIcon
-                                                    className="icon"
-                                                    icon={faEye}
-                                                    size="md"
-                                                    onClick={() => {}}
-                                                    style={{
-                                                        marginLeft: 10,
-                                                        marginRight: 10
-                                                    }}
-                                                    />
-                                                    <FontAwesomeIcon
-                                                    className="icon"
-                                                    icon={faUpload}
-                                                    size="md"
-                                                    onClick={() => {}}
-                                                    style={{
-                                                        marginLeft: 10,
-                                                        marginRight: 10
-                                                    }}
-                                                    />
+                                                <Col>
+                                                <span 
+                                                className='icon'
+                                                onClick={()=>{}}
+                                                >View
+                                                </span>
+                                                </Col>
+                                                <Col>
+                                                <span 
+                                                className='icon'
+                                                onClick={()=>{}}
+                                                >Upload
+                                                </span>
+                                                </Col>
                                             </Col>
                                         </Row>
                                 </div>

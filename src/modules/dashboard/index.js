@@ -29,7 +29,7 @@ class Dashboard extends Component {
       this.getEndorsedApplications()
     }
     getApplicantCount(){
-      API.request('user/retrieveByParameter', {
+      API.request('user/retrieveMultiple', {
         col: 'account_type',
         value: 'applicant',
       }, response => {
@@ -47,7 +47,7 @@ class Dashboard extends Component {
       })
     }
     getPendingApplications(){
-      API.request('scholar_request/retrieveByParameter', {
+      API.request('scholar_request/retrieveMultiple', {
         col: 'status',
         value: 'pending',
       }, response => {
@@ -65,7 +65,7 @@ class Dashboard extends Component {
       })
     }
     getEndorsedApplications(){
-      API.request('scholar_request/retrieveByParameter', {
+      API.request('scholar_request/retrieveMultiple', {
         col: 'status',
         value: 'endorsed',
       }, response => {
@@ -83,7 +83,7 @@ class Dashboard extends Component {
       })
     }
     getScholarCount(){
-      API.request('user/retrieveByParameter', {
+      API.request('user/retrieveMultiple', {
         col: 'account_type',
         value: 'scholar',
       }, response => {

@@ -5,7 +5,7 @@ import Dashboard from "modules/dashboard/index";
 import Login from "modules/auth/login";
 // import EndorsedApplicant from "modules/applications/EndorsedApplicant";
 // import AdminApplicantList from "modules/applications/AdminApplicantList";
-// import AccountList from "modules/accounts/index";
+import AccountList from "modules/accounts/index";
 // import AdminLeaveRequest from "modules/applications/AdminLeaveRequests";
 // import AdminViewScholar from "modules/applications/AdminViewScholar.js";
 import { ScholarList, ViewScholar } from "modules/scholar";
@@ -17,6 +17,7 @@ import Register from "modules/auth/register.js";
 import Home from "home/index.js";
 
 import ApplicantList from "modules/applications/index";
+import EndorsementList from "modules/endorsements/index";
 import NewApplicant from "modules/applications/new_application/newApplicant";
 // import {
 //   AddApplicant,
@@ -46,6 +47,7 @@ export default function Routes() {
       <Route path="/dashboard" exact component={Dashboard} />
       {/* Applicant Management */}
       <Route path="/applications" exact component={ApplicantList}/>
+      <Route path="/endorsements" exact component={EndorsementList}/>
       <Route path="/new_application" exact component={NewApplicant}/>
       
       {/* Endorsement Management */}
