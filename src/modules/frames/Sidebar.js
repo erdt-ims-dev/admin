@@ -50,7 +50,7 @@ const item = [
       },
       {
         title: "Endorsements",
-        route: "/",
+        route: "/endorsements",
       }
     ]
   },

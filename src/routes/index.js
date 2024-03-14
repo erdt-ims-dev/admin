@@ -17,6 +17,7 @@ import Register from "modules/auth/register.js";
 import Home from "home/index.js";
 
 import ApplicantList from "modules/applications/index";
+import EndorsementList from "modules/endorsements/index";
 import NewApplicant from "modules/applications/new_application/newApplicant";
 // import {
 //   AddApplicant,
@@ -46,6 +47,7 @@ export default function Routes() {
       <Route path="/dashboard" exact component={Dashboard} />
       {/* Applicant Management */}
       <Route path="/applications" exact component={ApplicantList}/>
+      <Route path="/endorsements" exact component={EndorsementList}/>
       <Route path="/new_application" exact component={NewApplicant}/>
       
       {/* Endorsement Management */}
