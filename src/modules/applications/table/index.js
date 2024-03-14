@@ -37,19 +37,23 @@ function TableComponent({ columns, data }) {
  // Ensure the actions column uses the custom renderer
  const tableColumns = React.useMemo(
     () => [
-      {
-        Header: 'Name',
-        accessor: 'name',
-      },
-      {
-        Header: 'Program of Study',
-        accessor: 'pos',
-      },
-      {
-        Header: 'Actions',
-        accessor: 'actions',
-        Cell: renderActions,
-      },
+        {
+            Header: 'Last Name',
+            accessor: 'last_name',
+        },
+        {
+            Header: 'First Name',
+            accessor: 'first_name',
+        },
+        {
+            Header: 'Program of Study',
+            accessor: 'pos',
+        },
+        {
+            Header: 'Actions',
+            accessor: 'actions',
+            Cell: renderActions,
+        },
     ],
     []
  );

@@ -22,8 +22,12 @@ class Applications extends Component {
         modalShow: false,
         columns: [
           {
-            Header: 'Name',
-            accessor: 'name',
+            Header: 'Last Name',
+            accessor: 'last_name',
+          },
+          {
+            Header: 'First Name',
+            accessor: 'first_name',
           },
           {
             Header: 'Program of Study',
@@ -32,22 +36,32 @@ class Applications extends Component {
           {
             Header: 'Actions',
             accessor: 'actions',
-            Cell: ({ cell: { value } }) => (
+            Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.handleView(value)}>View</span>
-                <span className='link'onClick={() => this.handleEdit(value)}>Edit</span>
+                <span className='link' onClick={() => this.handleView(row.original)}>View</span>
+                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
               </div>
             ),
           },
           ],
           data: [],
+          setData: null
           };
       };
-    handleView(){
-      console.log('open')
+    handleView(rowData){
       this.setState({
-        modalShow: true
-      })
+        modalShow: !this.state.modalShow,
+        setData: rowData
+      },() => {
+        console.log("setData", this.state.setData);
+     })
+    }
+    closeView(){
+      this.setState({
+        modalShow: !this.state.modalShow,
+        setData: null
+      },() => {
+     })
     }
     handleEdit(){
       console.log('edit')
@@ -77,13 +91,14 @@ class Applications extends Component {
         value: detail_id
       }, response => {
         if (response && response.data) {
-          console.log('::', response.data)
-          const formattedData = {
-            name: response.data.last_name + " " + response.data.first_name, 
-            program: response.data.program, 
-          };
+          // const formattedData = {
+          //   id: response.data.id,
+          //   last_name: response.data.last_name + ",",
+          //   first_name: response.data.first_name, 
+          //   program: response.data.program, 
+          // };
           this.setState(prevState => ({
-            data: [...prevState.data, formattedData]
+            data: [...prevState.data, response.data]
           }));
         } else {
           console.log('error on retrieve');
@@ -92,9 +107,16 @@ class Applications extends Component {
         console.log(error);
       });
     }
-    
+    handleRowClick(row){
+      const {data} = this.state
+      data.forEach((element, index) => {
+        if(element.first_name == row.original.first_name){
+
+        }
+      });
+    }
     render() {
-      const { columns, data, modalShow } = this.state;
+      const { columns, data, modalShow, setData } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -112,12 +134,13 @@ class Applications extends Component {
       </Box>
 
       <div className="table-container">
-        <TableComponent columns={columns} data={data}/>
+        <TableComponent columns={columns} data={data} onRowClick={(row) => console.log(row.original.program)}/>
         
       </div>
       <ViewModal
+      setData={setData}
       show={modalShow}
-      onHide={()=>{this.handleView()}}
+      onHide={()=>{this.closeView()}}
       />
     </div>
         )

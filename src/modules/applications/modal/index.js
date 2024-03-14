@@ -10,6 +10,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
+import API from 'services/Api'
 
 
 const files = [
@@ -30,7 +31,7 @@ const files = [
         disabled: false
     },
     {
-        title: "Medical Cerificate",
+        title: "Medical Certificate",
         disabled: false
     },
     {
@@ -62,13 +63,31 @@ class ViewModal extends Component {
           password: null,
           errorPassowrd: null,
           confirmPassowrd: null,
-          errorConfirm: null
+          errorConfirm: null,
+        //   Id: props.setData.id,
+          data: null, 
+          setEmail: null
         };
       }
+    componentDidMount() {
+        
+        // this.updateData();
+    }
+    
+    componentDidUpdate(prevProps) {
+        
+    }
+
+    updateData() {
+        
+       
+    }
     render() {
-        return (
-            <div className=''>
-                {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
+        const {data, setEmail} = this.state
+        const {setData} = this.props
+    return (
+        <div className=''>
+            {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
     <Modal
       show={this.props.show}
       onHide={this.props.onHide}
@@ -103,8 +122,8 @@ class ViewModal extends Component {
                 <InputField
                 id={1}
                 type={'name'}
-                label={'First Name'}
-                locked={false}
+                label={setData ? setData.first_name : ''}
+                locked={true}
                 active={false}
                 onChange={(first_name, error_first_name) => {
                     this.setState({
@@ -117,8 +136,8 @@ class ViewModal extends Component {
                 <InputField
                 id={1}
                 type={'name'}
-                label={'Middle Name'}
-                locked={false}
+                label={setData ? setData.middle_name : ''}
+                locked={true}
                 active={false}
                 onChange={(middle_name, error_middle_name) => {
                     this.setState({
@@ -131,8 +150,8 @@ class ViewModal extends Component {
                 <InputField
                 id={1}
                 type={'name'}
-                label={'Last Name'}
-                locked={false}
+                label={setData ? setData.last_name : ''}
+                locked={true}
                 active={false}
                 onChange={(last_name, error_last_name) => {
                     this.setState({
@@ -143,12 +162,12 @@ class ViewModal extends Component {
             </Col>
         </Row>
         <Row className='Row'>
-            <Col>
+            {/* <Col>
             <InputField
                 id={2}
                 type={'email'}
-                label={'Email'}
-                locked={false}
+                label={setEmail ? setEmail.email : ""}
+                locked={true}
                 active={false}
                 onChange={(email, errorEmail) => {
                     this.setState({
@@ -156,7 +175,7 @@ class ViewModal extends Component {
                     })
                     }}
                 />
-            </Col>
+            </Col> */}
             <Col>
             <InputField
                 id={3}
@@ -167,7 +186,7 @@ class ViewModal extends Component {
                 />
             </Col>
         </Row>
-    <Row className='sectionHeader'>
+    <Row className='Row'>
         <p>File Uploads</p>
         
     </Row>
