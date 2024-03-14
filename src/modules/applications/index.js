@@ -10,7 +10,9 @@ import Breadcrumbs from "../generic/breadcrumb";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import  TableComponent  from './table/index';
-import ViewModal from './modal/index'
+import ViewModal from './viewModal/index'
+import EditModal from './editModal/index'
+import EndorseModal from './endorseModal/index'
 import API from 'services/Api'
 
 
@@ -19,7 +21,9 @@ class Applications extends Component {
       super(props);
       this.state = {
         applicant_list: [],
-        modalShow: false,
+        showView: false,
+        showEndorse: false,
+        showEdit: false,
         columns: [
           {
             Header: 'Last Name',
@@ -40,7 +44,7 @@ class Applications extends Component {
               <div className='flex'>
                 <span className='link' onClick={() => this.handleView(row.original)}>View</span>
                 <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
-                <span className='link'onClick={() => this.handleEdit(row.original)}>Endorse</span>
+                <span className='link'onClick={() => this.handleEndorse(row.original)}>Endorse</span>
               </div>
             ),
           },
@@ -49,9 +53,10 @@ class Applications extends Component {
           setData: null
           };
       };
+      // Modal Handling
     handleView(rowData){
       this.setState({
-        modalShow: !this.state.modalShow,
+        showView: !this.state.showView,
         setData: rowData
       },() => {
         console.log("setData", this.state.setData);
@@ -59,14 +64,42 @@ class Applications extends Component {
     }
     closeView(){
       this.setState({
-        modalShow: !this.state.modalShow,
+        showView: !this.state.showView,
         setData: null
       },() => {
      })
     }
-    handleEdit(){
-      console.log('edit')
+    handleEdit(rowData){
+      this.setState({
+        showEdit: !this.state.showEdit,
+        setData: rowData
+      },() => {
+        console.log("setData", this.state.setData);
+     })
     }
+    closeEdit(){
+      this.setState({
+        showEdit: !this.state.showEdit,
+        setData: null
+      },() => {
+     })
+    }
+    handleEndorse(rowData){
+      this.setState({
+        showEndorse: !this.state.showEndorse,
+        setData: rowData
+      },() => {
+        console.log("setData", this.state.setData);
+     })
+    }
+    closeEndorse(){
+      this.setState({
+        showEndorse: !this.state.showEndorse,
+        setData: null
+      },() => {
+     })
+    }
+    // State
     componentDidMount(){
       this.getList()
     }
@@ -102,16 +135,8 @@ class Applications extends Component {
         console.log(error);
       });
     }
-    handleRowClick(row){
-      const {data} = this.state
-      data.forEach((element, index) => {
-        if(element.first_name == row.original.first_name){
-
-        }
-      });
-    }
     render() {
-      const { columns, data, modalShow, setData } = this.state;
+      const { columns, data, showEdit, showEndorse, showView, setData } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -134,8 +159,18 @@ class Applications extends Component {
       </div>
       <ViewModal
       setData={setData}
-      show={modalShow}
+      show={showView}
       onHide={()=>{this.closeView()}}
+      />
+      <EndorseModal
+      setData={setData}
+      show={showEndorse}
+      onHide={()=>{this.closeEndorse()}}
+      />
+      <EditModal
+      setData={setData}
+      show={showEdit}
+      onHide={()=>{this.closeEdit()}}
       />
     </div>
         )
