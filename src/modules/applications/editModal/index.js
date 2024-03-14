@@ -95,7 +95,9 @@ class editModal extends Component {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header >
+      <Modal.Header style={{
+        backgroundColor: '#f1f5fb'
+      }} >
         <Modal.Title id="contained-modal-title-vcenter">
         General Information
         </Modal.Title>
@@ -228,7 +230,11 @@ class editModal extends Component {
                                     <span 
                                     className='icon'
                                     onClick={()=>{}}
-                                    >View</span>
+                                    >View File</span>
+                                    <span 
+                                    className='icon'
+                                    onClick={()=>{}}
+                                    >Upload File</span>
                             </Col>
                         </Row>
                 </div>
@@ -239,7 +245,8 @@ class editModal extends Component {
         
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={this.props.onHide}>Close</Button>
+        <Button variant='secondary' onClick={this.props.onHide}>Discard Changes</Button>
+        <Button variant='primary' onClick={this.props.onHide}>Save Changes</Button>
       </Modal.Footer>
     </Modal>
                     

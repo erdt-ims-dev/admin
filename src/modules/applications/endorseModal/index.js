@@ -81,18 +81,20 @@ class endorseModal extends Component {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header >
+      <Modal.Header style={{
+        backgroundColor: '#f1f5fb'
+      }}>
         <Modal.Title id="contained-modal-title-vcenter">
         General Information
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{
-        backgroundColor: '#f1f5fb'
-      }}>
+      <Modal.Body >
         Are you sure you want to endorse applicant?
       </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={this.props.onHide}>Close</Button>
+      <Modal.Footer style={{
+        backgroundColor: '#f1f5fb'
+      }}>
+        <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
         <Button onClick={this.props.onHide}>Endorse</Button>
       </Modal.Footer>
     </Modal>
