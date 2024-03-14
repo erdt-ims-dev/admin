@@ -40,6 +40,7 @@ class Applications extends Component {
               <div className='flex'>
                 <span className='link' onClick={() => this.handleView(row.original)}>View</span>
                 <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
+                <span className='link'onClick={() => this.handleEdit(row.original)}>Endorse</span>
               </div>
             ),
           },
@@ -91,12 +92,6 @@ class Applications extends Component {
         value: detail_id
       }, response => {
         if (response && response.data) {
-          // const formattedData = {
-          //   id: response.data.id,
-          //   last_name: response.data.last_name + ",",
-          //   first_name: response.data.first_name, 
-          //   program: response.data.program, 
-          // };
           this.setState(prevState => ({
             data: [...prevState.data, response.data]
           }));
