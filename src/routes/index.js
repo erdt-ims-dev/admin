@@ -5,7 +5,7 @@ import Dashboard from "modules/dashboard/index";
 import Login from "modules/auth/login";
 // import EndorsedApplicant from "modules/applications/EndorsedApplicant";
 // import AdminApplicantList from "modules/applications/AdminApplicantList";
-// import AccountList from "modules/accounts/index";
+import AccountList from "modules/accounts/index";
 // import AdminLeaveRequest from "modules/applications/AdminLeaveRequests";
 // import AdminViewScholar from "modules/applications/AdminViewScholar.js";
 // import { ScholarList, ViewScholar } from "modules/scholar";

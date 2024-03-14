@@ -71,7 +71,7 @@ const item = [
   },
   {
     name: "Account Management",
-    route: "/#",
+    route: "/accounts",
     icon: faFileInvoice,
   },
   {
