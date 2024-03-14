@@ -8,7 +8,7 @@ import Login from "modules/auth/login";
 // import AccountList from "modules/accounts/index";
 // import AdminLeaveRequest from "modules/applications/AdminLeaveRequests";
 // import AdminViewScholar from "modules/applications/AdminViewScholar.js";
-// import { ScholarList, ViewScholar } from "modules/scholar";
+import { ScholarList, ViewScholar } from "modules/scholar";
 
 import Leaves from "modules/leaves/index.js";
 import Accounts from "modules/accounts/index.js";
@@ -57,11 +57,11 @@ export default function Routes() {
       <Route path="/account_list" exact component={AccountList} />
       <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} />
       <Route path="/admin_viewscholar" exact component={AdminViewScholar} />
-      <Route path="/scholars" exact component={ScholarList} />
-      <Route path="/scholars/:scholarId" component={ViewScholar} />
       <Route path="/applicants" exact component={ApplicantList} />
       <Route path="/applicants/add" exact component={AddApplicant} />
       <Route path="/applicants/:applicantId" component={ViewApplicant} />*/}
+      <Route path="/scholars" exact component={ScholarList} />
+      <Route path="/scholars/:scholarId" component={ViewScholar} />
       <Route path="/announcements" exact component={SystemAnnouncements} /> 
       {/* Replacements */}
       <Route path="/leaves" exact component={Leaves} />
