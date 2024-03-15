@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Breadcrumbs from "../generic/breadcrumb";
 import "./style.scss";
+import API from 'services/Api'
 
-const TABLE_HEADERS = ["Name", "Program", "Year level", "Actions"];
+const TABLE_HEADERS = ["#", "Scholar ID", "Requests", "Tasks", "Portfolio", "Leave Application", "Profile"];
 
 const sampleApiResponse = {
   status: 200,
@@ -44,25 +45,40 @@ const mockGetRequest = async () =>
     setTimeout(() => resolve(sampleApiResponse), 250);
   });
 
+const fetchData = async () =>
+{
+  API.request('user/retrieveAll', {
+    
+  }, response => {
+    if (response && response.data) {
+      this.setState({
+          account_list: response.data
+      })
+    }else{
+      console.log('error on retrieve')
+    }
+  }, error => {
+    console.log(error)
+  })
+}
+
 const ScholarList = () => {
   const [scholars, setScholars] = useState([]);
   const history = useHistory();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await mockGetRequest();
-
-      if (response.status !== 200) {
-        console.error(
-          response.status,
-          "There was some error fetching the data."
-        );
-        return;
+  const fetchData = async () => {
+    API.request('scholar/retrieveAll', {}, response => {
+      if (response && response.data) {
+        setScholars(response.data);
+      } else {
+        console.log('error on retrieve');
       }
+    }, error => {
+      console.log(error);
+    });
+  }
 
-      setScholars(response.data);
-    };
-
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -85,11 +101,14 @@ const ScholarList = () => {
             </tr>
           </thead>
           <tbody>
-            {scholars.map(({ id, name, program, yearLevel }) => (
+            {scholars.map(({ id, user_id, scholar_request_id, scholar_task_id, scholar_portfolio_id, scholar_leave_app_id }) => (
               <tr key={id}>
-                <td>{name}</td>
-                <td>{program}</td>
-                <td>{yearLevel}</td>
+                <td>{id}</td>
+                <td>{user_id}</td>
+                <td>{scholar_request_id}</td>
+                <td>{scholar_task_id}</td>
+                <td>{scholar_portfolio_id}</td>
+                <td>{scholar_leave_app_id}</td>
                 <td>
                   <FontAwesomeIcon
                     className="icon"
