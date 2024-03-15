@@ -61,7 +61,7 @@ const item = [
   },
   {
     name: "Leave Requests",
-    route: "/#",
+    route: "/leaves",
     icon: faPersonWalkingArrowRight,
   },
   {

@@ -7,7 +7,7 @@ import Breadcrumbs from "../generic/breadcrumb";
 import "./style.scss";
 import API from 'services/Api'
 
-const TABLE_HEADERS = ["#", "Scholar ID", "Requests", "Tasks", "Portfolio", "Leave Application", "Profile"];
+const TABLE_HEADERS = ["#", "Scholar ID", "Last Name", "First Name", "Program", "Actions"];
 
 const sampleApiResponse = {
   status: 200,
@@ -66,10 +66,24 @@ const ScholarList = () => {
   const [scholars, setScholars] = useState([]);
   const history = useHistory();
 
-  const fetchData = async () => {
+  const fetchScholars = async () => {
     API.request('scholar/retrieveAll', {}, response => {
       if (response && response.data) {
-        setScholars(response.data);
+        // Make the second API call to retrieve account details
+        API.request('account_details/retrieveAll', {}, accountResponse => {
+          if (accountResponse && accountResponse.data) {
+            // Merge the account details with the scholars data
+            const updatedScholars = response.data.map(scholar => {
+              const account = accountResponse.data.find(acc => acc.user_id === scholar.user_id);
+              return { ...scholar, account_details: account };
+            });
+            setScholars(updatedScholars);
+          } else {
+            console.log('error on retrieving account details');
+          }
+        }, error => {
+          console.log(error);
+        });
       } else {
         console.log('error on retrieve');
       }
@@ -77,9 +91,10 @@ const ScholarList = () => {
       console.log(error);
     });
   }
-
+  
+  
   useEffect(() => {
-    fetchData();
+    fetchScholars();
   }, []);
 
   const handleView = (id) => history.push("/scholars/" + id);
@@ -101,14 +116,13 @@ const ScholarList = () => {
             </tr>
           </thead>
           <tbody>
-            {scholars.map(({ id, user_id, scholar_request_id, scholar_task_id, scholar_portfolio_id, scholar_leave_app_id }) => (
+            {scholars.map(({ id, user_id, account_details }) => (
               <tr key={id}>
                 <td>{id}</td>
                 <td>{user_id}</td>
-                <td>{scholar_request_id}</td>
-                <td>{scholar_task_id}</td>
-                <td>{scholar_portfolio_id}</td>
-                <td>{scholar_leave_app_id}</td>
+                <td>{account_details.last_name}</td>
+                <td>{account_details.first_name}</td>
+                <td>{account_details.program}</td>
                 <td>
                   <FontAwesomeIcon
                     className="icon"

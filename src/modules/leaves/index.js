@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faEye, faX, faComment } from '@fortawesome/free-solid-svg-icons'
 import Details from './details';
 import Breadcrumb from '../generic/breadcrumb';
+import { Button } from "react-bootstrap";
 
 const applicants = [
     {name: "Allison Smith", course: "MS-ME", datesubmitted: "2-23-2023"},
@@ -29,8 +30,10 @@ class Leaves extends Component {
                 
                 <Breadcrumb
                     header={"Leave Requests"}
-                    subheader={"Here are all the submiited Requests"}/>
-
+                    subheader={"Here are all the submitted Requests"}/>
+                <Button>
+                        Add New Request
+                </Button>
                 <div className='applicanttitle' >
                     <p>Name</p>
                     <p>Course</p>

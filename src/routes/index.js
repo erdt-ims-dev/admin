@@ -6,7 +6,7 @@ import Login from "modules/auth/login";
 // import EndorsedApplicant from "modules/applications/EndorsedApplicant";
 // import AdminApplicantList from "modules/applications/AdminApplicantList";
 import AccountList from "modules/accounts/index";
-// import AdminLeaveRequest from "modules/applications/AdminLeaveRequests";
+import AdminLeaveRequest from "modules/applications/index";
 // import AdminViewScholar from "modules/applications/AdminViewScholar.js";
 import { ScholarList, ViewScholar } from "modules/scholar";
 
@@ -16,7 +16,7 @@ import Settings from "modules/settings/index.js";
 import Register from "modules/auth/register.js";
 import Home from "home/index.js";
 
-import ApplicantList from "modules/applications/index";
+import ApplicantList from "modules/applications/index.js";
 import EndorsementList from "modules/endorsements/index";
 import NewApplicant from "modules/applications/new_application/newApplicant";
 // import {
@@ -57,11 +57,11 @@ export default function Routes() {
       {/* <Route path="/endorsed_applicant" exact component={EndorsedApplicant} />
       <Route path="/admin_applicantlist" exact component={AdminApplicantList} />
       <Route path="/account_list" exact component={AccountList} />
-      <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} />
       <Route path="/admin_viewscholar" exact component={AdminViewScholar} />
       <Route path="/applicants" exact component={ApplicantList} />
       <Route path="/applicants/add" exact component={AddApplicant} />
       <Route path="/applicants/:applicantId" component={ViewApplicant} />*/}
+      <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} />
       <Route path="/scholars" exact component={ScholarList} />
       <Route path="/scholars/:scholarId" component={ViewScholar} />
       <Route path="/announcements" exact component={SystemAnnouncements} /> 
