@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { Table } from "react-bootstrap";
+import { Table, Button, Modal } from "react-bootstrap";
+import { Link, useParams , useHistory  } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Breadcrumbs from "../generic/breadcrumb";
 import "./style.scss";
 import API from 'services/Api'
+import ViewModal from '../accounts/editModal/index'
 
 const TABLE_HEADERS = ["#", "Scholar ID", "Last Name", "First Name", "Program", "Actions"];
 
@@ -65,7 +66,10 @@ const fetchData = async () =>
 const ScholarList = () => {
   const [scholars, setScholars] = useState([]);
   const history = useHistory();
-
+  //const { scholarId } = useParams();
+  //const { history, show } = this.props;
+  const { scholarId } = useParams();
+  
   const fetchScholars = async () => {
     API.request('scholar/retrieveAll', {}, response => {
       if (response && response.data) {
@@ -92,10 +96,20 @@ const ScholarList = () => {
     });
   }
   
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
   
+  const [selectedScholar, setSelectedScholar] = useState(null);
+
+  const handleShow = (scholar) => {
+    setSelectedScholar(scholar);
+    setShow(true);
+  };
+
   useEffect(() => {
     fetchScholars();
-  }, []);
+  }, [scholarId]);
 
   const handleView = (id) => history.push("/scholars/" + id);
   const handleDelete = (id) => console.log("delete", id);
@@ -106,6 +120,68 @@ const ScholarList = () => {
         <Breadcrumbs header="List of Scholars" subheader="1st sem 2023" />
       </div>
 
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Scholar Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedScholar && (
+            <>
+              <p>ID: {selectedScholar.id}</p>
+              <p>User ID: {selectedScholar.user_id}</p>
+              <p>Last Name: {selectedScholar.account_details.last_name}</p>
+              <p>First Name: {selectedScholar.account_details.first_name}</p>
+              <p>Program: {selectedScholar.account_details.program}</p>
+            </>
+          )}
+          
+          <Link
+            to={{
+              pathname: `scholars/${selectedScholar?.user_id}/scholar_details`,
+              state: { scholar: selectedScholar }
+            }}
+          >
+            <Button variant="primary" onClick={() => handleShow()}>Scholar Details</Button>
+          </Link>
+          <Link
+            to={{
+              pathname: `scholars/${selectedScholar?.user_id}/scholar_portfolio`,
+              state: { scholar: selectedScholar }
+            }}
+          >
+            <Button variant="primary" onClick={() => handleShow()}>View portfolio</Button>
+          </Link>
+          <Link
+            to={{
+              pathname: `scholars/${selectedScholar?.user_id}/scholar_tasks`,
+              state: { scholar: selectedScholar }
+            }}
+          >
+            <Button variant="primary" onClick={() => handleShow()}>Scholar Tasks</Button>
+          </Link>
+          <Link
+            to={{
+              pathname: `scholars/${selectedScholar?.user_id}/scholar_requests`,
+              state: { scholar: selectedScholar }
+            }}
+          >
+            <Button variant="primary" onClick={() => handleShow()}>Scholar Requests</Button>
+          </Link>
+          <Link
+            to={{
+              pathname: `scholars/${selectedScholar?.user_id}/scholar_leave_applications`,
+              state: { scholar: selectedScholar }
+            }}
+          >
+            <Button variant="primary" onClick={() => handleShow()}>Leave Application</Button>
+          </Link>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="table-container">
         <Table>
           <thead>
@@ -116,29 +192,19 @@ const ScholarList = () => {
             </tr>
           </thead>
           <tbody>
-            {scholars.map(({ id, user_id, account_details }) => (
-              <tr key={id}>
-                <td>{id}</td>
-                <td>{user_id}</td>
-                <td>{account_details.last_name}</td>
-                <td>{account_details.first_name}</td>
-                <td>{account_details.program}</td>
-                <td>
-                  <FontAwesomeIcon
-                    className="icon"
-                    icon={faEye}
-                    size="sm"
-                    onClick={() => handleView(id)}
-                  />
-                  <FontAwesomeIcon
-                    className="icon"
-                    icon={faTrash}
-                    size="sm"
-                    onClick={() => handleDelete(id)}
-                  />
-                </td>
-              </tr>
-            ))}
+            {scholars.map((scholar) => (
+                <tr key={scholar.id}>
+                  <td>{scholar.id}</td>
+                  <td>{scholar.user_id}</td>
+                  <td>{scholar.account_details.last_name}</td>
+                  <td>{scholar.account_details.first_name}</td>
+                  <td>{scholar.account_details.program}</td>
+                  <td>
+                    <span className='link' onClick={() => handleShow(scholar)}><a href="#">View</a></span>
+                    <span className='link'><a href="#">  Delete</a></span>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </div>

@@ -8,7 +8,7 @@ import Login from "modules/auth/login";
 import AccountList from "modules/accounts/index";
 import AdminLeaveRequest from "modules/applications/index";
 // import AdminViewScholar from "modules/applications/AdminViewScholar.js";
-import { ScholarList, ViewScholar } from "modules/scholar";
+import { ScholarList, ScholarDetails, ViewScholar, ScholarPortfolio, ScholarLeaveApplication, ScholarTasks, ScholarRequests } from "modules/scholar";
 
 import Leaves from "modules/leaves/index.js";
 import Accounts from "modules/accounts/index.js";
@@ -60,10 +60,19 @@ export default function Routes() {
       <Route path="/admin_viewscholar" exact component={AdminViewScholar} />
       <Route path="/applicants" exact component={ApplicantList} />
       <Route path="/applicants/add" exact component={AddApplicant} />
+
+      <Route path="/scholars/:scholarId" component={ViewScholar} />
       <Route path="/applicants/:applicantId" component={ViewApplicant} />*/}
       <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} />
       <Route path="/scholars" exact component={ScholarList} />
-      <Route path="/scholars/:scholarId" component={ViewScholar} />
+
+      <Route path="/scholar_details" exact component={ScholarDetails} />
+      <Route path="/scholars/scholar_details" exact component={ScholarDetails} />
+      <Route path="/scholars/:scholarId/scholar_details" component={ScholarDetails} />
+      <Route path="/scholars/:scholarId/scholar_tasks" component={ScholarTasks} />
+      <Route path="/scholars/:scholarId/scholar_requests" component={ScholarRequests} />
+      <Route path="/scholars/:scholarId/scholar_portfolio" component={ScholarPortfolio} />
+      <Route path="/scholars/:scholarId/scholar_leave_applications" component={ScholarLeaveApplication} />
       <Route path="/announcements" exact component={SystemAnnouncements} /> 
       {/* Replacements */}
       <Route path="/leaves" exact component={Leaves} />
