@@ -36,9 +36,13 @@ class Settings extends Component {
           email: null,
           errorEmail: null,
           password: null,
-          errorPassowrd: null,
-          confirmPassowrd: null,
-          errorConfirm: null
+          errorPassword: null,
+          confirmPassword: null,
+          errorConfirm: null,
+          type: null,
+          errorType: null,
+          status: null,
+          errorStatus: null
         };
       }
     render() {
@@ -106,6 +110,11 @@ class Settings extends Component {
                                 label={'Admin'}
                                 locked={true}
                                 active={false}
+                                onChange={(type, errorType) => {
+                                    this.setState({
+                                        type, errorType
+                                    })
+                                  }}
                                 />
                             </Col>
                             <Col>
@@ -115,7 +124,11 @@ class Settings extends Component {
                                 label={'Active'}
                                 locked={true}
                                 active={false}
-                                
+                                onChange={(status, errorStatus) => {
+                                    this.setState({
+                                        status, errorStatus
+                                    })
+                                  }}
                                 />
                             </Col>
                         </Row>
