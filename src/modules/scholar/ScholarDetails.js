@@ -6,8 +6,17 @@ function ScholarDetails() {
 
     return (
       <>
-      <p>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</p>
-        <h1>This is your Scholar Details page</h1>
+      <h3>This is your Scholar Details page</h3>
+      <p>welcome {scholar.account_details.last_name} </p>
+      <p>ID: {scholar.account_details.user_id}</p>
+      <p>First Name: {scholar.account_details.first_name}</p>
+      <p>Middle Name: {scholar.account_details.middle_name}</p>
+      <p>Last Name: {scholar.account_details.last_name}</p>
+      <p>Program: {scholar.account_details.program}</p>
+      <p>Birth Certificate: {scholar.account_details.birth_certificate}</p>
+      <p>TOR: {scholar.account_details.tor}</p>
+      <p>Narrative Essay: {scholar.account_details.narrative_essay}</p>
+      <p>Recommendation Letter: {scholar.account_details.recommendation_letter}</p>
       </>
     );
   }

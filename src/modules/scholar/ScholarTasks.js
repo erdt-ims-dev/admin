@@ -1,13 +1,57 @@
+import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
+import API from 'services/Api'
 
 function ScholarTasks() {
     const location = useLocation();
     const scholar = location.state.scholar;
 
+    const [tasks, setTasks] = useState([]);
+    //const { scholarId } = useParams();
+    //const { history, show } = this.props;
+    
+    const fetchTasks = async () => {
+      API.request('scholar_tasks/retrieveAll', { scholar_id: scholar.user_id }, response => {
+        if (response && response.data) {
+          // Make the second API call to retrieve account details
+            setTasks(response.data)
+        } else {
+          console.log('error on retrieve');
+        }
+      }, error => {
+        console.log(error);
+      });
+    }
+    console.log(tasks);
+    useEffect(() => {
+      fetchTasks();
+    }, []);
+
+
     return (
       <>
-      <p>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</p>
-        <h1>This is the Scholar Tasks page</h1>
+      <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
+      <p>This is the Scholar Tasks page</p>
+      <table>
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>Midterm Assessment</th>
+            <th>Final Assessment</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task) => (
+            <tr key={task.id}>
+              <td>{task.user_id}</td>
+              <td>{task.midterm_assessment}</td>
+              <td>{task.final_assessment}</td>
+              <td>{task.status}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       </>
     );
   }
