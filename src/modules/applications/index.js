@@ -15,7 +15,6 @@ import EditModal from './editModal/index'
 import EndorseModal from './endorseModal/index'
 import API from 'services/Api'
 
-
 class Applications extends Component {
     constructor(props) {
       super(props);

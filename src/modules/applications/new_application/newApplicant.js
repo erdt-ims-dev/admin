@@ -10,40 +10,52 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { Button } from 'react-bootstrap';
+import API from 'services/Api'
 
+// create application form on behalf of existing user.
+// to create, user must be registered and have account_type == new
 
 const files = [
     {
         title: "Transcript of Record",
-        disabled: false
+        disabled: false,
+        alias: "TOR"
     },
     {
         title: "Birth Certificate",
-        disabled: false
+        disabled: false,
+        alias: "Birth"
     },
     {
         title: "Valid ID",
-        disabled: false
+        disabled: false,
+        alias: "Id"
+        
     },
     {
         title: "Narrative Essay",
-        disabled: false
+        disabled: false,
+        alias: "Essay"
     },
     {
         title: "Medical Cerificate",
-        disabled: false
+        disabled: false,
+        alias: "Medical"
     },
     {
         title: "NBI Clearance",
-        disabled: false
+        disabled: false,
+        alias: "NBI"
     },
     {
         title: "Admission Notice",
-        disabled: false
+        disabled: false,
+        alias: "Admission"
     },
     {
         title: "Program Study",
-        disabled: false
+        disabled: false,
+        alias: "Program"
     },
 ]
 
@@ -63,9 +75,89 @@ class newApplicant extends Component {
           password: null,
           errorPassowrd: null,
           confirmPassowrd: null,
-          errorConfirm: null
+          errorConfirm: null,
+          selectedFiles: {
+            TOR: null,
+            Birth: null,
+            Id: null,
+            Essay: null,
+            Medical: null,
+            NBI: null,
+            Admission: null,
+            Program: null,
+          },
         };
-      }
+        };
+        
+        retrieveUser(){
+            // retrieves user based on email provided
+            // email needs to be checked first
+            API.request('account_details/updateTor', {
+                col: 'status',
+                value: 'pending'
+              }, response => {
+                if (response && response.data) {
+                  response.data.forEach((element, index )=> {
+                  });
+                }else{
+                  console.log('error on retrieve')
+                }
+              }, error => {
+                console.log(error)
+              })
+        }
+        viewFile = (alias) => {
+            const { selectedFiles } = this.state;
+            const { fileURL } = selectedFiles[alias] || {}; // Use an empty object as a fallback
+            if (fileURL) {
+               // Display the file using the fileURL
+               window.open(fileURL, '_blank');
+            } else {
+               console.log("No file selected for viewing.");
+            }
+           };
+           handleFileChange = (event, alias) => {
+            const file = event.target.files[0];
+            let fileURL = null; 
+            console.log("alias", alias)
+            if(file){
+                fileURL = URL.createObjectURL(file);
+                this.setState(prevState => ({
+                    selectedFiles: {
+                      ...prevState.selectedFiles,
+                      [alias]: { file, fileURL },
+                    },
+                 }), ()=>{
+                    console.log("File", this.state.selectedFiles)
+                 });
+            }else{
+                console.log('no selected file')
+            }
+           };
+           
+     handleUpload = () => {
+        const { selectedFile, email, first_name, middle_name, last_name,  } = this.state;
+        if (!selectedFile) {
+          alert('Please select a file to upload.');
+          return;
+        }
+        if(email != null || undefined){
+            API.request('account_details/updateTor', {
+                col: 'status',
+                value: 'pending'
+              }, response => {
+                if (response && response.data) {
+                  response.data.forEach((element, index )=> {
+                    this.getDetails(element.account_details_id)
+                  });
+                }else{
+                  console.log('error on update')
+                }
+              }, error => {
+                console.log(error)
+              })
+        }
+     };
     render() {
         return (
             <div>
@@ -164,41 +256,7 @@ class newApplicant extends Component {
                                 />
                             </Col>
                         </Row>
-                    {/* Password */}
-                    {/* <hr className='break'/>
-                    <Row className='sectionHeader'>
-                        <p>Password Settings</p>
-                    </Row>
-                    <Row className='Row'>
-                            <Col className=''>
-                                <InputField
-                                id={1}
-                                type={'password'}
-                                label={'Current Password'}
-                                locked={false}
-                                active={false}
-                                onChange={(password, errorPassword) => {
-                                    this.setState({
-                                        password, errorPassword
-                                    })
-                                  }}
-                                />
-                            </Col>
-                            <Col>
-                            <InputField
-                                id={2}
-                                type={'password'}
-                                label={'Confirm New Password'}
-                                locked={false}
-                                active={false}
-                                onChange={(confirmPassword, errorConfirm) => {
-                                    this.setState({
-                                        confirmPassword, errorConfirm
-                                    })
-                                  }}
-                                />
-                            </Col>
-                        </Row> */}
+                    
                     {/* Notification */}
                     <hr className='break'/>
                     <Row className='sectionHeader'>
@@ -209,7 +267,7 @@ class newApplicant extends Component {
                             return(
                                 <div>
                                     
-                                        <Row className='Row'>
+                                        <Row className='Row' key={index}>
                                             <Col md={4}>
                                                 <p>{item.title}</p>
                                             </Col>
@@ -218,16 +276,22 @@ class newApplicant extends Component {
                                             </Col>
                                             <Col md={4} className='switch'>
                                                 <Col>
-                                                <span 
-                                                className='icon'
-                                                onClick={()=>{}}
-                                                >View
-                                                </span>
+                                                <span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>
+
                                                 </Col>
+
                                                 <Col>
+                                                <input
+                                                type="file"
+                                                style={{ display: 'none' }}
+                                                onChange={(event) => this.handleFileChange(event, item.alias)}
+                                                ref={(input) => {
+                                                    this.fileInputs = { ...this.fileInputs, [item.alias]: input };
+                                                 }}
+                                                />
                                                 <span 
                                                 className='icon'
-                                                onClick={()=>{}}
+                                                onClick={() => this.fileInputs[item.alias].click()}
                                                 >Upload
                                                 </span>
                                                 </Col>
