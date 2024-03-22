@@ -6,15 +6,14 @@ function ScholarPortfolio() {
     const location = useLocation();
     const scholar = location.state.scholar;
 
-    const [portfolio, setPortfolio] = useState([]);
+    const [portfolios, setPortfolios] = useState([]);
     //const { scholarId } = useParams();
     //const { history, show } = this.props;
-    
     const fetchPortfolio = async () => {
-      API.request('scholar_portfolio/retrieveOneByParameter', { col: 'user_id', value: 1 }, response => {
+      API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.user_id }, response => {
         if (response && response.data) {
           // Make the second API call to retrieve account details
-          setPortfolio(response.data)
+          setPortfolios(response.data)
         } else {
           console.log('error on retrieve');
         }
@@ -22,7 +21,7 @@ function ScholarPortfolio() {
         console.log(error);
       });
     }
-    console.log(portfolio);
+    console.log(portfolios);
     useEffect(() => {
       fetchPortfolio();
     }, []);
@@ -35,6 +34,7 @@ function ScholarPortfolio() {
       <table>
         <thead>
           <tr>
+            <th>#</th>
             <th>id</th>
             <th>study</th>
             <th>study_name</th>
@@ -43,15 +43,16 @@ function ScholarPortfolio() {
           </tr>
         </thead>
         <tbody>
-          {portfolio.map((portfolio) => (
-            <tr key={portfolio.id}>
-              <td>{portfolio.user_id}</td>
-              <td>{portfolio.study}</td>
-              <td>{portfolio.study_name}</td>
-              <td>{portfolio.study_category}</td>
-              <td>{portfolio.publish_type}</td>
-            </tr>
-          ))}
+        {Object.values(portfolios).map((portfolio, index) => (
+          <tr key={portfolio.id}>
+            <td>{index+1}</td>
+            <td>{portfolio.scholar_id}</td>
+            <td>{portfolio.study}</td>
+            <td>{portfolio.study_name}</td>
+            <td>{portfolio.study_category}</td>
+            <td>{portfolio.publish_type}</td>
+          </tr>
+        ))}
         </tbody>
       </table>
       </>

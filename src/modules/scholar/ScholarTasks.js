@@ -11,10 +11,10 @@ function ScholarTasks() {
     //const { history, show } = this.props;
     
     const fetchTasks = async () => {
-      API.request('scholar_tasks/retrieveAll', { scholar_id: scholar.user_id }, response => {
+      API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.user_id }, response => {
         if (response && response.data) {
           // Make the second API call to retrieve account details
-            setTasks(response.data)
+          setTasks(response.data)
         } else {
           console.log('error on retrieve');
         }
@@ -35,6 +35,7 @@ function ScholarTasks() {
       <table>
         <thead>
           <tr>
+            <th>#</th>
             <th>id</th>
             <th>Midterm Assessment</th>
             <th>Final Assessment</th>
@@ -42,8 +43,9 @@ function ScholarTasks() {
           </tr>
         </thead>
         <tbody>
-          {tasks.map((task) => (
+          {tasks.map((task, index) => (
             <tr key={task.id}>
+              <td>{index+1}</td>
               <td>{task.user_id}</td>
               <td>{task.midterm_assessment}</td>
               <td>{task.final_assessment}</td>
