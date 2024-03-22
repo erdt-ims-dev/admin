@@ -405,3 +405,12 @@ h4 {
     justify-content: center;
     gap: 10%;
 }
+.error{
+    border: solid 1px lightcoral;
+}
+.errorText{
+    padding: 1%;
+    color: red;
+    text-align: left;
+    font-size: 12px;
+}

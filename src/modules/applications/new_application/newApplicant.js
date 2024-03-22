@@ -11,7 +11,7 @@ import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { Button } from 'react-bootstrap';
 import API from 'services/Api'
-
+import CONFIG from 'config.js';
 // create application form on behalf of existing user.
 // to create, user must be registered and have account_type == new
 
@@ -19,43 +19,38 @@ const files = [
     {
         title: "Transcript of Record",
         disabled: false,
-        alias: "TOR"
+        alias: "tor"
     },
     {
         title: "Birth Certificate",
         disabled: false,
-        alias: "Birth"
+        alias: "birth"
     },
     {
-        title: "Valid ID",
+        title: "Recommendation Letter",
         disabled: false,
-        alias: "Id"
+        alias: "recommendation"
         
     },
     {
         title: "Narrative Essay",
         disabled: false,
-        alias: "Essay"
+        alias: "essay"
     },
     {
         title: "Medical Cerificate",
         disabled: false,
-        alias: "Medical"
+        alias: "medical"
     },
     {
         title: "NBI Clearance",
         disabled: false,
-        alias: "NBI"
+        alias: "nbi"
     },
     {
         title: "Admission Notice",
         disabled: false,
-        alias: "Admission"
-    },
-    {
-        title: "Program Study",
-        disabled: false,
-        alias: "Program"
+        alias: "notice"
     },
 ]
 
@@ -72,40 +67,23 @@ class newApplicant extends Component {
           error_last_name:  null,
           email: null,
           errorEmail: null,
-          password: null,
-          errorPassowrd: null,
-          confirmPassowrd: null,
-          errorConfirm: null,
+
           selectedFiles: {
-            TOR: null,
-            Birth: null,
-            Id: null,
-            Essay: null,
-            Medical: null,
-            NBI: null,
-            Admission: null,
-            Program: null,
+            tor: null,
+            birth_certificate: null,
+            narrative_essay: null,
+            medical_certificate: null,
+            nbi: null,
+            admission_notice: null,
           },
+
+          user: [],
+          retrieveError: false, 
+          retrievedExisting: false
         };
         };
         
-        retrieveUser(){
-            // retrieves user based on email provided
-            // email needs to be checked first
-            API.request('account_details/updateTor', {
-                col: 'status',
-                value: 'pending'
-              }, response => {
-                if (response && response.data) {
-                  response.data.forEach((element, index )=> {
-                  });
-                }else{
-                  console.log('error on retrieve')
-                }
-              }, error => {
-                console.log(error)
-              })
-        }
+        
         viewFile = (alias) => {
             const { selectedFiles } = this.state;
             const { fileURL } = selectedFiles[alias] || {}; // Use an empty object as a fallback
@@ -113,13 +91,12 @@ class newApplicant extends Component {
                // Display the file using the fileURL
                window.open(fileURL, '_blank');
             } else {
-               console.log("No file selected for viewing.");
+               alert("No file selected for viewing.");
             }
            };
            handleFileChange = (event, alias) => {
             const file = event.target.files[0];
             let fileURL = null; 
-            console.log("alias", alias)
             if(file){
                 fileURL = URL.createObjectURL(file);
                 this.setState(prevState => ({
@@ -128,37 +105,126 @@ class newApplicant extends Component {
                       [alias]: { file, fileURL },
                     },
                  }), ()=>{
-                    console.log("File", this.state.selectedFiles)
+                    // console.log("File", this.state.selectedFiles)
                  });
             }else{
-                console.log('no selected file')
+                // console.log('no selected file')
             }
            };
-           
-     handleUpload = () => {
-        const { selectedFile, email, first_name, middle_name, last_name,  } = this.state;
-        if (!selectedFile) {
-          alert('Please select a file to upload.');
-          return;
+           retrieveUser(successCallback, errorCallback, user = null) {
+            const { email } = this.state;
+            if (email) {
+                API.request('user/retrieveOne', {
+                    col: 'email',
+                    value: email
+                }, response => {
+                    if (response && response.data) {
+                        this.setState({
+                            user: response.data,
+                            retrieveError: false
+                        }, () => {
+                            console.log('user', this.state.user)
+                            this.uploadFile(response.data)
+                        });
+                        if (response.data.account_type != 'new') {
+                            this.setState({
+                                retrievedExisting: true
+                            });
+                            successCallback(false);
+                        } else {
+                            successCallback(true, response.data);
+                        }
+                    } else {
+                        console.log('error on retrieve', response.error);
+                        this.setState({
+                            retrieveError: true
+                        });
+                        errorCallback(new Error('Error retrieving user'));
+                    }
+                }, error => {
+                    console.log(error);
+                    errorCallback(error);
+                });
+            } else {
+                errorCallback(new Error('Email is not provided'));
+            }
         }
-        if(email != null || undefined){
-            API.request('account_details/updateTor', {
-                col: 'status',
-                value: 'pending'
-              }, response => {
-                if (response && response.data) {
-                  response.data.forEach((element, index )=> {
-                    this.getDetails(element.account_details_id)
-                  });
-                }else{
-                  console.log('error on update')
+           handleUpload = () => {
+
+            // find existing user via email
+            this.retrieveUser(
+                (userFound, errorCallback, user) => {
+                    if (userFound) {
+                        console.log("user found")
+                    } else {
+                        // User not found or is not new, handle accordingly
+                        console.log("error on callback")
+                    }
+                },
+                (error) => {
+                    // Handle error
+                    console.error(error);
                 }
-              }, error => {
-                console.log(error)
-              })
-        }
-     };
+            );
+           };
+
+           uploadFile(user){
+            const {selectedFiles} = this.state
+            console.log("::user", user)
+            Object.entries(selectedFiles).forEach(([field, fileData]) => {
+                if (fileData && fileData.file) {
+                  let formData = new FormData();
+                  formData.append('file', fileData.file);
+                  formData.append('user_id', user.id);
+                  formData.append('field', field);
+
+                  API.uploadFile('account_details/update', formData, response => {
+                    if (response && response.data) {
+                      console.log(response)
+                    }else{
+                      console.log('error on retrieve')
+                    }
+                  }, error => {
+                    console.log(error)
+                  })
+
+                }
+             });
+           }
+           
+        //    handleUpload = async () => {
+        //     const { user, selectedFiles } = this.state;
+        //     try {
+        //         const userFound = await this.retrieveUser();
+        //         if (userFound && user != null) {
+        //             // Use Promise.all to wait for all API calls to complete
+        //             await Promise.all(Object.entries(selectedFiles).map(async ([field, file]) => {
+        //                 if (file) {
+        //                     console.log(file)
+        //                     const response = await API.request('account_details/update', {
+        //                         user_id: user.id,
+        //                         file: file,
+        //                         field: field
+        //                     });
+        //                     if (!response || !response.data) {
+        //                         console.log('error on retrieve');
+        //                     }
+        //                 } else {
+        //                     console.log('No file uploaded for', field);
+        //                 }
+        //             }));
+        //             // All API calls completed successfully
+        //             console.log('All files uploaded successfully');
+        //         } else {
+        //             this.setState({ errorEmail: 'Email not found' });
+        //         }
+        //     } catch (error) {
+        //         console.error('Error retrieving user:', error);
+        //         this.setState({ errorEmail: 'An error occurred while retrieving user' });
+        //     }
+        // };
     render() {
+        const {retrieveError, retrievedExisting} = this.state
         return (
             <div>
                 {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -193,11 +259,12 @@ class newApplicant extends Component {
                                 id={1}
                                 type={'name'}
                                 label={'First Name'}
+                                placeholder={'First Name'}
                                 locked={false}
                                 active={false}
-                                onChange={(first_name, error_first_name) => {
+                                onChange={(value) => {
                                     this.setState({
-                                        first_name, error_first_name
+                                        first_name: value
                                     })
                                   }}
                                 />
@@ -207,11 +274,12 @@ class newApplicant extends Component {
                                 id={1}
                                 type={'name'}
                                 label={'Middle Name'}
+                                placeholder={'Middle Name'}
                                 locked={false}
                                 active={false}
-                                onChange={(middle_name, error_middle_name) => {
+                                onChange={(value) => {
                                     this.setState({
-                                        middle_name, error_middle_name
+                                        middle_name: value
                                     })
                                   }}
                                 />
@@ -221,38 +289,47 @@ class newApplicant extends Component {
                                 id={1}
                                 type={'name'}
                                 label={'Last Name'}
+                                placeholder={'Last Name'}
                                 locked={false}
                                 active={false}
-                                onChange={(last_name, error_last_name) => {
+                                onChange={(value) => {
                                     this.setState({
-                                        last_name, error_last_name
+                                        last_name: value
                                     })
                                   }}
                                 />
                             </Col>
                         </Row>
                         <Row className='Row'>
-                            <Col>
+                            <Col >
                             <InputField
-                                id={2}
-                                type={'email'}
-                                label={'Email'}
-                                locked={false}
-                                active={false}
-                                onChange={(email, errorEmail) => {
-                                    this.setState({
-                                        email, errorEmail
-                                    })
-                                  }}
-                                />
+                            id={2}
+                            className={retrieveError || retrievedExisting ? "error" : ""}
+                            type={'email'}
+                            label={'Email'}
+                            placeholder={'Email'}
+                            locked={false}
+                            active={true}
+                            onChange={(value) => {
+                                this.setState({
+                                    email: value
+                                },)
+                            }}
+                        />
+                                <p className='errorText'>{retrieveError ? "Email not Found" : ""}</p>
+                                <p className='errorText'>{retrievedExisting ? "This email already has a pending/endorsed application" : ""}</p>
                             </Col>
                             <Col>
                             <InputField
                                 id={3}
                                 type={'field'}
                                 label={'Applicant'}
+                                placeholder={'Applicant'}
                                 locked={true}
                                 active={false}
+                                onChange={() => {
+                                    
+                                  }}
                                 />
                             </Col>
                         </Row>
@@ -307,7 +384,7 @@ class newApplicant extends Component {
                     
                     </Col>
                     <Col md={2}>
-                        <Button>
+                        <Button onClick={this.handleUpload}>
                             Create Applicant
                         </Button>
                     </Col>

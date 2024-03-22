@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import './style.css'
 
+// generic custom input
+
 class InputField extends Component {
     constructor(props) {
         super(props);
@@ -20,8 +22,15 @@ class InputField extends Component {
         const { id } = this.props;
         const value = event.target.value;
         this.setState({ value, error: '' });
-        return this.props.onChange(id, value);
+        return this.props.onChange(value);
       }
+      componentDidUpdate(prevProps) {
+        // Check if the error prop has changed
+        if (this.props.error !== prevProps.error) {
+            // Update the internal state to reflect the new error message
+            this.setState({ error: this.props.error });
+        }
+    }
     render() {
         const {id, type, placeholder, locked} = this.props;
         const { focussed, value, error, label } = this.state;
