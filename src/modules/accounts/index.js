@@ -42,9 +42,9 @@ class Accounts extends Component {
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                {/* <span className='link' onClick={() => this.handleView(row.original)}>View</span> */}
-                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
-                <span className='link'onClick={() => this.handleEndorse(row.original)}>Deactivate</span>
+                <span className='link' onClick={() => this.handleView(row.original)}>View</span>
+                {/* <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span> */}
+                <span className='link'onClick={() => this.handleDeactivate(row.original)}>Deactivate</span>
               </div>
             ),
           },
@@ -84,7 +84,8 @@ class Accounts extends Component {
       },() => {
      })
     }
-    handleEndorse(rowData){
+
+    handleDeactivate(rowData){
       this.setState({
         showDelete: !this.state.showDelete,
         setData: rowData
@@ -92,9 +93,25 @@ class Accounts extends Component {
         console.log("setData", this.state.setData);
      })
     }
-    closeEndorse(){
+    onDeactivate(){
+      const {setData} = this.state
+      console.log("setData1", setData);
+      API.request('user/delete', {
+          id: setData.id
+      }, response => {
+        if (response && response.data) {
+          this.closeDelete()
+          this.getList()
+        }else{
+          console.log('error on retrieve')
+        }
+      }, error => {
+        console.log(error)
+      })
+    }
+    closeDelete(){
       this.setState({
-        showEndorse: !this.state.showEndorse,
+        showDelete: !this.state.showDelete,
         setData: null
       },() => {
      })
@@ -149,13 +166,14 @@ class Accounts extends Component {
       <DeleteModal
       setData={setData}
       show={showDelete}
-      onHide={()=>{this.closeEndorse()}}
+      onHide={()=>{this.closeDelete()}}
+      onDeactivate={()=>{this.onDeactivate()}}
       />
-      <EditModal
+      {/* <EditModal
       setData={setData}
       show={showEdit}
       onHide={()=>{this.closeEdit()}}
-      />
+      /> */}
     </div>
         )
     }

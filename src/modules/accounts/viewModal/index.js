@@ -11,6 +11,7 @@ import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
+// import ViewModal from 'modules/applications/viewModal';
 
 
 const files = [
@@ -52,21 +53,7 @@ class ViewModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          first_name: null,
-          error_first_name: null,
-          middle_name: null,
-          error_middle_name: null,
-          last_name: null,
-          error_last_name:  null,
-          email: null,
-          errorEmail: null,
-          password: null,
-          errorPassowrd: null,
-          confirmPassowrd: null,
-          errorConfirm: null,
-        //   Id: props.setData.id,
-          data: null, 
-          setEmail: null
+          
         };
       }
     componentDidMount() {
@@ -99,149 +86,17 @@ class ViewModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
-        General Information
+        Account Info
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{
+      <Modal.Body >
+      <pre>{JSON.stringify(setData, null, 2)}</pre>
+      </Modal.Body>
+      <Modal.Footer style={{
         backgroundColor: '#f1f5fb'
       }}>
-      <Container>
-        <Row className='sectionHeader'>
-        
-
-        </Row>
-
-        <Row className='Row'>
-            <Col className='imageCircle'>
-                <img className='circle' src={placeholder}></img>
-            </Col>
-            <Col className='imageText'>
-                <p className=''>This will be the profile picture displayed</p>
-            </Col>
-        </Row>
-        <Row className='Row'>
-            <Col className=''>
-                <InputField
-                id={1}
-                type={'name'}
-                label={setData ? setData.first_name : ''}
-                locked={true}
-                active={false}
-                onChange={(first_name, error_first_name) => {
-                    this.setState({
-                        first_name, error_first_name
-                    })
-                    }}
-                />
-            </Col>
-            <Col className=''>
-                <InputField
-                id={1}
-                type={'name'}
-                label={setData ? setData.middle_name : ''}
-                locked={true}
-                active={false}
-                onChange={(middle_name, error_middle_name) => {
-                    this.setState({
-                        middle_name, error_middle_name
-                    })
-                    }}
-                />
-            </Col>
-            <Col className=''>
-                <InputField
-                id={1}
-                type={'name'}
-                label={setData ? setData.last_name : ''}
-                locked={true}
-                active={false}
-                onChange={(last_name, error_last_name) => {
-                    this.setState({
-                        last_name, error_last_name
-                    })
-                    }}
-                />
-            </Col>
-        </Row>
-        <Row className='Row'>
-            {/* <Col>
-            <InputField
-                id={2}
-                type={'email'}
-                label={setEmail ? setEmail.email : ""}
-                locked={true}
-                active={false}
-                onChange={(email, errorEmail) => {
-                    this.setState({
-                        email, errorEmail
-                    })
-                    }}
-                />
-            </Col> */}
-            <Col>
-            <InputField
-                id={3}
-                type={'field'}
-                label={'Applicant'}
-                locked={true}
-                active={false}
-                />
-            </Col>
-        </Row>
-    <Row className='Row'>
-        <p>File Uploads</p>
-        
-    </Row>
-    <hr className='break'></hr>
-    {
-        files.map((item, index)=>{
-            return(
-                <div>
-                    
-                        <Row className='Row'>
-                            <Col md={3}>
-                                <p>{item.title}</p>
-                            </Col>
-                            <Col md={3}>
-                            
-                            </Col>
-                            <Col md={3}></Col>
-                            <Col md={3} className='switch'>
-                                {/* <FontAwesomeIcon
-                                    className="icon"
-                                    icon={faEye}
-                                    size="md"
-                                    onClick={() => {}}
-                                    style={{
-                                        marginLeft: 10,
-                                        marginRight: 10
-                                    }}
-                                    />
-                                    <FontAwesomeIcon
-                                    className="icon"
-                                    icon={faUpload}
-                                    size="md"
-                                    onClick={() => {}}
-                                    style={{
-                                        marginLeft: 10,
-                                        marginRight: 10
-                                    }}
-                                    /> */}
-                                    <span 
-                                    className='icon'
-                                    onClick={()=>{}}
-                                    >View File</span>
-                            </Col>
-                        </Row>
-                </div>
-            )
-        })
-    }
-    </Container>
-        
-      </Modal.Body>
-      <Modal.Footer>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
+        {/* <Button onClick={this.props.onDeactivate}>Deactivate</Button> */}
       </Modal.Footer>
     </Modal>
                     

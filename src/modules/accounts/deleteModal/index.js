@@ -95,7 +95,7 @@ class DeleteModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={this.props.onHide}>Deactivate</Button>
+        <Button onClick={this.props.onDeactivate}>Deactivate</Button>
       </Modal.Footer>
     </Modal>
                     
