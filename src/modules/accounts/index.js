@@ -132,9 +132,9 @@ class Accounts extends Component {
         }}
       >
         <Breadcrumbs header="Account List" />
-        <Button onClick={()=>{ history.push('/#')}}>
-          Add New Account
-        </Button>
+         {/* <Button onClick={()=>{ history.push('/#')}}>
+           Add New Account
+         </Button> */}
       </Box>
 
       <div className="table-container">

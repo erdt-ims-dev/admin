@@ -50,20 +50,13 @@ export default function Routes() {
       <Route path="/endorsements" exact component={EndorsementList}/>
       <Route path="/new_application" exact component={NewApplicant}/>
       
-      {/* Endorsement Management */}
 
 
       
-      {/* <Route path="/endorsed_applicant" exact component={EndorsedApplicant} />
-      <Route path="/admin_applicantlist" exact component={AdminApplicantList} />
-      <Route path="/account_list" exact component={AccountList} />
-      <Route path="/admin_viewscholar" exact component={AdminViewScholar} />
-      <Route path="/applicants" exact component={ApplicantList} />
-      <Route path="/applicants/add" exact component={AddApplicant} />
-
-      <Route path="/scholars/:scholarId" component={ViewScholar} />
-      <Route path="/applicants/:applicantId" component={ViewApplicant} />*/}
+      
       <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} />
+      
+      
       <Route path="/scholars" exact component={ScholarList} />
 
       <Route path="/scholar_details" exact component={ScholarDetails} />

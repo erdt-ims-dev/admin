@@ -94,3 +94,11 @@
 .borderRed{
   border-color: red;
 }
+
+ .field.error {
+  border: 1px solid #f56260; /* Red border for error state */
+ }
+ 
+ .field label.error {
+  color: #f56260; /* Red text color for error message */
+ }

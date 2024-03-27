@@ -38,7 +38,7 @@ const Api = {
   uploadFile: (link, parameter, callback, errorCallback = null) => {
     let token = localStorage.getItem(Helper.APP_NAME + 'token')
     let tokenStringParam = token && token !== 'null' && token !== null ? '?token=' + token : ''
-    jQuery.ajaxSetup({headers: {'authorization': 'Bearer ' + token}})
+    // jQuery.ajaxSetup({headers: {'authorization': 'Bearer ' + token}})
     axios.post(CONFIG.API_URL + link + tokenStringParam, parameter).then(response => {
       callback(response)
     }).catch(err => {
