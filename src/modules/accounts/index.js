@@ -43,7 +43,7 @@ class Accounts extends Component {
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
                 <span className='link' onClick={() => this.handleView(row.original)}>View</span>
-                {/* <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span> */}
+                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
                 <span className='link'onClick={() => this.handleDeactivate(row.original)}>Deactivate</span>
               </div>
             ),
@@ -169,11 +169,12 @@ class Accounts extends Component {
       onHide={()=>{this.closeDelete()}}
       onDeactivate={()=>{this.onDeactivate()}}
       />
-      {/* <EditModal
+      <EditModal
       setData={setData}
       show={showEdit}
+      refresh={()=>{this.getList()}}
       onHide={()=>{this.closeEdit()}}
-      /> */}
+      />
     </div>
         )
     }
