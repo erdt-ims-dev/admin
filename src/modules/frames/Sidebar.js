@@ -36,7 +36,7 @@ const item = [
     icon: faGripHorizontal,
   },
   {
-    name: "Application Management",
+    name: "Applications",
     icon: faListCheck,
     type: "dropdown",
     list: [
@@ -45,11 +45,11 @@ const item = [
         route: "/new_application",
       },
       {
-        title: "Applications",
+        title: "Applications Management",
         route: "/applications",
       },
       {
-        title: "Endorsements",
+        title: "Endorsement Management",
         route: "/endorsements",
       }
     ]
@@ -66,7 +66,17 @@ const item = [
   },
   {
     name: "System Announcements",
-    route: "/announcements",
+    type: "dropdown",
+    list: [
+      {
+        title: "Create New Announcement",
+        route: "/",
+      },
+      {
+        title: "Manage Announcements",
+        route: "/announcements",
+      },
+    ],
     icon: faBullhorn,
   },
   {

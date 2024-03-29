@@ -24,7 +24,7 @@ import NewApplicant from "modules/applications/new_application/newApplicant";
 //   ApplicantList,
 //   ViewApplicant,
 // } from "../modules/applicants";
-import { SystemAnnouncements } from "../modules/announcements";
+import SystemAnnouncements from "modules/announcements/index";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function Routes() {
@@ -66,7 +66,7 @@ export default function Routes() {
       <Route path="/scholars/:scholarId/scholar_requests" component={ScholarRequests} />
       <Route path="/scholars/:scholarId/scholar_portfolio" component={ScholarPortfolio} />
       <Route path="/scholars/:scholarId/scholar_leave_applications" component={ScholarLeaveApplication} />
-      <Route path="/announcements" exact component={SystemAnnouncements} /> 
+      <Route path="/announcements" component={SystemAnnouncements} /> 
       {/* Replacements */}
       <Route path="/leaves" exact component={Leaves} />
       <Route path="/accounts" exact component={Accounts} />
