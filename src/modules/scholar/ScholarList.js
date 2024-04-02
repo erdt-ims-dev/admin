@@ -8,6 +8,7 @@ import "./style.scss";
 import API from 'services/Api'
 import ViewModal from '../accounts/editModal/index'
 
+
 const TABLE_HEADERS = ["#", "Scholar ID", "Last Name", "First Name", "Program", "Actions"];
 
 const sampleApiResponse = {
@@ -63,13 +64,14 @@ const fetchData = async () =>
   })
 }
 
-const ScholarList = () => {
+const useScholarList = () => {
   const [scholars, setScholars] = useState([]);
-  const history = useHistory();
-  //const { scholarId } = useParams();
-  //const { history, show } = this.props;
-  const { scholarId } = useParams();
-  
+  const [selectedScholarId, setSelectedScholarId] = useState(null);
+  const [selectedScholar, setSelectedScholar] = useState(null);
+
+  const [show, setShow] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+ 
   const fetchScholars = async () => {
     API.request('scholar/retrieveAll', {}, response => {
       if (response && response.data) {
@@ -95,30 +97,81 @@ const ScholarList = () => {
       console.log(error);
     });
   }
-  
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  
-  const [selectedScholar, setSelectedScholar] = useState(null);
-
-  const handleShow = (scholar) => {
-    setSelectedScholar(scholar);
-    setShow(true);
-  };
 
   useEffect(() => {
-    fetchScholars();
-  }, [scholarId]);
-
-  const handleView = (id) => history.push("/scholars/" + id);
-  const handleDelete = (id) => console.log("delete", id);
-
+     fetchScholars();
+  }, []);
+ 
+  const handleShow = (scholar) => {
+     setSelectedScholar(scholar);
+     setShow(true);
+  };
+ 
+  const handleClose = () => setShow(false);
+ 
+  const handleDeleteShow = (id) => {
+    setSelectedScholarId(id);
+    setShowConfirm(true);
+  };
+ 
+  const handleDeleteConfirm = async () => {
+    API.request('scholar/delete', {
+      id: selectedScholarId,
+    }, error => {
+      console.log(error)
+    });
+    //to see the changes in the table after and close the modal
+    setScholars(scholars.filter(scholar => scholar.id !== selectedScholarId));
+    setShowConfirm(false);
+   };
+ 
+  return {
+     scholars,
+     show,
+     selectedScholar,
+     showConfirm,
+     selectedScholarId,
+     handleShow,
+     handleClose,
+     handleDeleteShow,
+     handleDeleteConfirm,
+     //handleDeleteCancel,
+  };
+ };
+ 
+ const ScholarList = () => {
+  const {
+     scholars,
+     show,
+     selectedScholar,
+     showConfirm,
+     selectedScholarId,
+     handleShow,
+     handleClose,
+     handleDeleteShow,
+     handleDeleteConfirm,
+     handleDeleteCancel,
+  } = useScholarList();
+ 
   return (
     <>
       <div className="header-container">
         <Breadcrumbs header="List of Scholars" subheader="1st sem 2023" />
       </div>
+      <Modal show={showConfirm} onHide={handleDeleteCancel}>
+        <Modal.Header closeButton>
+          <Modal.Title>Are you sure?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleDeleteCancel}>
+            No
+          </Button>
+          <Button variant="primary" onClick={handleDeleteConfirm}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -129,9 +182,9 @@ const ScholarList = () => {
             <>
               <p>ID: {selectedScholar.id}</p>
               <p>User ID: {selectedScholar.user_id}</p>
-              <p>Last Name: {selectedScholar.account_details.last_name}</p>
-              <p>First Name: {selectedScholar.account_details.first_name}</p>
-              <p>Program: {selectedScholar.account_details.program}</p>
+              <p>Last Name: {selectedScholar.account_details?.last_name}</p>
+              <p>First Name: {selectedScholar.account_details?.first_name}</p>
+              <p>Program: {selectedScholar.account_details?.program}</p>
             </>
           )}
           
@@ -196,12 +249,12 @@ const ScholarList = () => {
                 <tr key={scholar.id}>
                   <td>{scholar.id}</td>
                   <td>{scholar.user_id}</td>
-                  <td>{scholar.account_details.last_name}</td>
-                  <td>{scholar.account_details.first_name}</td>
-                  <td>{scholar.account_details.program}</td>
+                  <td>{scholar.account_details?.last_name}</td>
+                  <td>{scholar.account_details?.first_name}</td>
+                  <td>{scholar.account_details?.program}</td>
                   <td>
                     <span className='link' onClick={() => handleShow(scholar)}><a href="#">View</a></span>
-                    <span className='link'><a href="#">  Delete</a></span>
+                    <span className='link' onClick={() => handleDeleteShow(scholar.id)}><a href="#">  Delete</a></span>
                   </td>
                 </tr>
               ))}
