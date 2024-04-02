@@ -14,6 +14,8 @@ import ViewModal from './viewModal/index'
 import EditModal from './editModal/index'
 import DeleteModal from './deleteModal/index'
 import API from 'services/Api'
+import CreateModal from './createModal/index';
+
 
 
 class Announcements extends Component {
@@ -24,6 +26,7 @@ class Announcements extends Component {
         showView: false,
         showDelete: false,
         showEdit: false,
+        showCreate: false,
         columns: [
           {
             Header: 'Title',
@@ -54,6 +57,8 @@ class Announcements extends Component {
           };
       };
       // Modal Handling
+
+      // View
     handleView(rowData){
       this.setState({
         showView: !this.state.showView,
@@ -69,6 +74,7 @@ class Announcements extends Component {
       },() => {
      })
     }
+    // Edit
     handleEdit(rowData){
       this.setState({
         showEdit: !this.state.showEdit,
@@ -84,7 +90,7 @@ class Announcements extends Component {
       },() => {
      })
     }
-
+    // Delete
     handleDeactivate(rowData){
       this.setState({
         showDelete: !this.state.showDelete,
@@ -115,6 +121,24 @@ class Announcements extends Component {
       },() => {
      })
     }
+    // Create
+    handleCreate(){
+        this.setState({
+          showCreate: !this.state.showCreate,
+        },() => {
+       })
+      }
+      closeCreate(){
+        this.setState({
+            showCreate: !this.state.showCreate,
+        },() => {
+       })
+      }
+      handleSubmitAnnouncement = (announcement) => {
+        console.log(announcement);
+        // Here, you would typically make an API call to save the announcement
+        this.closeCreate();
+     };
     // State
     componentDidMount(){
       this.getList()
@@ -136,7 +160,7 @@ class Announcements extends Component {
       }
     
     render() {
-      const { columns, announcement_list, showEdit, showDelete, showView, setData } = this.state;
+      const { columns, announcement_list, showEdit, showDelete, showView, setData, showCreate } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -148,7 +172,7 @@ class Announcements extends Component {
         }}
       >
         <Breadcrumbs header="System Announcements" />
-         <Button onClick={()=>{ history.push('/#')}}>
+         <Button onClick={()=>{ this.handleCreate()}}>
            Create New Announcement
          </Button>
       </Box>
@@ -173,6 +197,11 @@ class Announcements extends Component {
       show={showEdit}
       refresh={()=>{this.getList()}}
       onHide={()=>{this.closeEdit()}}
+      />
+      <CreateModal
+        show={showCreate}
+        handleClose={()=>{this.closeCreate()}}
+        handleSubmit={this.handleSubmitAnnouncement}
       />
     </div>
         )
