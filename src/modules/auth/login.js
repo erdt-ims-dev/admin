@@ -6,7 +6,7 @@ import "./style.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-import InputField from "../generic/inputV2";
+import InputField from "modules/generic/inputV2";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -39,18 +39,15 @@ class Login extends Component {
     }, response => {
       if (response && response.data) {
         const user = response.data
-        const token = response.token
-        localStorage.setItem(`${Helper.APP_NAME}token`, token)
-        // this.props.login(user, token)
-        this.navigate("/dashboard");
+        const token = response.data.token
+        this.props.login(user)
+        // this.props.navigate("/dashboard");
       }
     }, error => {
       console.log(error)
     })
   }
-  navigate = (route) => {
-    this.props.history.push(route)
-  }
+
 
   render() {
     return (
@@ -91,7 +88,7 @@ class Login extends Component {
               />
             </Row>
             <Row className="Row mx-4">
-              <Button type="button" variant="primary" size="lg" >
+              <Button type="button" onClick={()=>{this.startLogin()}} variant="primary" size="lg" >
                 Sign In
               </Button>
             </Row>
@@ -118,7 +115,7 @@ class Login extends Component {
               </Row>
               <Row className="Row">
                 <p>
-                  Don't have an Account, you can register{" "}
+                  Don't have an Account? you can register{" "}
                   <a href="/register">here</a>
                 </p>
               </Row>
@@ -132,9 +129,10 @@ class Login extends Component {
 const mapStateToProps = (state) => ({ state: state });
 
 const mapDispatchToProps = (dispatch) => {
-  const { actions } = require('reduxhandler');
   return {
-    login: (user, token) => {dispatch(actions.login(user, token))}
+    login: (user) => {
+      dispatch({ type: 'LOGIN', payload: { user } });
+    }
   };
 };
 

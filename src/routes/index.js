@@ -26,53 +26,53 @@ import NewApplicant from "modules/applications/new_application/newApplicant";
 // } from "../modules/applicants";
 import SystemAnnouncements from "modules/announcements/index";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
+import { useSelector } from "react-redux";
 
 export default function Routes() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
+  const isLoggedIn = useSelector(state=> state.isLoggedIn)
+  console.log("::", isLoggedIn)
   return (
     <Switch>
+      {/* Public Routes */}
       <Route
         path="/login"
         exact
         component={Login}
       />
-       {/* Protected */}
-      {/* <Route path="/dashboard" 
-			exact 
-			component={isLoggedIn ? Dashboard: () => <Redirect to="/"/>}
-			/> */}
-      <Route path="/dashboard" exact component={Dashboard} />
-      {/* Applicant Management */}
-      <Route path="/applications" exact component={ApplicantList}/>
-      <Route path="/endorsements" exact component={EndorsementList}/>
-      <Route path="/new_application" exact component={NewApplicant}/>
+      <Route
+        path="/register"
+        exact
+        component={Register}
+      />
+      {/* Protected Routes */}
       
+          <Route path="/dashboard" exact component={Dashboard} isPrivate/>
 
+          <Route path="/endorsements" exact component={EndorsementList} isPrivate/>
+          <Route path="/new_application" exact component={NewApplicant} isPrivate/>
+          <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} isPrivate/>
+          <Route path="/scholars" exact component={ScholarList} isPrivate/>
 
-      
-      
-      <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} />
-      
-      
-      <Route path="/scholars" exact component={ScholarList} />
-
-      <Route path="/scholar_details" exact component={ScholarDetails} />
-      <Route path="/scholars/scholar_details" exact component={ScholarDetails} />
-      <Route path="/scholars/:scholarId/scholar_details" component={ScholarDetails} />
-      <Route path="/scholars/:scholarId/scholar_tasks" component={ScholarTasks} />
-      <Route path="/scholars/:scholarId/scholar_requests" component={ScholarRequests} />
-      <Route path="/scholars/:scholarId/scholar_portfolio" component={ScholarPortfolio} />
-      <Route path="/scholars/:scholarId/scholar_leave_applications" component={ScholarLeaveApplication} />
-      <Route path="/announcements" component={SystemAnnouncements} /> 
+          <Route path="/scholars/scholar_details" exact component={ScholarDetails} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_details" component={ScholarDetails} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_tasks" component={ScholarTasks} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_requests" component={ScholarRequests} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_portfolio" component={ScholarPortfolio} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_leave_applications" component={ScholarLeaveApplication} isPrivate/>
+          <Route path="/announcements" component={SystemAnnouncements} /> 
       {/* Replacements */}
-      <Route path="/leaves" exact component={Leaves} />
-      <Route path="/accounts" exact component={Accounts} />
-      <Route path="/settings" exact component={Settings} />
-      <Route path="/register" exact component={Register} />
-      <Route path="/home" exact component={Home} />
+          <Route path="/scholars/:scholarId/scholar_details" component={ScholarDetails} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_tasks" component={ScholarTasks} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_requests" component={ScholarRequests} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_portfolio" component={ScholarPortfolio} isPrivate/>
+          <Route path="/scholars/:scholarId/scholar_leave_applications" component={ScholarLeaveApplication} isPrivate/>
+          <Route path="/announcements" component={SystemAnnouncements} isPrivate/> 
+          <Route path="/leaves" exact component={Leaves} isPrivate/>
+          <Route path="/accounts" exact component={Accounts} isPrivate/>
+          <Route path="/settings" exact component={Settings} isPrivate/>
+          <Route path="/register" exact component={Register} isPrivate/>
+          <Route path="/home" exact component={Home} />
+        
     </Switch>
   );
 }

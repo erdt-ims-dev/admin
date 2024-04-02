@@ -2,6 +2,7 @@
   text-align: center;
   background-color: #f1f5fb;
   font-size: 14px!important;
+  
 }
 
 .App-logo {
@@ -21,7 +22,7 @@
   min-height: auto !important;
   padding: 24px;
 }
-.dsiplay-web {
+.display-web {
   display: block;
 }
 @media (prefers-reduced-motion: no-preference) {

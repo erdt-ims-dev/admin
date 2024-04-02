@@ -14,11 +14,14 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
+import Login from "./modules/auth/login"
+import Register from "./modules/auth/register"
+
 function App(props) {
   const history = useHistory()
 
   const user = useSelector(state => state.user)
-  const [isLoggedIn, setIsLoggedIn ] = useState(false)
+  const isLoggedIn = useSelector(state=> state.isLoggedIn)
   const [openSidebar, setOpenSidebar ] = useState(false)
   const navigate = (route) => {
     if(route == '/logout'){
@@ -37,20 +40,31 @@ function App(props) {
   return (
     <div className="App">
       <React.Fragment>
-        <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
-        <div className="mainContainer">
-          {
-            <div className={"sidebarContainer" + openSidebar ? "": "hidden"}>
-              <Sidebar show={openSidebar} {...props} />
-            </div>
-          }
+        {
+          isLoggedIn ? 
+          <span>
+            <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
+            <div className="mainContainer">
+              {
+                <div className={"sidebarContainer" + openSidebar ? "": "hidden"}>
+                  <Sidebar  show={openSidebar} {...props} navigate={navigate}/>
+                </div>
+              }
 
-          <div className="pageContainer">
-            {user}
-            <RouterList />
-          </div>
-        </div>
-        <Footer />
+              <div className="pageContainer">
+                <RouterList />
+              </div>
+            </div>
+            <Footer />
+          </span>
+          : <span>
+            <Login
+            navigate={navigate}
+            />
+            <Footer />
+          </span> 
+        }
+        
       </React.Fragment>
     </div>
   );
@@ -59,10 +73,8 @@ function App(props) {
 const mapStateToProps = (state) => ({ state: state });
 
 const mapDispatchToProps = (dispatch) => {
-  const { actions } = require('reduxhandler');
   return {
-    login: (user, token) => dispatch(actions.login(user, token)),
-    logout: () => dispatch(actions.logout())
+    logout: () => dispatch({ type: 'LOGOUT' }),
   };
 };
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Navbar, Container, Breadcrumb } from "react-bootstrap";
+import { withRouter } from "react-router-dom";
 import erdt from "../../assets/img/erdt-logo-black.png";
 // import {
 //   Sidebar,
@@ -12,21 +12,19 @@ import erdt from "../../assets/img/erdt-logo-black.png";
 // } from "react-sidebar-ui";
 
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-
-import "./style.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHouse,
-  faListCheck,
-  faGear,
-  faRightFromBracket,
-  faPerson,
+import { 
+  faRightFromBracket, 
+  faGripHorizontal, 
+  faListCheck, 
+  faPerson, 
   faPersonWalkingArrowRight,
   faBullhorn,
   faFileInvoice,
-  faGripHorizontal,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
-import { withRouter } from "react-router-dom";
+
+import "./style.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Modify 'item' as needed
 const item = [
@@ -110,7 +108,10 @@ export class SidebarFrame extends Component {
       this.setState({ sidebarOpen: this.props.openSidebar });
     }
  }
-
+ handleLogout = () => {
+  // Perform logout logic here
+  this.props.logout();
+ };
  onSetSidebarOpen(open) {
     this.setState({ sidebarOpen: open });
  }
@@ -134,9 +135,15 @@ export class SidebarFrame extends Component {
                     </SubMenu>
                 );
               } else {
+                if (item.name === 'Logout') {
+                  return (
+                   <MenuItem onClick={this.handleLogout} icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
+                  );
+                }else{
                 return (
                     <MenuItem onClick={()=>{history.push(item.route)}} icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
                 );
+              }
               }
             })}
         </Menu>

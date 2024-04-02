@@ -58,11 +58,10 @@ RouteWrapper.defaultProps = {
 const mapStateToProps = (state) => ({ state: state });
 
 const mapDispatchToProps = (dispatch) => {
-  const { actions } = require('reduxhandler');
   return {
-    login: (user, token) => dispatch(actions.login(user, token)),
-    setIsLoading: (flag) => dispatch(actions.setIsLoading(flag)),
-    logout: () => dispatch(actions.logout())
+    login: (user) => dispatch({ type: 'LOGIN', payload: { user } }),
+    setIsLoading: (flag) => dispatch({ type: 'SET_IS_LOADING', payload: { flag } }),
+    logout: () => dispatch({ type: 'LOGOUT' }),
   };
 };
 
