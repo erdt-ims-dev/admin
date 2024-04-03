@@ -1,19 +1,18 @@
-import React, { Component } from 'react'
-import './style.css'
+import React, { Component } from 'react';
+import { connect } from 'react-redux'
+import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { Box } from "@mui/material";
 import Breadcrumbs from "../generic/breadcrumb";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import  TableComponent  from 'modules/generic/table/index';
-import ViewModal from './viewModal/index'
-import EditModal from './editModal/index'
-import DeleteModal from './deleteModal/index'
-import API from 'services/Api'
+import TableComponent from 'modules/generic/table/index';
+import ViewModal from './viewModal/index';
+import EditModal from './editModal/index';
+import DeleteModal from './deleteModal/index';
+import API from 'services/Api';
 import CreateModal from './createModal/index';
 
 
@@ -30,11 +29,11 @@ class Announcements extends Component {
         columns: [
           {
             Header: 'Title',
-            accessor: 'title',
+            accessor: 'message_title',
           },
           {
             Header: 'Posted By',
-            accessor: 'posted',
+            accessor: 'message_by',
           },
           {
             Header: 'Status',
@@ -46,7 +45,7 @@ class Announcements extends Component {
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
                 <span className='link' onClick={() => this.handleView(row.original)}>View</span>
-                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
+                {/* <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span> */}
                 <span className='link'onClick={() => this.handleDeactivate(row.original)}>Deactivate</span>
               </div>
             ),
@@ -101,7 +100,7 @@ class Announcements extends Component {
     }
     onDeactivate(){
       const {setData} = this.state
-      API.request('user/delete', {
+      API.request('admin_system_message/delete', {
           id: setData.id
       }, response => {
         if (response && response.data) {
@@ -135,8 +134,23 @@ class Announcements extends Component {
        })
       }
       handleSubmitAnnouncement = (announcement) => {
-        console.log(announcement);
-        // Here, you would typically make an API call to save the announcement
+        const loggedInUser = this.props.user
+        console.log(":announcement:", announcement)
+        // const announcementString = JSON.stringify(announcement);
+        API.request('admin_system_message/create', {
+          message_by: loggedInUser.email,
+          message_title: announcement.title,
+          message_body: announcement.message
+        }, response => {
+          if (response && response.data) {
+            // this.closeCreate()
+            this.getList()
+          }else{
+            console.log('error on retrieve')
+          }
+        }, error => {
+          console.log(error)
+        })
         this.closeCreate();
      };
     // State
@@ -149,7 +163,7 @@ class Announcements extends Component {
         }, response => {
           if (response && response.data) {
             this.setState({
-                announcement_list_list: response.data
+                announcement_list: response.data
             })
           }else{
             console.log('error on retrieve')
@@ -178,7 +192,7 @@ class Announcements extends Component {
       </Box>
 
       <div className="table-container">
-        <TableComponent columns={columns} data={announcement_list} onRowClick={(row) => console.log(row.original.program)}/>
+        <TableComponent columns={columns} data={announcement_list} onRowClick={(row) => console.log(row.original.title)}/>
         
       </div>
       <ViewModal
@@ -208,4 +222,10 @@ class Announcements extends Component {
     }
 }
 
-export default Announcements
+const mapStateToProps = (state) => {
+    return {
+        user: state.user
+    };
+};
+
+export default connect(mapStateToProps)(Announcements);

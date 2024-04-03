@@ -40,7 +40,7 @@ class Login extends Component {
       if (response && response.data) {
         const user = response.data
         const token = response.data.token
-        this.props.login(user)
+        this.props.login(user, token)
         // this.props.navigate("/dashboard");
       }
     }, error => {
@@ -130,8 +130,8 @@ const mapStateToProps = (state) => ({ state: state });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (user) => {
-      dispatch({ type: 'LOGIN', payload: { user } });
+    login: (user, token) => {
+      dispatch({ type: 'LOGIN', payload: { user, token } });
     }
   };
 };

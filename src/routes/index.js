@@ -49,7 +49,9 @@ export default function Routes() {
           <Route path="/dashboard" exact component={Dashboard} isPrivate/>
 
           <Route path="/endorsements" exact component={EndorsementList} isPrivate/>
+          <Route path="/applications" exact component={ApplicantList} isPrivate/>
           <Route path="/new_application" exact component={NewApplicant} isPrivate/>
+
           <Route path="/admin_leaverequest" exact component={AdminLeaveRequest} isPrivate/>
           <Route path="/scholars" exact component={ScholarList} isPrivate/>
 
@@ -59,7 +61,6 @@ export default function Routes() {
           <Route path="/scholars/:scholarId/scholar_requests" component={ScholarRequests} isPrivate/>
           <Route path="/scholars/:scholarId/scholar_portfolio" component={ScholarPortfolio} isPrivate/>
           <Route path="/scholars/:scholarId/scholar_leave_applications" component={ScholarLeaveApplication} isPrivate/>
-          <Route path="/announcements" component={SystemAnnouncements} /> 
       {/* Replacements */}
           <Route path="/scholars/:scholarId/scholar_details" component={ScholarDetails} isPrivate/>
           <Route path="/scholars/:scholarId/scholar_tasks" component={ScholarTasks} isPrivate/>
@@ -67,6 +68,7 @@ export default function Routes() {
           <Route path="/scholars/:scholarId/scholar_portfolio" component={ScholarPortfolio} isPrivate/>
           <Route path="/scholars/:scholarId/scholar_leave_applications" component={ScholarLeaveApplication} isPrivate/>
           <Route path="/announcements" component={SystemAnnouncements} isPrivate/> 
+
           <Route path="/leaves" exact component={Leaves} isPrivate/>
           <Route path="/accounts" exact component={Accounts} isPrivate/>
           <Route path="/settings" exact component={Settings} isPrivate/>
