@@ -6,7 +6,7 @@ import "./style.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-import InputField from "../generic/inputV2";
+import InputField from "modules/generic/inputV2";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -14,6 +14,8 @@ import Col from "react-bootstrap/Col";
 import { GoogleLogin } from "@react-oauth/google";
 import { withRouter } from "react-router-dom";
 // import { useAuth, withAuth } from 'context/AuthContext';
+
+import Helper from 'common/Helper';
 
 import API from 'services/Api'
 
@@ -37,15 +39,16 @@ class Login extends Component {
     }, response => {
       if (response && response.data) {
         const user = response.data
-        const token = response.token
-
+        const token = response.data.token
         this.props.login(user, token)
-        // this.props.history.push("/dashboard");
+        // this.props.navigate("/dashboard");
       }
     }, error => {
       console.log(error)
     })
   }
+
+
   render() {
     return (
       <div className="loginContainer">
@@ -85,9 +88,7 @@ class Login extends Component {
               />
             </Row>
             <Row className="Row mx-4">
-              <Button type="button" variant="primary" size="lg" onClick={
-                this.startLogin()
-              } >
+              <Button type="button" onClick={()=>{this.startLogin()}} variant="primary" size="lg" >
                 Sign In
               </Button>
             </Row>
@@ -114,7 +115,7 @@ class Login extends Component {
               </Row>
               <Row className="Row">
                 <p>
-                  Don't have an Account, you can register{" "}
+                  Don't have an Account? you can register{" "}
                   <a href="/register">here</a>
                 </p>
               </Row>
@@ -128,9 +129,10 @@ class Login extends Component {
 const mapStateToProps = (state) => ({ state: state });
 
 const mapDispatchToProps = (dispatch) => {
-  const { actions } = require('reduxhandler');
   return {
-    login: (user, token) => {dispatch(actions.login(user, token))}
+    login: (user, token) => {
+      dispatch({ type: 'LOGIN', payload: { user, token } });
+    }
   };
 };
 

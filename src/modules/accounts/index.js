@@ -1,58 +1,183 @@
 import React, { Component } from 'react'
 import './style.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Breadcrumb from '../generic/breadcrumb';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { faCheck, faEye, faX, faComment } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 
-const applicants = [
-    {name: "Allison Smith", course: "MS-ME", datesubmitted: "2-23-2023"},
-    {name: "Lorenzo Scott", course: "MS-CE", datesubmitted: "11-12-2023"},
-    {name: "Edward Rose", course: "MS-ME", datesubmitted: "11-12-2023"},
-    {name: "Kylie Bradley", course: "MS-CE", datesubmitted: "11-12-2023"},
-];
+import { Box } from "@mui/material";
+import Breadcrumbs from "../generic/breadcrumb";
+import { Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
+import  TableComponent  from 'modules/generic/table/index';
+import ViewModal from './viewModal/index'
+import EditModal from './editModal/index'
+import DeleteModal from './deleteModal/index'
+import API from 'services/Api'
 
 
-class AccountList extends Component {
+class Accounts extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        account_list: [],
+        showView: false,
+        showDelete: false,
+        showEdit: false,
+        columns: [
+          {
+            Header: 'Email',
+            accessor: 'email',
+          },
+          {
+            Header: 'Status',
+            accessor: 'status',
+          },
+          {
+            Header: 'Account Type',
+            accessor: 'account_type',
+          },
+          {
+            Header: 'Actions',
+            accessor: 'actions',
+            Cell: ({ cell: { row } }) => (
+              <div className='flex'>
+                <span className='link' onClick={() => this.handleView(row.original)}>View</span>
+                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
+                <span className='link'onClick={() => this.handleDeactivate(row.original)}>Deactivate</span>
+              </div>
+            ),
+          },
+          ],
+          data: [],
+          setData: null
+          };
+      };
+      // Modal Handling
+    handleView(rowData){
+      this.setState({
+        showView: !this.state.showView,
+        setData: rowData
+      },() => {
+        console.log("setData", this.state.setData);
+     })
+    }
+    closeView(){
+      this.setState({
+        showView: !this.state.showView,
+        setData: null
+      },() => {
+     })
+    }
+    handleEdit(rowData){
+      this.setState({
+        showEdit: !this.state.showEdit,
+        setData: rowData
+      },() => {
+        console.log("setData", this.state.setData);
+     })
+    }
+    closeEdit(){
+      this.setState({
+        showEdit: !this.state.showEdit,
+        setData: null
+      },() => {
+     })
+    }
 
+    handleDeactivate(rowData){
+      this.setState({
+        showDelete: !this.state.showDelete,
+        setData: rowData
+      },() => {
+        console.log("setData", this.state.setData);
+     })
+    }
+    onDeactivate(){
+      const {setData} = this.state
+      console.log("setData1", setData);
+      API.request('user/delete', {
+          id: setData.id
+      }, response => {
+        if (response && response.data) {
+          this.closeDelete()
+          this.getList()
+        }else{
+          console.log('error on retrieve')
+        }
+      }, error => {
+        console.log(error)
+      })
+    }
+    closeDelete(){
+      this.setState({
+        showDelete: !this.state.showDelete,
+        setData: null
+      },() => {
+     })
+    }
+    // State
+    componentDidMount(){
+      this.getList()
+    }
+    getList(){
+        API.request('user/retrieveAll', {
+          
+        }, response => {
+          if (response && response.data) {
+            this.setState({
+                account_list: response.data
+            })
+          }else{
+            console.log('error on retrieve')
+          }
+        }, error => {
+          console.log(error)
+        })
+      }
+    
     render() {
-        return (
-            <div>
-                {/* <div className="headerStyle"><h2>List of Accounts</h2></div> */}
-                <Breadcrumb
-                    header={"List of Accounts"}
-                    subheader={"Here are all the Accounts"}/>
-                
-                <div className='applicanttitle' >
-                    <p>Name</p>
-                    <p>Course</p>
-                    <p>Date Submitted</p>
-                    <p >Action</p>
-                </div>
-                <div className='applicantData'>
-                {
-                    applicants.map((applicant, idx) => (
-                       
-                            <div key={idx}>
-                                <p>{applicant.name}</p>
-                                <p>{applicant.course}</p>
-                                <p>{applicant.datesubmitted}</p>
-                                <p> 
-                                    <FontAwesomeIcon icon={faCheck} size="sm" style={{color: "#2ead43", margin:"0px 5px", cursor: "pointer"}} />
-                                    <FontAwesomeIcon icon={faEye} size="sm" style={{color: "#66a5e2", margin:"0px 5px", cursor: "pointer"}}/>
-                                    <FontAwesomeIcon icon={faX} size="sm" style={{color: "#ff0808", margin:"0px 5px", cursor: "pointer"}}/>
-                                    <FontAwesomeIcon icon={faComment} size="sm" style={{color: "#71abe4", margin:"0px 5px", cursor: "pointer"}}/>
-                                </p>
-                            </div> 
-                        
-                    ))
-                }  
-                </div> 
-            </div>
+      const { columns, account_list, showEdit, showDelete, showView, setData } = this.state;
+      const {history} = this.props;
+      return (
+      <div className="container">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Breadcrumbs header="Account List" />
+         {/* <Button onClick={()=>{ history.push('/#')}}>
+           Add New Account
+         </Button> */}
+      </Box>
+
+      <div className="table-container">
+        <TableComponent columns={columns} data={account_list} onRowClick={(row) => console.log(row.original.program)}/>
+        
+      </div>
+      <ViewModal
+      setData={setData}
+      show={showView}
+      onHide={()=>{this.closeView()}}
+      />
+      <DeleteModal
+      setData={setData}
+      show={showDelete}
+      onHide={()=>{this.closeDelete()}}
+      onDeactivate={()=>{this.onDeactivate()}}
+      />
+      <EditModal
+      setData={setData}
+      show={showEdit}
+      refresh={()=>{this.getList()}}
+      onHide={()=>{this.closeEdit()}}
+      />
+    </div>
         )
     }
 }
 
-export default AccountList
+export default Accounts

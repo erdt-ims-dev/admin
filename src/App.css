@@ -1,6 +1,8 @@
 .App {
   text-align: center;
   background-color: #f1f5fb;
+  font-size: 14px!important;
+  
 }
 
 .App-logo {
@@ -13,13 +15,14 @@
 }
 .sidebarContainer {
   flex: 1 1 auto;
+  border-right: 1px lightgrey solid;
 }
 .pageContainer {
   flex: 11 1 auto;
-  min-height: 75vh !important;
+  min-height: auto !important;
   padding: 24px;
 }
-.dsiplay-web {
+.display-web {
   display: block;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -38,9 +41,11 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
 .App-link {
   color: #61dafb;
+}
+.hidden{
+  display: none;
 }
 
 @keyframes App-logo-spin {

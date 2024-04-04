@@ -1,40 +1,56 @@
 import React, { Component } from "react";
-import { Navbar, Container, Breadcrumb } from "react-bootstrap";
-import erdt from "../../assets/img/erdtl.png";
-import {
-  Sidebar,
-  InputItem,
-  DropdownItem,
-  Icon,
-  Item,
-  Logo,
-  LogoText,
-} from "react-sidebar-ui";
-import "./style.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHouse,
-  faListCheck,
-  faGear,
-  faRightFromBracket,
-  faPerson,
+import { withRouter } from "react-router-dom";
+import erdt from "../../assets/img/erdt-logo-black.png";
+// import {
+//   Sidebar,
+//   InputItem,
+//   DropdownItem,
+//   Icon,
+//   Item,
+//   Logo,
+//   LogoText,
+// } from "react-sidebar-ui";
+
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import { 
+  faRightFromBracket, 
+  faGripHorizontal, 
+  faListCheck, 
+  faPerson, 
   faPersonWalkingArrowRight,
   faBullhorn,
   faFileInvoice,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
-import { withRouter } from "react-router-dom";
+
+import "./style.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Modify 'item' as needed
 const item = [
   {
     name: "Dashboard",
     route: "/dashboard",
-    icon: faHouse,
+    icon: faGripHorizontal,
   },
   {
-    name: "Applicant Management",
-    route: "/applications",
+    name: "Applications",
     icon: faListCheck,
+    type: "dropdown",
+    list: [
+      {
+        title: "Create New Applicant",
+        route: "/new_application",
+      },
+      {
+        title: "Applications Management",
+        route: "/applications",
+      },
+      {
+        title: "Endorsement Management",
+        route: "/endorsements",
+      }
+    ]
   },
   {
     name: "Scholar Dashboard",
@@ -48,17 +64,31 @@ const item = [
   },
   {
     name: "Leave Requests",
+<<<<<<< HEAD
     route: "/admin_leaverequest",
+=======
+    route: "/leaves",
+>>>>>>> a2ae650014440ae9b61d49609c03df5619cdbf94
     icon: faPersonWalkingArrowRight,
   },
   {
     name: "System Announcements",
-    route: "/announcements",
+    type: "dropdown",
+    list: [
+      {
+        title: "Create New Announcement",
+        route: "/",
+      },
+      {
+        title: "Manage Announcements",
+        route: "/announcements",
+      },
+    ],
     icon: faBullhorn,
   },
   {
     name: "Account Management",
-    route: "/#",
+    route: "/accounts",
     icon: faFileInvoice,
   },
   {
@@ -77,55 +107,55 @@ export class SidebarFrame extends Component {
     super(props);
     this.state = {
       data: null,
-      sidebarOpen: false,
+      sidebarOpen: props.openSidebar || null
     };
     this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
   }
-  onSetSidebarOpen(open) {
+  componentDidUpdate(prevProps) {
+    // Update state if openSidebar prop changes
+    if (this.props.openSidebar !== prevProps.openSidebar) {
+      this.setState({ sidebarOpen: this.props.openSidebar });
+    }
+ }
+ handleLogout = () => {
+  // Perform logout logic here
+  this.props.logout();
+ };
+ onSetSidebarOpen(open) {
     this.setState({ sidebarOpen: open });
-  }
+ }
   render() {
     const { sidebarOpen } = this.state;
-    const { history } = this.props;
+    const { history, show } = this.props;
     return (
-      <div>
-        <Sidebar
-          classes="sidebarStyles"
-          bgColor="white"
-          isCollapsed={sidebarOpen}
-        >
-          {/* <Logo
-                    image={erdt}
-                    imageName='react logo'/> */}
-          {/* <LogoText>Sidebar Test</LogoText> */}
-          {item.map((item, index) => {
-            return (
-              <Item
-                bgColor="white"
-                classes="sidebarItem"
-                // I used this.props.navigate here <Sidebar/> is being called by App.js directly. You can call this.props.navigate as is
-                onClick={() => history.push(item.route)}
-                key={index}
-              >
-                <Icon
-                  style={{
-                    "margin-left": "10%",
-                  }}
-                >
-                  <FontAwesomeIcon icon={item.icon} />
-                </Icon>
-                <p
-                  style={{
-                    "margin-left": "15%",
-                  }}
-                  classes="sidebarText sidebarMargin"
-                >
-                  {item.name}
-                </p>
-              </Item>
-            );
-          })}
-          {/* <InputItem type='text' placeholder={'Search...'}/> */}
+      <div className="">
+        <Sidebar collapsed={show} collapsedWidth="0" 
+        rootStyles={{
+          textAlign: "left"
+        }}>
+        <Menu closeOnClick={true}>
+            {item.map((item, index) => {
+              if (item.type === 'dropdown') {
+                return (
+                    <SubMenu icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index} label={item.name}>
+                      {item.list.map((element, idx) => (
+                        <MenuItem  key={idx} onClick={()=>{history.push(element.route)}}>{element.title} </MenuItem>
+                      ))}
+                    </SubMenu>
+                );
+              } else {
+                if (item.name === 'Logout') {
+                  return (
+                   <MenuItem onClick={this.handleLogout} icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
+                  );
+                }else{
+                return (
+                    <MenuItem onClick={()=>{history.push(item.route)}} icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
+                );
+              }
+              }
+            })}
+        </Menu>
         </Sidebar>
       </div>
     );

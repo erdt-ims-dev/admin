@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ListGroup } from 'react-bootstrap'
+import { Container, ListGroup } from 'react-bootstrap'
 import ERDT from '../../assets/img/erdtl.png'
 import USCLogo from '../../assets/img/usc.png'
 import DCISM from '../../assets/img/dcism.png'
@@ -14,10 +14,10 @@ export class Footer extends Component {
       }
     render() {
         return (
-            <div className='footerContainer'>
-              <div className='footerContent'>
+            <Container className='footerContainer'>
+              {/* <div className='footerContent'> */}
               <div className='uscLogo'>
-              <img src={USCLogo} width={367} height={131} />
+              <img src={USCLogo} />
               </div>
               <div className='deptLogo'>
                 <img src={DCISM}/>
@@ -42,11 +42,11 @@ export class Footer extends Component {
               </List>
               </div>
               <div className='disclaimer'>
-                <p>ERDT-IMS @ 2023. All Rights Reserved</p>
+                <p>ERDT-IMS @ 2023-2024. All Rights Reserved</p>
               </div>
-              </div>
+              {/* </div> */}
               
-            </div>
+            </Container>
         )
     }
 }

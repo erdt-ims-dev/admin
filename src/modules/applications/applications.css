@@ -391,4 +391,26 @@ h4 {
 .switch{
     display: flex;
     justify-content: center;
+    font-size: 14px;
+}
+
+
+.link:hover{
+    cursor: pointer;
+    color: #66a5e2;
+    text-decoration: underline;
+}
+.flex{
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+}
+.error{
+    border: solid 1px lightcoral;
+}
+.errorText{
+    padding: 1%;
+    color: red;
+    text-align: left;
+    font-size: 12px;
 }

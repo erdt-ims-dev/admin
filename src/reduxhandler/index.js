@@ -26,26 +26,36 @@ export const actions = {
 const initialState = {
   token: null,
   user: null,
+  isLoggedIn: false,
   isLoading: false,
 };
 
 const reducer = (state = initialState, action) => {
-  const { type, user, token, isLoading } = action;
-  switch (type) {
-    case types.LOGOUT:
-      localStorage.removeItem(`${Helper.APP_NAME}token`);
+  const { user, token, isLoading } = action;
+  switch (action.type) {
+    case 'LOGOUT':
       console.log('INITIALIZING LOGOUT');
-      return initialState;
-    case types.LOGIN:
-      localStorage.setItem(`${Helper.APP_NAME}token`, token)
+      localStorage.removeItem(`${Helper.APP_NAME}token`);
+      return{
+        ...state,
+        user: null,
+        isLoggedIn: false
+      }
+    case 'LOGIN':
       console.log('INITIALIZING LOGIN');
-      return {...state, user, token};
-    case types.UPDATE_USER:
+      localStorage.setItem(`${Helper.APP_NAME}token`, token)
+      return{
+        ...state,
+        user: action.payload.user,
+        token: action.payload.token,
+        isLoggedIn: true
+      }
+    case 'UPDATE_USER':
       return {
         ...state,
         user,
       };
-    case types.SET_IS_LOADING:
+    case 'SET_IS_LOADING':
       return {
         ...state,
         isLoading: isLoading

@@ -1,5 +1,5 @@
 export default{
-	authenticate: 'login',
+	authenticate: 'authenticate/auth',
 	authenticatedUser: 'authenticate/user',
 	// accountCreate: 'accounts/create',
 	// accountDelete: 'accounts/delete',

@@ -1,19 +1,19 @@
 import API from 'services/Api'
 import Routes from 'common/Routes'
-const api = {
+export default {
 	async authenticate(username, password, callback, errorCallback){
-		await API.request(Routes.authenticate, {username, password}, response => {
+		await API.request('authenticate/auth', {username, password}, response => {
 			callback(response)
 		}, error => {
 			errorCallback(error)
 		})
 	},
 	async getAuthenticatedUser(callback, errorCallback){
-		await API.request(Routes.authenticatedUser, {}, response => {
+		await API.request('authenticate/user', {}, response => {
+			console.log(response)
 			callback(response)
 		}, error => {
 			errorCallback(error)
 		});
 	}
 }
-export default api;
