@@ -3,6 +3,7 @@ import {createStore} from 'redux'
 const types = {
   LOGOUT: 'LOGOUT',
   LOGIN: 'LOGIN',
+  SET_DETAILS: 'SET_DETAILS',
   UPDATE_USER: 'UPDATE_USER',
   SET_IS_LOADING: 'SET_IS_LOADING',
 };
@@ -10,6 +11,9 @@ const types = {
 export const actions = {
   login: (user, token) => {
     return {type: types.LOGIN, user, token};
+  },
+  setDetails: (details) => {
+    return {type: types.SET_DETAILS, details};
   },
   logout() {
     return {type: types.LOGOUT};
@@ -26,6 +30,7 @@ export const actions = {
 const initialState = {
   token: null,
   user: null,
+  details: null,
   isLoggedIn: false,
   isLoading: false,
 };
@@ -50,6 +55,12 @@ const reducer = (state = initialState, action) => {
         token: action.payload.token,
         isLoggedIn: true
       }
+    case 'SET_DETAILS':
+    console.log('SETTING DETAILS');
+    return{
+      ...state,
+      details: action.payload.details,
+    }
     case 'UPDATE_USER':
       return {
         ...state,

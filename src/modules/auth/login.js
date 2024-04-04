@@ -41,14 +41,24 @@ class Login extends Component {
         const user = response.data
         const token = response.data.token
         this.props.login(user, token)
+        this.setDetails(response.data.email)
+      }
+    }, error => {
+      console.log(error)
+    })
+  }
+  setDetails(data){
+    API.request('user/retrieveWithAccountDetails', {
+      email: data
+    }, response => {
+      if (response && response.data) {
+        this.props.setDetails(response.data)
         this.props.navigate("/dashboard");
       }
     }, error => {
       console.log(error)
     })
   }
-
-
   render() {
     return (
       <div className="loginContainer">
@@ -132,6 +142,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     login: (user, token) => {
       dispatch({ type: 'LOGIN', payload: { user, token } });
+    },
+    setDetails: (details) => {
+      dispatch({ type: 'SET_DETAILS', payload: { details } });
     }
   };
 };
