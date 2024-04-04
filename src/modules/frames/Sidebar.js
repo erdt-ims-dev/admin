@@ -64,11 +64,7 @@ const item = [
   },
   {
     name: "Leave Requests",
-<<<<<<< HEAD
-    route: "/admin_leaverequest",
-=======
     route: "/leaves",
->>>>>>> a2ae650014440ae9b61d49609c03df5619cdbf94
     icon: faPersonWalkingArrowRight,
   },
   {

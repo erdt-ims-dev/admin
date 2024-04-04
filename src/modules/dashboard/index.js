@@ -47,7 +47,7 @@ class Dashboard extends Component {
       })
     }
     getPendingApplications(){
-      API.request('scholar_request/retrieveMultiple', {
+      API.request('scholar_request/retrieveMultipleByParameter', {
         col: 'status',
         value: 'pending',
       }, response => {
@@ -65,7 +65,7 @@ class Dashboard extends Component {
       })
     }
     getEndorsedApplications(){
-      API.request('scholar_request/retrieveMultiple', {
+      API.request('scholar_request/retrieveMultipleByParameter', {
         col: 'status',
         value: 'endorsed',
       }, response => {

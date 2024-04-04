@@ -41,7 +41,7 @@ class Login extends Component {
         const user = response.data
         const token = response.data.token
         this.props.login(user, token)
-        // this.props.navigate("/dashboard");
+        this.props.navigate("/dashboard");
       }
     }, error => {
       console.log(error)

@@ -72,7 +72,7 @@ class Endorsements extends Component {
       this.getList()
     }
     getList(){
-      API.request('scholar_request/retrieveMultiple', {
+      API.request('scholar_request/retrieveMultipleByParameter', {
         col: 'status',
         value: 'endorsed'
       }, response => {
