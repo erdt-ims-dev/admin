@@ -58,7 +58,6 @@ class Applications extends Component {
         showView: !this.state.showView,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     closeView(){
@@ -73,7 +72,6 @@ class Applications extends Component {
         showEdit: !this.state.showEdit,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     closeEdit(){
@@ -88,7 +86,6 @@ class Applications extends Component {
         showEndorse: !this.state.showEndorse,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     closeEndorse(){

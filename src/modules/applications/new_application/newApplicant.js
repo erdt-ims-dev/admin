@@ -123,7 +123,6 @@ class newApplicant extends Component {
                             user: response.data,
                             retrieveError: false
                         }, () => {
-                            console.log('user', this.state.user)
                             this.uploadFile(response.data)
                         });
                         if (response.data.account_type != 'new') {
@@ -170,7 +169,6 @@ class newApplicant extends Component {
 
            uploadFile(user){
             const {selectedFiles} = this.state
-            console.log("::user", user)
             Object.entries(selectedFiles).forEach(([field, fileData]) => {
                 if (fileData && fileData.file) {
                   let formData = new FormData();

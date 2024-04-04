@@ -56,7 +56,6 @@ class Endorsements extends Component {
         showView: !this.state.showView,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     closeView(){

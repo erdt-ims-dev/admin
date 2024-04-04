@@ -59,7 +59,6 @@ class Accounts extends Component {
         showView: !this.state.showView,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     closeView(){
@@ -74,7 +73,6 @@ class Accounts extends Component {
         showEdit: !this.state.showEdit,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     closeEdit(){
@@ -90,7 +88,6 @@ class Accounts extends Component {
         showDelete: !this.state.showDelete,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     onDeactivate(){

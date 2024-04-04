@@ -61,30 +61,7 @@ export class Header extends Component {
               
             </div>
 
-            // <div className='headerContainer'>
-            // <Navbar className="bg-body-tertiary">
-            //   <Container className='leftContainer'>
-            //     <Navbar.Brand href="/dashboard">
-            //       <img
-            //         alt="logo.png"
-            //         src={erdt}
-            //         width="30"
-            //         height="30"
-            //         className="d-inline-block align-top"
-            //       />{' '}
-            //       USC ERDT
-            //     </Navbar.Brand>
-            //   </Container>
-            //   <Container className='centerContainer'/>
-            //   <Container className='rightContainer'>
-            //     <Navbar.Collapse className='justify-content-end'>
-            //       <Navbar.Text>
-            //         <FontAwesomeIcon icon={faBell}/>
-            //       </Navbar.Text>
-            //     </Navbar.Collapse>
-            //   </Container>
-            // </Navbar>
-            // </div>
+            
         )
     }
 }

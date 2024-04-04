@@ -10,7 +10,6 @@ function RouteWrapper({
     ...rest
 }){
     let token = localStorage.getItem(`${Helper.APP_NAME}token`)
-    console.log("route::token", token)
     let { user } = rest.state;
 
     if(user == null && token){

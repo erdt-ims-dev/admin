@@ -19,19 +19,6 @@ const mockAnnouncements = [
   },
 ];
 
-// Api.request('admin_system_message/retrieveAll', {
-
-// }, response => {
-//   if (response && response.data )
-//     {
-//       console.log(response)
-//     }
-//   }, error => 
-//     {
-//       console.log(error)
-//     }
-// )
-
 const mockGetAnnouncements = async () =>
   new Promise((resolve) => {
     setTimeout(() => resolve({ status: 200, data: mockAnnouncements }), 500);

@@ -30,7 +30,6 @@ import { useSelector } from "react-redux";
 
 export default function Routes() {
   const isLoggedIn = useSelector(state=> state.isLoggedIn)
-  console.log("::", isLoggedIn)
   return (
     <Switch>
       {/* Public Routes */}

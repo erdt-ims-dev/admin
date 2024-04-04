@@ -63,7 +63,6 @@ class Announcements extends Component {
         showView: !this.state.showView,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     closeView(){
@@ -79,7 +78,6 @@ class Announcements extends Component {
         showEdit: !this.state.showEdit,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     closeEdit(){
@@ -95,7 +93,6 @@ class Announcements extends Component {
         showDelete: !this.state.showDelete,
         setData: rowData
       },() => {
-        console.log("setData", this.state.setData);
      })
     }
     onDeactivate(){
@@ -135,7 +132,6 @@ class Announcements extends Component {
       }
       handleSubmitAnnouncement = (announcement) => {
         const loggedInUser = this.props.user
-        console.log(":announcement:", announcement)
         // const announcementString = JSON.stringify(announcement);
         API.request('admin_system_message/create', {
           message_by: loggedInUser.email,
