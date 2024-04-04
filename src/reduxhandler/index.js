@@ -47,6 +47,7 @@ const reducer = (state = initialState, action) => {
       return{
         ...state,
         user: action.payload.user,
+        token: action.payload.token,
         isLoggedIn: true
       }
     case 'UPDATE_USER':

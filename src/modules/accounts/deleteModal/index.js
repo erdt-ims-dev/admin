@@ -89,7 +89,7 @@ class DeleteModal extends Component {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body >
-        Are you sure you want to deactivate account?
+        Are you sure you want to deactivate account? This cannot be reverted
       </Modal.Body>
       <Modal.Footer style={{
         backgroundColor: '#f1f5fb'
