@@ -37,13 +37,18 @@ const item = [
     icon: faListCheck,
   },
   {
+    name: "Scholar Dashboard",
+    route: "/scholar_dashboard",
+    icon: faPerson,
+  },
+  {
     name: "Scholar Management",
     route: "/scholars",
     icon: faPerson,
   },
   {
     name: "Leave Requests",
-    route: "/#",
+    route: "/admin_leaverequest",
     icon: faPersonWalkingArrowRight,
   },
   {

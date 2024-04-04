@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import UserInfoCard from "../generic/UserInfoCard";
-import { Api } from "@mui/icons-material";
+import  Api  from "../../services/Api";
 
 const TABLE_HEADERS = ["Title", "Date", "Actions"];
 
@@ -17,21 +17,20 @@ const mockAnnouncements = [
     message: "This is a sample announcement.",
     date: "11/05/23",
   },
-  {
-    id: "announcement_2",
-    title: "Sample announcement 2",
-    message:
-      "Find every kind of design, as well as commercial washing machines for washing a lot of clothing each and every day.",
-    date: "11/10/23",
-  },
-  {
-    id: "announcement_3",
-    title: "Sample announcement 3",
-    message:
-      "Her position at the table shifted as the program grew more complex; she dropped her feet to the ground and leaned forward, taking in the rapidly changing situation.",
-    date: "11/11/23",
-  },
 ];
+
+// Api.request('admin_system_message/retrieveAll', {
+
+// }, response => {
+//   if (response && response.data )
+//     {
+//       console.log(response)
+//     }
+//   }, error => 
+//     {
+//       console.log(error)
+//     }
+// )
 
 const mockGetAnnouncements = async () =>
   new Promise((resolve) => {
@@ -57,15 +56,21 @@ const SystemAnnouncements = () => {
 
   useEffect(() => {
     const getAnnouncements = async () => {
-      const response = await mockGetAnnouncements();
+    Api.request('admin_system_message/retrieveAll', {
 
-      if (response.status !== 200) {
-        console.error("There was an error in fetching announcements.");
-        setAnnouncements([]);
-        return;
-      }
+    }, response => {
+      if (response && response.data )
+        {
+          setAnnouncements([response.data])
+        }
+      }, error => 
+        {
+          console.error("There was an error in fetching announcements.");
+          setAnnouncements([]);
+        }
+    )
 
-      setAnnouncements(response.data);
+      
     };
 
     getAnnouncements();
@@ -88,19 +93,6 @@ const SystemAnnouncements = () => {
     }
   };
 
-  Api.request('retrieveAll', {
-
-  }, response => {
-    if (response && response.data )
-      {
-        console.log(response)
-      }
-    }, error => 
-      {
-        console.log(error)
-      }
-  )
-
   return (
     <div className="system-announcements">
       <Box sx={{ display: "flex" }}>
@@ -119,9 +111,9 @@ const SystemAnnouncements = () => {
               </tr>
             </thead>
             <tbody>
-              {announcements.map(({ id, title, date }) => (
+              {announcements.map(({ id, system_message, date }) => (
                 <tr key={id}>
-                  <td>{title}</td>
+                  <td>{system_message}</td>
                   <td>{date}</td>
                   <td>
                     <FontAwesomeIcon
