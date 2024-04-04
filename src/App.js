@@ -35,7 +35,6 @@ function App(props) {
     }
  };
   const handleOpenSidebar = () => {
-    console.log('fire');
     setOpenSidebar(!openSidebar);
  };
 

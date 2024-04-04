@@ -51,8 +51,6 @@ class Register extends Component {
     const { errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword, errorMessage} = this.state;
     
     
-    console.log("1:",firstName, lastName, email, password, confirmPassword)
-    console.log("2:",errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword)
     // Check for missing fields
     if(firstName == null || firstName == '' || lastName == null || lastName == '' || email == null || email == '' || password == null || password == '' || confirmPassword == null || confirmPassword == ''){
       this.setState({errorMessage: 'Please fill in missing fields'})
