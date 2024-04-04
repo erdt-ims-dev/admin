@@ -223,6 +223,7 @@ class newApplicant extends Component {
         //         this.setState({ errorEmail: 'An error occurred while retrieving user' });
         //     }
         // };
+        
     render() {
         const {retrieveError, retrievedExisting} = this.state
         return (

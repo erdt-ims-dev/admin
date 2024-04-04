@@ -4,13 +4,16 @@
   align-items: flex-end;
   margin-bottom: 24px;
 }
+.btn {
+  margin-right: 20px;
+}
 
 .table-container {
   margin: 20px;
   padding-block: 20px;
   border-radius: 20px;
   box-shadow: 0 4px 4px rgb(0 0 0 / 24%);
-
+  margin-top: 50px;
   th,
   td {
     background-color: #d9e8f6;
@@ -26,4 +29,9 @@
 // view scholar
 .view-scholar {
   margin-top: 24px;
+}
+
+.link 
+{
+  margin-right: 10px;
 }

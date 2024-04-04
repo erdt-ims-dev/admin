@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
+import { Table, Button, Modal } from "react-bootstrap";
 import API from 'services/Api'
+
+const TABLE_HEADERS = ["#", "Midterm Assessment", "Final Assessment", "Status"];
 
 function ScholarTasks() {
     const location = useLocation();
@@ -32,7 +35,7 @@ function ScholarTasks() {
       <>
       <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
       <p>This is the Scholar Tasks page</p>
-      <table>
+      {/* <table>
         <thead>
           <tr>
             <th>#</th>
@@ -46,14 +49,52 @@ function ScholarTasks() {
           {tasks.map((task, index) => (
             <tr key={task.id}>
               <td>{index+1}</td>
-              <td>{task.user_id}</td>
+              <td>{task.id}</td>
               <td>{task.midterm_assessment}</td>
               <td>{task.final_assessment}</td>
-              <td>{task.status}</td>
+              <td>{task.approval_status}</td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
+      <div className="table-container">
+        <Table>
+          <thead>
+            <tr>
+              {TABLE_HEADERS.map((header) => (
+                <th key={header}>{header}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {tasks.map((task) => (
+                <tr key={task.id}>
+                  <td>{task.id + 1}</td>
+                  {/* <td>{portfolio.scholar_id}</td> */}
+                  {/* <td>{portfolio.study}</td> */}
+                  <td> <input 
+                          type="file" 
+                          style={{ display: 'block', padding: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 0, marginBottom: 0, width: '200px' }} 
+                          // onChange={(event) => this.handleFileChange(event, item.alias)}
+                          // ref={(input) => {
+                          //     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
+                          //  }}
+                          /> </td>
+                  {/* <td>{portfolio.study_category}</td> */}
+                  <td> <input 
+                          type="file" 
+                          style={{ display: 'block', padding: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 0, marginBottom: 0, width: '200px' }} 
+                          // onChange={(event) => this.handleFileChange(event, item.alias)}
+                          // ref={(input) => {
+                          //     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
+                          //  }}
+                          /> </td>
+                  <td>{task.approval_status}</td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+      </div>
       </>
     );
   }

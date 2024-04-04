@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
+import { Table, Button, Modal } from "react-bootstrap";
 import API from 'services/Api'
+
+const TABLE_HEADERS = ["#", "Comment", "Leave Start", "Leave End", "Leave Letter", "Status"];
 
 function ScholarLeaveApplication() {
   const location = useLocation();
@@ -31,7 +34,7 @@ function ScholarLeaveApplication() {
     <>
     <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
     <p>This is the Scholar Tasks page</p>
-    <table>
+    {/* <table>
       <thead>
         <tr>
           <th>#</th>
@@ -55,7 +58,37 @@ function ScholarLeaveApplication() {
           </tr>
         ))}
       </tbody>
-    </table>
+    </table> */}
+    <div className="table-container">
+        <Table>
+          <thead>
+            <tr>
+              {TABLE_HEADERS.map((header) => (
+                <th key={header}>{header}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {leaverequests.map((request) => (
+                <tr key={request.id}>
+                  <td>{request.id + 1}</td>
+                  <td>{request.comment_id}</td>
+                  <td>{request.leave_start}</td>
+                  <td>{request.leave_end}</td>
+                  <td> <input 
+                          type="file" 
+                          style={{ display: 'block', padding: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 0, marginBottom: 0, width: '200px' }} 
+                          // onChange={(event) => this.handleFileChange(event, item.alias)}
+                          // ref={(input) => {
+                          //     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
+                          //  }}
+                          /> </td>
+                  <td>{request.status}</td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+      </div>
     </>
   );
 }
