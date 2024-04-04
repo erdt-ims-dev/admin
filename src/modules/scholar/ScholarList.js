@@ -124,7 +124,8 @@ const useScholarList = () => {
     setScholars(scholars.filter(scholar => scholar.id !== selectedScholarId));
     setShowConfirm(false);
    };
- 
+  
+   const handleDeleteCancel = async () => { setShowConfirm(false); }
   return {
      scholars,
      show,
@@ -135,7 +136,7 @@ const useScholarList = () => {
      handleClose,
      handleDeleteShow,
      handleDeleteConfirm,
-     //handleDeleteCancel,
+     handleDeleteCancel,
   };
  };
  

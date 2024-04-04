@@ -8,31 +8,41 @@ import "./style.scss";
 const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type", "Action"];
 function ScholarPortfolio() {
     const location = useLocation();
-    const scholar = location.state?.scholar;
-    console.log(location.state);
-    console.log(location.state?.scholar);
+    const scholar = location.state.scholar;
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    //to display table
     const [portfolios, setPortfolios] = useState([]);
-    //initialize
+
+    //initialize for new portfolio
     const [newPortfolios, setNewPortfolios] = useState({
       study_name: '',
       study: '',
       study_category: '',
       publish_type: '',
     });
-    //for edit
-    const [selectedPortfolios, setSelectedPortfolios] = useState(null);
+
+    //edit modal
+    const [selectedPortfolio, setSelectedPortfolio] = useState(null);
     const [editShow, setEditShow] = useState(false);
-    const handleEditShow = (portfolios) => {
-      setSelectedPortfolios(portfolios);
+
+    const handleEditShow = (portfolio) => {
+      setSelectedPortfolio(portfolio);
+      //console.log(portfolio);
       setEditShow(true);
     }
     const handleEditClose = () => setEditShow(false);
-    //const { scholarId } = useParams();
-    //const { history, show } = this.props;
+    
+    //delete confimation modal
+    const [deleteShow, setDeleteShow] = useState(false);
+    const handleDeleteShow = (portfolio) => {
+      setSelectedPortfolio(portfolio);
+      console.log(portfolio);
+      setDeleteShow(true);
+    }
+    const handleDeleteClose = () => setDeleteShow(false);
 
     //bind input to newPortfolios
     const handleInputChange = (fieldName, event) => {
@@ -42,27 +52,7 @@ function ScholarPortfolio() {
       }));
     };
 
-    //set newPortfolios to API
-    const createNewPortfolio = async (e) => {
-      e.preventDefault();
-      //console.log(newPortfolios);
-      API.request('scholar_portfolio/create', {
-        scholar_id: scholar.user_id,
-        study_name: newPortfolios.study_name,
-        study: newPortfolios.study,
-        study_category: newPortfolios.study_category,
-        publish_type: newPortfolios.publish_type,
-      }, response => {
-        console.log('Data updated successfully');
-      }, error => {
-        console.log(error)
-      })
-      setShow(false);
-    };
-
-    //edit specific portfolios
-
-
+    //fetch
     const fetchPortfolio = async () => {
       API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.user_id }, response => {
         if (response && response.data) {
@@ -75,11 +65,65 @@ function ScholarPortfolio() {
         console.log(error);
       });
     }
+
+    //set newPortfolios to API
+    const createNewPortfolio = async (e) => {
+      e.preventDefault();
+      //console.log(newPortfolios);
+      API.request('scholar_portfolio/create', {
+        scholar_id: scholar.user_id,
+        study_name: newPortfolios.study_name,
+        study: newPortfolios.study,
+        study_category: newPortfolios.study_category,
+        publish_type: newPortfolios.publish_type,
+      }, response => {
+        console.log('Data created successfully');
+      }, error => {
+        console.log(error)
+      })
+      setShow(false);
+    };
+
+    //edit specific portfolios
+    const editPortfolio = async (e) => {
+      e.preventDefault();
+      API.request('scholar_portfolio/update', {
+        study_name: selectedPortfolio.study_name,
+        study: selectedPortfolio.study,
+        study_category: selectedPortfolio.study_category,
+        publish_type: selectedPortfolio.publish_type,
+      }, response => {
+        console.log('Data updated successfully');
+      }, error => {
+        console.log(error)
+      })
+      //console.log(selectedPortfolio);
+      setEditShow(false);
+    };
+
+    //delete
+    const deletePortfolio = async (e) => {
+      e.preventDefault();
+      console.log(setSelectedPortfolio.id)
+      API.request('scholar_portfolio/delete', {
+        id: selectedPortfolio.id,
+      }, response => {
+        console.log('Data deleted successfully');
+      }, error => {
+        console.log(error)
+      })
+      //console.log(selectedPortfolio);
+      //to see the changes in the table after and close the modal
+      setPortfolios(portfolios.filter(portfolios => portfolios.id !== selectedPortfolio.id));
+      setDeleteShow(false);
+    };
+
     //console.log(portfolios);
     useEffect(() => {
       fetchPortfolio();
     }, []);
 
+    console.log(portfolios);
 
     return (
       <>
@@ -147,7 +191,7 @@ function ScholarPortfolio() {
         </Modal.Footer>
       </Modal>
       {/* to edit portfolios */}
-      <Modal show={show} onHide={handleEditClose}>
+      <Modal show={editShow} onHide={handleEditClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit New Study</Modal.Title>
         </Modal.Header>
@@ -155,7 +199,7 @@ function ScholarPortfolio() {
         <Form>
           <Form.Group controlId="formStudyName">
               <Form.Label>Study Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Name" onChange={(event) => handleInputChange('study_name', event)} />
+              <Form.Control type="text" placeholder="Enter Study Name" onChange={(event) => handleInputChange('study_name', event)} value={selectedPortfolio?.study} />
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Study</Form.Label>
@@ -163,11 +207,11 @@ function ScholarPortfolio() {
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Study Category</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('study_category', event)} />
+              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('study_category', event)} value={selectedPortfolio?.study_category}/>
           </Form.Group>
           <Form.Group controlId="formPublishType">
               <Form.Label>Publish Type</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Type" onChange={(event) => handleInputChange('publish_type', event)} />
+              <Form.Control type="text" placeholder="Enter Study Type" onChange={(event) => handleInputChange('publish_type', event)} value={selectedPortfolio?.publish_type}/>
           </Form.Group>
         </Form>
         </Modal.Body>
@@ -175,12 +219,25 @@ function ScholarPortfolio() {
           <Button variant="secondary" onClick={handleEditClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={createNewPortfolio}>
+          <Button variant="primary" onClick={editPortfolio}>
             Submit
           </Button>
         </Modal.Footer>
       </Modal>
-
+      <Modal show={deleteShow} onHide={handleDeleteClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Are you sure?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleDeleteClose}>
+            No
+          </Button>
+          <Button variant="primary" onClick={deletePortfolio}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="table-container">
         <Table>
           <thead>
@@ -208,8 +265,8 @@ function ScholarPortfolio() {
                   <td>{portfolio.study_category}</td>
                   <td>{portfolio.publish_type} </td>
                   <td>
-                    <span className='link' onClick={() => handleEditShow(portfolio)} ><a href="#">Edit</a></span>
-                    <span className='link' ><a href="#"> Delete</a></span>
+                    <span className='link' onClick={() => handleEditShow(portfolio)} >Edit</span>
+                    <span className='link' onClick={() => handleDeleteShow(portfolio)}> Delete</span>
                   </td>
                 </tr>
               ))}
