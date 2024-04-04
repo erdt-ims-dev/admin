@@ -146,7 +146,7 @@ class Applications extends Component {
           alignItems: "center",
         }}
       >
-        <Breadcrumbs header="Applications" />
+        <Breadcrumbs header="Applications" subheader="All Application Requests Are Listed Here"/>
         <Button onClick={()=>{ history.push('/new_application')}}>
           Add New Applicant
         </Button>

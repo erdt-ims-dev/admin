@@ -21,6 +21,7 @@ import {
   faBullhorn,
   faFileInvoice,
   faGear,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./style.css";
@@ -35,22 +36,13 @@ const item = [
   },
   {
     name: "Applications",
+    icon: faList,
+    route: "/applications",
+  },
+  {
+    name: "Endorsements",
+    route: "/endorsements",
     icon: faListCheck,
-    type: "dropdown",
-    list: [
-      {
-        title: "Create New Applicant",
-        route: "/new_application",
-      },
-      {
-        title: "Applications Management",
-        route: "/applications",
-      },
-      {
-        title: "Endorsement Management",
-        route: "/endorsements",
-      }
-    ]
   },
   {
     name: "Scholar Dashboard",
@@ -68,22 +60,12 @@ const item = [
     icon: faPersonWalkingArrowRight,
   },
   {
-    name: "System Announcements",
-    type: "dropdown",
-    list: [
-      {
-        title: "Create New Announcement",
-        route: "/",
-      },
-      {
-        title: "Manage Announcements",
-        route: "/announcements",
-      },
-    ],
+    name: "Announcements",
+    route: "/announcements",
     icon: faBullhorn,
   },
   {
-    name: "Account Management",
+    name: "Accounts",
     route: "/accounts",
     icon: faFileInvoice,
   },

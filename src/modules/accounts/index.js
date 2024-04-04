@@ -95,7 +95,6 @@ class Accounts extends Component {
     }
     onDeactivate(){
       const {setData} = this.state
-      console.log("setData1", setData);
       API.request('user/delete', {
           id: setData.id
       }, response => {
@@ -148,7 +147,7 @@ class Accounts extends Component {
           alignItems: "center",
         }}
       >
-        <Breadcrumbs header="Account List" />
+        <Breadcrumbs header="Account List" subheader="All Existing Accounts are Listed Here"/>
          {/* <Button onClick={()=>{ history.push('/#')}}>
            Add New Account
          </Button> */}
