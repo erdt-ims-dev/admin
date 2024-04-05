@@ -1,5 +1,7 @@
 import Helper from 'common/Helper';
-import {createStore} from 'redux'
+import {createStore, applyMiddleware} from 'redux'
+import sessionTimeoutMiddleware from 'middleware/index'; // Adjust the path as necessary
+
 const types = {
   LOGOUT: 'LOGOUT',
   LOGIN: 'LOGIN',
@@ -33,6 +35,7 @@ const initialState = {
   details: null,
   isLoggedIn: false,
   isLoading: false,
+  loginTime: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -48,13 +51,14 @@ const reducer = (state = initialState, action) => {
       }
     case 'LOGIN':
       console.log('INITIALIZING LOGIN');
-      localStorage.setItem(`${Helper.APP_NAME}token`, token)
-      return{
+      localStorage.setItem(`${Helper.APP_NAME}token`, token);
+      return {
         ...state,
         user: action.payload.user,
         token: action.payload.token,
-        isLoggedIn: true
-      }
+        isLoggedIn: true,
+        loginTime: new Date().getTime(), // Store the current time
+      };
     case 'SET_DETAILS':
     console.log('SETTING DETAILS');
     return{
@@ -71,10 +75,15 @@ const reducer = (state = initialState, action) => {
         ...state,
         isLoading: isLoading
       }
+    case 'RESET_LOGIN_TIME':
+      return {
+        ...state,
+        loginTime: action.payload,
+     };
     default:
       return state;
   }
 };
 
-const store = createStore(reducer);
+const store = createStore(reducer, applyMiddleware(sessionTimeoutMiddleware));
 export default store;
