@@ -2,7 +2,11 @@ const sessionTimeoutMiddleware = store => next => action => {
     const currentTime = new Date().getTime();
     const state = store.getState();
     const loginTime = state.loginTime;
-    const timeout = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const timeout = 1 * 60 * 1000; // 30 minutes in milliseconds
+
+    if (action.type === 'RESET_LOGIN_TIME') {
+        return next(action);
+    }
    
     if (loginTime && currentTime - loginTime > timeout) {
        // If the session has expired, dispatch a logout action
