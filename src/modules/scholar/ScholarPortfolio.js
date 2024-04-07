@@ -3,16 +3,12 @@ import { useLocation } from 'react-router-dom';
 import API from 'services/Api'
 import { Table, Button, Modal, Form } from "react-bootstrap";
 
-import Breadcrumbs from "../generic/breadcrumb";
 import "./style.scss";
 const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type", "Action"];
 function ScholarPortfolio() {
     const location = useLocation();
     const scholar = location.state.scholar;
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
+    
     //to display table
     const [portfolios, setPortfolios] = useState([]);
 
@@ -23,6 +19,11 @@ function ScholarPortfolio() {
       study_category: '',
       publish_type: '',
     });
+    
+    //create modal
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     //edit modal
     const [selectedPortfolio, setSelectedPortfolio] = useState(null);
@@ -39,7 +40,7 @@ function ScholarPortfolio() {
     const [deleteShow, setDeleteShow] = useState(false);
     const handleDeleteShow = (portfolio) => {
       setSelectedPortfolio(portfolio);
-      console.log(portfolio);
+      //console.log(portfolio);
       setDeleteShow(true);
     }
     const handleDeleteClose = () => setDeleteShow(false);
@@ -123,7 +124,7 @@ function ScholarPortfolio() {
       fetchPortfolio();
     }, []);
 
-    console.log(portfolios);
+    //console.log(portfolios);
 
     return (
       <>
@@ -190,6 +191,7 @@ function ScholarPortfolio() {
           </Button>
         </Modal.Footer>
       </Modal>
+      
       {/* to edit portfolios */}
       <Modal show={editShow} onHide={handleEditClose}>
         <Modal.Header closeButton>
@@ -224,6 +226,8 @@ function ScholarPortfolio() {
           </Button>
         </Modal.Footer>
       </Modal>
+      
+       {/* to delete confirmation portfolios */}
       <Modal show={deleteShow} onHide={handleDeleteClose}>
         <Modal.Header closeButton>
           <Modal.Title>Are you sure?</Modal.Title>

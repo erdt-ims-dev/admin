@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
+import { Table, Button, Modal, Form } from "react-bootstrap";
 import API from 'services/Api'
+
+const TABLE_HEADERS = ["#", "Midterm Assessment", "Final Assessment", "Status", "Action"];
 
 function ScholarRequests() {
   const location = useLocation();
@@ -30,7 +33,7 @@ function ScholarRequests() {
   return (
     <>
     <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
-    <p>This is the Scholar Tasks page</p>
+    <p>This is the Scholar Requests page</p>
     <table>
       <thead>
         <tr>
