@@ -67,17 +67,18 @@ function ScholarLeaveApplication() {
   //create
   const createRequest = async (e) => {
     e.preventDefault();
-    API.request('leave_application/create', {
-      user_id: scholar.user_id,
-      leave_start: newLeaveRequest.leave_start,
-      leave_end: newLeaveRequest.leave_end,
-      leave_letter: newLeaveRequest.leave_letter,
-      status: newLeaveRequest.status,
-    }, response => {
-      console.log('Data created successfully');
-    }, error => {
-      console.log(error)
-    })
+    console.log(newLeaveRequest);
+    // API.request('leave_application/create', {
+    //   user_id: scholar.user_id,
+    //   leave_start: newLeaveRequest.leave_start,
+    //   leave_end: newLeaveRequest.leave_end,
+    //   leave_letter: newLeaveRequest.leave_letter,
+    //   status: newLeaveRequest.status,
+    // }, response => {
+    //   console.log('Data created successfully');
+    // }, error => {
+    //   console.log(error)
+    // })
     setShow(false);
   };
 
@@ -164,11 +165,13 @@ function ScholarLeaveApplication() {
         <Form>
           <Form.Group controlId="formStudyName">
               <Form.Label>Leave Start</Form.Label>
-              <Form.Control type="text" placeholder=" Enter Date" onChange={(event) => handleInputChange('leave_start', event)} />
+              {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
+              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_start', event)}></input>
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Leave End</Form.Label>
-              <Form.Control type="text" placeholder="Enter Date" onChange={(event) => handleInputChange('leave_end', event)}  />
+              {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
+              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>
@@ -199,11 +202,13 @@ function ScholarLeaveApplication() {
         <Form>
           <Form.Group controlId="formStudyName">
               <Form.Label>Leave-Start</Form.Label>
-              <Form.Control type="text" placeholder="Midterm file" onChange={(event) => handleInputChange('leave_start', event)} />
+              {/* <Form.Control type="text" placeholder="Midterm file" onChange={(event) => handleInputChange('leave_start', event)} /> */}
+              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_start', event)}></input>
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Leave End</Form.Label>
-              <Form.Control type="text" placeholder="Final file" onChange={(event) => handleInputChange('leave_end', event)}  />
+              {/* <Form.Control type="text" placeholder="Final file" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
+              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>
