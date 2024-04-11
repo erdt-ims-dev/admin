@@ -37,11 +37,21 @@ class Endorsements extends Component {
             accessor: 'program',
           },
           {
+            Header: 'View Profile',
+            accessor: 'profile',
+            Cell: ({ cell: { row } }) => (
+              <div className='flex'>
+                <span className='link' onClick={() => this.handleView(row.original)}>View</span>
+              </div>
+            ),
+          },
+          {
             Header: 'Actions',
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.handleView(row.original)}>View</span>
+                <span className='link' >Endorse</span>
+                <span className='link' >Reject</span>
               </div>
             ),
           },
