@@ -95,7 +95,7 @@ class endorseModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={this.props.onHide}>Endorse</Button>
+        <Button onClick={()=>{this.props.onEndorse(setData)}}>Endorse</Button>
       </Modal.Footer>
     </Modal>
                     

@@ -13,6 +13,7 @@ import  TableComponent  from 'modules/generic/table/index';
 import ViewModal from './viewModal/index'
 import EditModal from './editModal/index'
 import EndorseModal from './endorseModal/index'
+import RemarksModal from './remarksModal/index'
 import API from 'services/Api'
 
 class Applications extends Component {
@@ -23,6 +24,7 @@ class Applications extends Component {
         showView: false,
         showEndorse: false,
         showEdit: false,
+        showRemarks: false,
         columns: [
           {
             Header: 'Last Name',
@@ -41,9 +43,10 @@ class Applications extends Component {
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.handleView(row.original)}>View</span>
-                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
-                <span className='link'onClick={() => this.handleEndorse(row.original)}>Endorse</span>
+                <span className='link' onClick={() => this.openView(row.original)}>View</span>
+                <span className='link'onClick={() => this.openEdit(row.original)}>Edit</span>
+                <span className='link'onClick={() => this.openEndorse(row.original)}>Endorse</span>
+                <span className='link'onClick={() => this.openRemarks(row.original)}>Remarks</span>
               </div>
             ),
           },
@@ -53,7 +56,7 @@ class Applications extends Component {
           };
       };
       // Modal Handling
-    handleView(rowData){
+      openView(rowData){
       this.setState({
         showView: !this.state.showView,
         setData: rowData
@@ -67,7 +70,7 @@ class Applications extends Component {
       },() => {
      })
     }
-    handleEdit(rowData){
+    openEdit(rowData){
       this.setState({
         showEdit: !this.state.showEdit,
         setData: rowData
@@ -81,7 +84,7 @@ class Applications extends Component {
       },() => {
      })
     }
-    handleEndorse(rowData){
+    openEndorse(rowData){
       this.setState({
         showEndorse: !this.state.showEndorse,
         setData: rowData
@@ -94,6 +97,39 @@ class Applications extends Component {
         setData: null
       },() => {
      })
+    }
+    openRemarks(){
+      this.setState({
+        showRemarks: !this.state.showRemarks,
+        // setData: rowData
+      },() => {
+     })
+    }
+    closeRemarks(){
+      this.setState({
+        showRemarks: !this.state.showRemarks,
+        // setData: null
+      },() => {
+     })
+    }
+    // Form handling
+    handleRemarkSubmit = (remarks) => {
+
+    }
+    handleEndorse(data) {
+      API.request('scholar_request/updateToEndorsed', {
+        id: data.id,
+      }, response => {
+        if (response && response.data) {
+          this.closeEndorse()
+          this.getList()
+        }else{
+          console.log('error on retrieve')
+        }
+      }, error => {
+        console.log(error)
+      })
+      console.log("::", data)
     }
     // State
     componentDidMount(){
@@ -132,7 +168,7 @@ class Applications extends Component {
       });
     }
     render() {
-      const { columns, data, showEdit, showEndorse, showView, setData } = this.state;
+      const { columns, data, showEdit, showEndorse, showView, showRemarks, setData } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -162,11 +198,18 @@ class Applications extends Component {
       setData={setData}
       show={showEndorse}
       onHide={()=>{this.closeEndorse()}}
+      onEndorse={(data)=>{this.handleEndorse(data)}}
       />
       <EditModal
       setData={setData}
       show={showEdit}
       onHide={()=>{this.closeEdit()}}
+      />
+      <RemarksModal
+      setData={setData}
+      show={showRemarks}
+      onHide={()=>{this.closeRemarks()}}
+      handleRemarkSubmit={this.handleRemarkSubmit}
       />
     </div>
         )
