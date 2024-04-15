@@ -45,7 +45,7 @@ const item = [
     icon: faListCheck,
   },
   {
-    name: "Scholar Dashboard",
+    name: "Scholar Requests",
     route: "/scholar_dashboard",
     icon: faPerson,
   },

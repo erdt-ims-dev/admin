@@ -9,7 +9,7 @@ import AccountList from "modules/accounts/index";
 import AdminLeaveRequest from "modules/applications/index";
 // import AdminViewScholar from "modules/applications/AdminViewScholar.js";
 import { ScholarList, ScholarDetails, ViewScholar, ScholarPortfolio, ScholarLeaveApplication, ScholarTasks, ScholarRequests } from "modules/scholar";
-
+import ScholarDashboard  from "modules/scholardashboard/index.js";
 import Leaves from "modules/leaves/index.js";
 import Accounts from "modules/accounts/index.js";
 import Settings from "modules/settings/index.js";
@@ -66,6 +66,7 @@ export default function Routes() {
           <Route path="/scholars/:scholarId/scholar_requests" component={ScholarRequests} isPrivate/>
           <Route path="/scholars/:scholarId/scholar_portfolio" component={ScholarPortfolio} isPrivate/>
           <Route path="/scholars/:scholarId/scholar_leave_applications" component={ScholarLeaveApplication} isPrivate/>
+          <Route path="/scholar_dashboard" component={ScholarDashboard} isPrivate/>
           <Route path="/announcements" component={SystemAnnouncements} isPrivate/> 
 
           <Route path="/leaves" exact component={Leaves} isPrivate/>
