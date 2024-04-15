@@ -14,16 +14,15 @@ import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
+import Colors from 'common/Colors'
 import Login from "./modules/auth/login"
 import Register from "./modules/auth/register"
-
+import Spinner from 'modules/generic/spinner'
 function App(props) {
   const history = useHistory();
   const location = useLocation()
 
-  const user = useSelector(state => state.user)
-  const isLoggedIn = useSelector(state=> state.isLoggedIn)
+
 
   const [openSidebar, setOpenSidebar] = useState(false);
   const navigate = (route) => {
@@ -46,32 +45,61 @@ function App(props) {
   }else{
     renderComponent = <Login navigate={navigate} />;
   }
-  
+  const {user, token, details, isLoading, isLoggedIn} = props.state
   return (
-    <div className="App">
-      <React.Fragment>
-        {isLoggedIn ? (
-          <span>
-            <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
-            <div className="mainContainer">
-              <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
-                <Sidebar show={openSidebar} {...props} navigate={navigate} />
-              </div>
+    <div>
+    {
+      (user && token && !isLoading)&&(
+      <div className="App">
+        <React.Fragment>
+          
+            <span>
+              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
+              <div className="mainContainer">
+                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                  <Sidebar show={openSidebar} {...props} navigate={navigate} />
+                </div>
 
-              <div className="pageContainer">
-                <RouterList />
+                <div className="pageContainer">
+                  <RouterList />
+                </div>
               </div>
-            </div>
-            <Footer />
-          </span>
-        ) : (
-          <span>
-            {renderComponent}
-            <Footer />
-          </span> 
-        )}
-        
-      </React.Fragment>
+              <Footer />
+            </span>
+          
+          
+          
+        </React.Fragment>
+      </div>
+      )
+    }
+    {
+        isLoading && (
+          <div style={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: Colors.white
+          }}>
+            <Spinner />
+          </div>
+        )
+      }
+      {
+        (user === null && token === null && !isLoading) && (
+          <div style={{
+            minHeight: '100vh',
+            overflowY: 'hidden',
+            backgroundImage: "none",
+            backgroundSize: '100% auto'
+          }}
+            className="login-body"
+          >
+            <RouterList />
+          </div>
+        )
+      }
     </div>
   );
 }

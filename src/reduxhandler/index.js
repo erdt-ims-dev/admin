@@ -44,14 +44,10 @@ const reducer = (state = initialState, action) => {
     case 'LOGOUT':
       console.log('INITIALIZING LOGOUT');
       localStorage.removeItem(`${Helper.APP_NAME}token`);
-      return{
-        ...state,
-        user: null,
-        isLoggedIn: false
-      }
+      return Object.assign({}, initialState);
     case 'LOGIN':
       console.log('INITIALIZING LOGIN');
-      localStorage.setItem(`${Helper.APP_NAME}token`, token);
+      localStorage.setItem(`${Helper.APP_NAME}token`, action.payload.token,);
       return {
         ...state,
         user: action.payload.user,
@@ -86,5 +82,5 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-const store = createStore(reducer, applyMiddleware(sessionTimeoutMiddleware));
-export default store;
+// const store = createStore(reducer, applyMiddleware(sessionTimeoutMiddleware));
+export default reducer;

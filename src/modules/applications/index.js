@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { connect } from 'react-redux';
 
 import { Box } from "@mui/material";
 import Breadcrumbs from "../generic/breadcrumb";
@@ -13,6 +14,7 @@ import  TableComponent  from 'modules/generic/table/index';
 import ViewModal from './viewModal/index'
 import EditModal from './editModal/index'
 import EndorseModal from './endorseModal/index'
+import RemarksModal from './remarksModal/index'
 import API from 'services/Api'
 
 class Applications extends Component {
@@ -23,6 +25,7 @@ class Applications extends Component {
         showView: false,
         showEndorse: false,
         showEdit: false,
+        showRemarks: false,
         columns: [
           {
             Header: 'Last Name',
@@ -41,19 +44,21 @@ class Applications extends Component {
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.handleView(row.original)}>View</span>
-                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
-                <span className='link'onClick={() => this.handleEndorse(row.original)}>Endorse</span>
+                <span className='link' onClick={() => this.openView(row.original)}>View</span>
+                <span className='link'onClick={() => this.openEdit(row.original)}>Edit</span>
+                <span className='link'onClick={() => this.openEndorse(row.original)}>Endorse</span>
+                <span className='link'onClick={() => this.openRemarks(row.original)}>Remarks</span>
               </div>
             ),
           },
           ],
-          data: [],
-          setData: null
+          data: [], // will contain the finalized value to be displayed in the Table Component
+          setData: null, // will contain which row has been selected and details associated with it
+          list: null // will contain the current Applicant List pulled from DB
           };
       };
       // Modal Handling
-    handleView(rowData){
+      openView(rowData){
       this.setState({
         showView: !this.state.showView,
         setData: rowData
@@ -67,7 +72,7 @@ class Applications extends Component {
       },() => {
      })
     }
-    handleEdit(rowData){
+    openEdit(rowData){
       this.setState({
         showEdit: !this.state.showEdit,
         setData: rowData
@@ -81,7 +86,7 @@ class Applications extends Component {
       },() => {
      })
     }
-    handleEndorse(rowData){
+    openEndorse(rowData){
       this.setState({
         showEndorse: !this.state.showEndorse,
         setData: rowData
@@ -95,19 +100,33 @@ class Applications extends Component {
       },() => {
      })
     }
-    // State
-    componentDidMount(){
-      this.getList()
+    openRemarks(rowData){
+      this.setState({
+        showRemarks: !this.state.showRemarks,
+        setData: rowData
+      },() => {
+        console.log("reow", rowData)
+     })
     }
-    getList(){
-      API.request('scholar_request/retrieveMultipleByParameter', {
-        col: 'status',
-        value: 'pending'
+    closeRemarks(){
+      this.setState({
+        showRemarks: !this.state.showRemarks,
+        // setData: null
+      },() => {
+     })
+    }
+    // Form handling
+    handleRemarkSubmit = (remarks) => {
+      const { user, details } = this.props;
+      let {setData} = this.state;
+      API.request('comments/createViaApplication', {
+        id: setData.id, // take account_detail_id, find it in BE
+        message: remarks.message,
+        comment_by: details.user_id  
       }, response => {
         if (response && response.data) {
-          response.data.forEach((element, index )=> {
-            this.getDetails(element.account_details_id)
-          });
+          this.closeEndorse()
+          
         }else{
           console.log('error on retrieve')
         }
@@ -115,24 +134,52 @@ class Applications extends Component {
         console.log(error)
       })
     }
-    getDetails(detail_id){
-      API.request('account_details/retrieveOne', {
-        col: 'id',
-        value: detail_id
+    
+    handleEndorse(data) {
+      API.request('scholar_request/updateToEndorsed', {
+        id: data.id,
       }, response => {
         if (response && response.data) {
-          this.setState(prevState => ({
-            data: [...prevState.data, response.data]
-          }));
-        } else {
-          console.log('error on retrieve');
+          this.closeEndorse()
+          this.getList()
+        }else{
+          console.log('error on retrieve')
         }
       }, error => {
-        console.log(error);
-      });
+        console.log(error)
+      })
+      
     }
+    // State
+    componentDidMount(){
+      this.getList()
+    }
+    getList() {
+      API.request('scholar_request/retrievePendingTableAndDetail', {
+      }, response => {
+         if (response && response.data) {
+           const details = [];
+           const list = [];
+     
+           response.data.forEach(element => {
+             details.push(element.details);
+             list.push(element.list);
+           });
+     
+           this.setState({
+             data: details,
+             list: list
+           });
+         } else {
+           console.log('error on retrieve');
+         }
+      }, error => {
+         console.log(error);
+      });
+     }
+    
     render() {
-      const { columns, data, showEdit, showEndorse, showView, setData } = this.state;
+      const { columns, data, showEdit, showEndorse, showView, showRemarks, setData } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -162,15 +209,26 @@ class Applications extends Component {
       setData={setData}
       show={showEndorse}
       onHide={()=>{this.closeEndorse()}}
+      onEndorse={(data)=>{this.handleEndorse(data)}}
       />
       <EditModal
       setData={setData}
       show={showEdit}
       onHide={()=>{this.closeEdit()}}
       />
+      <RemarksModal
+      setData={setData}
+      show={showRemarks}
+      onHide={()=>{this.closeRemarks()}}
+      handleRemarkSubmit={this.handleRemarkSubmit}
+      />
     </div>
         )
     }
 }
+const mapStateToProps = (state) => ({
+  user: state.user,
+  details: state.details, // Adjust this path according to your Redux store's structure
+ });
 
-export default Applications
+export default connect(mapStateToProps)(Applications);

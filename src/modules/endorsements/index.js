@@ -50,13 +50,14 @@ class Endorsements extends Component {
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' >Endorse</span>
+                <span className='link' >Accept</span>
                 <span className='link' >Reject</span>
               </div>
             ),
           },
           ],
           data: [],
+          list: [],
           setData: null
           };
       };
@@ -80,38 +81,30 @@ class Endorsements extends Component {
     componentDidMount(){
       this.getList()
     }
-    getList(){
-      API.request('scholar_request/retrieveMultipleByParameter', {
-        col: 'status',
-        value: 'endorsed'
+    getList() {
+      API.request('scholar_request/retrieveEndorsedTableAndDetail', {
       }, response => {
-        if (response && response.data) {
-          response.data.forEach((element, index )=> {
-            this.getDetails(element.account_details_id)
-          });
-        }else{
-          console.log('error on retrieve')
-        }
+         if (response && response.data) {
+           const details = [];
+           const list = [];
+     
+           response.data.forEach(element => {
+             details.push(element.details);
+             list.push(element.list);
+           });
+     
+           this.setState({
+             data: details,
+             list: list
+           });
+         } else {
+           console.log('error on retrieve');
+         }
       }, error => {
-        console.log(error)
-      })
-    }
-    getDetails(detail_id){
-      API.request('account_details/retrieveOne', {
-        col: 'id',
-        value: detail_id
-      }, response => {
-        if (response && response.data) {
-          this.setState(prevState => ({
-            data: [...prevState.data, response.data]
-          }));
-        } else {
-          console.log('error on retrieve');
-        }
-      }, error => {
-        console.log(error);
+         console.log(error);
       });
-    }
+     }
+  
     render() {
       const { columns, data, showEdit, showEndorse, showView, setData } = this.state;
       const {history} = this.props;

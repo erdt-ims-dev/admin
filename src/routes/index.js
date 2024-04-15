@@ -29,7 +29,6 @@ import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 import { useSelector } from "react-redux";
 
 export default function Routes() {
-  const isLoggedIn = useSelector(state=> state.isLoggedIn)
   return (
     <Switch>
       {/* Public Routes */}
@@ -75,6 +74,11 @@ export default function Routes() {
           <Route path="/register" exact component={Register} isPrivate/>
           <Route path="/home" exact component={Home} />
         
+
+
+          {/* default */}
+          <Route component={Login} />
+
     </Switch>
   );
 }

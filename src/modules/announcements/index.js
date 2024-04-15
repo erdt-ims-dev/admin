@@ -45,7 +45,7 @@ class Announcements extends Component {
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
                 <span className='link' onClick={() => this.handleView(row.original)}>View</span>
-                {/* <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span> */}
+                <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
                 <span className='link'onClick={() => this.handleDeactivate(row.original)}>Deactivate</span>
               </div>
             ),
@@ -149,6 +149,9 @@ class Announcements extends Component {
         })
         this.closeCreate();
      };
+     handleEditSubmit = (announcement) => {
+      console.log(announcement)
+     }
     // State
     componentDidMount(){
       this.getList()
@@ -207,6 +210,7 @@ class Announcements extends Component {
       show={showEdit}
       refresh={()=>{this.getList()}}
       onHide={()=>{this.closeEdit()}}
+      handleEditSubmit={this.handleEditSubmit}
       />
       <CreateModal
         show={showCreate}

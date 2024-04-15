@@ -2,87 +2,62 @@ import React, { Component } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import '../style.css';
 import API from 'services/Api'
+
 class EditModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            newType: props.setData ? props.setData.account_type : ''
-        };
+            title: '',
+            message: '',
+          };
       }
 
-    
     componentDidUpdate(prevProps) {
-        if (this.props.setData !== prevProps.setData) {
-            this.setState({
-                newType: this.props.setData ? this.props.setData.account_type : ''
-            });
-        }
+    if (this.props.setData !== prevProps.setData) {
+        this.setState({
+            title: this.props.setData ? this.props.setData.message_title : "",
+            message: this.props.setData ? this.props.setData.message_body : ""
+        });
     }
-    handleSubmit(){
-        const {setData} = this.props
-        const {newType} = this.state
-        API.request('user/update', {
-            id: setData.id,
-            col: 'account_type',
-            value: newType
-        }, response => {
-          if (response && response.data) {
-            this.props.onHide()
-            this.props.refresh()
-          }else{
-            console.log('error on retrieve')
-          }
-        }, error => {
-          console.log(error)
-        })
     }
+    handleTitleChange = (e) => {
+        this.setState({ title: e.target.value });
+     };
+    
+     handleMessageChange = (e) => {
+        this.setState({ message: e.target.value });
+     };
+    
+     handleEditSubmit = (e) => {
+        e.preventDefault();
+        this.props.handleEditSubmit({ title: this.state.title, message: this.state.message });
+        this.setState({ title: '', message: '' });
+     };
+    
     render() {
         const { show, onHide, setData } = this.props;
-        const { newType } = this.state;
+        const { title, message } = this.state;
     return (
-            <Modal show={show} onHide={onHide} size="lg" centered>
-                <Modal.Header>
-                    <Modal.Title>Edit Account</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group controlId="formEmail">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="text" placeholder="Enter first name" value={setData? setData.email : ""} readOnly />
-                        </Form.Group>
-                        <Form.Group controlId="formStatus">
-                            <Form.Label>Status</Form.Label>
-                            <Form.Control type="text" placeholder="Enter middle name" value={setData? setData.status: ""} readOnly />
-                        </Form.Group>
-                        <Form.Group controlId="formAccountType">
-                            <Form.Label>Account Type</Form.Label>
-                            <Form.Control 
-                                className='customSelect' 
-                                as="select" 
-                                value={newType}
-                                onChange={(e) => this.setState({ newType: e.target.value })}
-                            >
-                                <option value="admin">admin</option>
-                                <option value="staff">staff</option>
-                                <option value="applicant">applicant</option>
-                                <option value="scholar">scholar</option>
-                                <option value="new">new</option>
-                            </Form.Control>
-                        </Form.Group>
-                        
-                        {/* Add other fields as necessary */}
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={onHide}>
-                        Discard
-                    </Button>
-                    <Button variant="primary" onClick={()=>{this.handleSubmit()}}>
-                        Save
-                    </Button>
-                    {/* Add a button for saving changes if necessary */}
-                </Modal.Footer>
-            </Modal>
+        <Modal show={show} onHide={onHide}>
+            <Modal.Header closeButton>
+                <Modal.Title>Edit Announcement</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={this.handleEditSubmit}>
+            <Form.Group controlId="formTitle">
+              <Form.Label>Title</Form.Label>
+              <Form.Control type="text" placeholder="Enter title" value={title} onChange={this.handleTitleChange} />
+            </Form.Group>
+            <Form.Group controlId="formMessage">
+              <Form.Label>Message</Form.Label>
+              <Form.Control as="textarea" rows={3} placeholder="Enter message" value={message} onChange={this.handleMessageChange} />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
         );
     }
 }
