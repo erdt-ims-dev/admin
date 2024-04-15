@@ -141,7 +141,7 @@ class Applications extends Component {
       }, response => {
         if (response && response.data) {
           this.closeEndorse()
-          
+          this.getList()
         }else{
           console.log('error on retrieve')
         }
@@ -155,7 +155,7 @@ class Applications extends Component {
       this.getList()
     }
     getList() {
-      API.request('scholar_request/retrieveTableAndDetail', {
+      API.request('scholar_request/retrievePendingTableAndDetail', {
       }, response => {
          if (response && response.data) {
            const details = [];

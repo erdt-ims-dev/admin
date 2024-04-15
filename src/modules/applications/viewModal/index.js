@@ -196,7 +196,7 @@ class ViewModal extends Component {
     {
         files.map((item, index)=>{
             return(
-                <div>
+                <div key={index}>
                     
                         <Row className='Row'>
                             <Col md={3}>

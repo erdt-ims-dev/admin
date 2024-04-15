@@ -40,6 +40,7 @@ class Login extends Component {
       if (response && response.data) {
         const user = response.data
         const token = response.data.token
+        localStorage.setItem(`${Helper.APP_NAME}token`, token);
         this.props.login(user, token)
         this.setDetails(response.data.email)
       }
@@ -53,7 +54,7 @@ class Login extends Component {
     }, response => {
       if (response && response.data) {
         this.props.setDetails(response.data)
-        this.props.navigate("/dashboard");
+        this.props.history.push("/dashboard");
       }
     }, error => {
       console.log(error)

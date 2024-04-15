@@ -1,9 +1,10 @@
-import React from "react";
 import { Route, Redirect} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Helper from 'common/Helper';
 import CommonApi from 'services/commonAPI'
+import React, { useEffect } from "react";
+
 function RouteWrapper({
     component: Component,
     isPrivate,
@@ -11,26 +12,47 @@ function RouteWrapper({
 }){
     let token = localStorage.getItem(`${Helper.APP_NAME}token`)
     let { user } = rest.state;
+    // console.log("here")
+    // if(user == null && token){
+    //     const { setIsLoading } = rest
+    //     // setIsLoading(true)
+    //     console.log("here2")
+    //     CommonApi.getAuthenticatedUser(user => {
+    //         console.log(user)
+    //         setIsLoading(false)
+    //         const { login, logout } = rest;
+    //         if(user){
+    //           login(user, token)
+    //           user = user
+    //         }else{
+    //             logout()
+    //         }
+    //     }, error => {
+    //         const { logout } = rest;
+    //         setIsLoading(false)
+    //         logout()
+    //     })
+    // }
+    useEffect(() => {
 
-    if(user == null && token){
-        const { setIsLoading } = rest
-        // setIsLoading(true)
-        CommonApi.getAuthenticatedUser(user => {
-            console.log(user)
+        if (user == null && token) {
+          const { setIsLoading } = rest
+          CommonApi.getAuthenticatedUser(user => {
             setIsLoading(false)
             const { login, logout } = rest;
-            if(user){
+    
+            if (user && !user.error) {
               login(user, token)
-              user = user
-            }else{
-                logout()
+            } else {
+              logout()
             }
-        }, error => {
-            const { logout } = rest;
+          }, error => {
+            const { logout } = rest
             setIsLoading(false)
             logout()
-        })
-    }
+          })
+        }
+      }, [rest, token, user])
 
     // Route is private and the user is not logged in
     if(isPrivate && !user && !token){
