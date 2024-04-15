@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { connect } from 'react-redux';
 
 import { Box } from "@mui/material";
 import Breadcrumbs from "../generic/breadcrumb";
@@ -51,8 +52,9 @@ class Applications extends Component {
             ),
           },
           ],
-          data: [],
-          setData: null
+          data: [], // will contain the finalized value to be displayed in the Table Component
+          setData: null, // will contain which row has been selected and details associated with it
+          list: null // will contain the current Applicant List pulled from DB
           };
       };
       // Modal Handling
@@ -98,11 +100,12 @@ class Applications extends Component {
       },() => {
      })
     }
-    openRemarks(){
+    openRemarks(rowData){
       this.setState({
         showRemarks: !this.state.showRemarks,
-        // setData: rowData
+        setData: rowData
       },() => {
+        console.log("reow", rowData)
      })
     }
     closeRemarks(){
@@ -114,59 +117,67 @@ class Applications extends Component {
     }
     // Form handling
     handleRemarkSubmit = (remarks) => {
-
+      const { user, details } = this.props;
+      let {setData} = this.state;
+      API.request('comments/createViaApplication', {
+        id: setData.id, // take account_detail_id, find it in BE
+        message: remarks.message,
+        comment_by: details.user_id  
+      }, response => {
+        if (response && response.data) {
+          this.closeEndorse()
+          
+        }else{
+          console.log('error on retrieve')
+        }
+      }, error => {
+        console.log(error)
+      })
     }
+    
     handleEndorse(data) {
       API.request('scholar_request/updateToEndorsed', {
         id: data.id,
       }, response => {
         if (response && response.data) {
           this.closeEndorse()
-          this.getList()
+          
         }else{
           console.log('error on retrieve')
         }
       }, error => {
         console.log(error)
       })
-      console.log("::", data)
+      
     }
     // State
     componentDidMount(){
       this.getList()
     }
-    getList(){
-      API.request('scholar_request/retrieveMultipleByParameter', {
-        col: 'status',
-        value: 'pending'
+    getList() {
+      API.request('scholar_request/retrieveTableAndDetail', {
       }, response => {
-        if (response && response.data) {
-          response.data.forEach((element, index )=> {
-            this.getDetails(element.account_details_id)
-          });
-        }else{
-          console.log('error on retrieve')
-        }
+         if (response && response.data) {
+           const details = [];
+           const list = [];
+     
+           response.data.forEach(element => {
+             details.push(element.details);
+             list.push(element.list);
+           });
+     
+           this.setState({
+             data: details,
+             list: list
+           });
+         } else {
+           console.log('error on retrieve');
+         }
       }, error => {
-        console.log(error)
-      })
-    }
-    getDetails(detail_id){
-      API.request('account_details/retrieveOne', {
-        col: 'id',
-        value: detail_id
-      }, response => {
-        if (response && response.data) {
-          this.setState(prevState => ({
-            data: [...prevState.data, response.data]
-          }));
-        } else {
-          console.log('error on retrieve');
-        }
-      }, error => {
-        console.log(error);
+         console.log(error);
       });
-    }
+     }
+    
     render() {
       const { columns, data, showEdit, showEndorse, showView, showRemarks, setData } = this.state;
       const {history} = this.props;
@@ -215,5 +226,9 @@ class Applications extends Component {
         )
     }
 }
+const mapStateToProps = (state) => ({
+  user: state.user,
+  details: state.details, // Adjust this path according to your Redux store's structure
+ });
 
-export default Applications
+export default connect(mapStateToProps)(Applications);

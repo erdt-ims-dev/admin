@@ -15,9 +15,10 @@ class RemarksModal extends Component {
  };
 
  handleSubmitForm = (e) => {
+    let {setData} = this.props
     e.preventDefault();
-    this.props.handleSubmit({ title: this.state.title, message: this.state.message });
-    this.setState({ title: '', message: '' });
+    this.props.handleRemarkSubmit({ message: this.state.message, details: setData });
+    this.setState({  message: '' });
  };
 
  render() {
