@@ -19,23 +19,23 @@ class Dashboard extends Component {
           total_scholars: 0,
           pending_applications: 0,
           total_applicants: 0, // how many applications overall
-          new_scholars: 0
+          total_approved: 0
         };
       }
     componentDidMount() {
-      this.getApplicantCount()
-      this.getScholarCount()
-      this.getPendingApplications()
-      this.getEndorsedApplications()
+      this.getStatistics()
     }
-    getApplicantCount(){
-      API.request('user/retrieveMultiple', {
-        col: 'account_type',
-        value: 'applicant',
+    getStatistics(){
+      API.request('user/retrieveStatistics', {
       }, response => {
         if (response && response.data) {
          this.setState({
-          applicant_count: response.data.length
+          applicant_count: response.data.applicant_count,
+          pending_applications: response.data.pending_count,
+          endorsed_count: response.data.endorsed_count,
+          total_scholars: response.data.scholar_count,
+          total_applicants: response.data.total_applications,
+          total_approved: response.data.total_approved
          })
         }else{
           this.setState({
@@ -46,86 +46,9 @@ class Dashboard extends Component {
         console.log(error)
       })
     }
-    getPendingApplications(){
-      API.request('scholar_request/retrieveMultipleByParameter', {
-        col: 'status',
-        value: 'pending',
-      }, response => {
-        if (response && response.data) {
-         this.setState({
-          pending_applications: response.data.length
-         })
-        }else{
-          this.setState({
-            pending_applications: 0
-           })
-        }
-      }, error => {
-        console.log(error)
-      })
-    }
-    getEndorsedApplications(){
-      API.request('scholar_request/retrieveMultipleByParameter', {
-        col: 'status',
-        value: 'endorsed',
-      }, response => {
-        if (response && response.data) {
-         this.setState({
-          endorsed_count: response.data.length
-         })
-        }else{
-          this.setState({
-            endorsed_count: 0
-           })
-        }
-      }, error => {
-        console.log(error)
-      })
-    }
-    getScholarCount(){
-      API.request('user/retrieveMultiple', {
-        col: 'account_type',
-        value: 'scholar',
-      }, response => {
-        if (response && response.data) {
-          // For now takes current date, replace with when a sem starts
-          const fourMonthsAgo = subMonths(new Date(), 4);
-          const filteredData = response.data.filter(item => {
-          const createdAt = new Date(item.created_at);
-          return isAfter(createdAt, fourMonthsAgo);
-         })
-         this.setState({
-          total_scholars: response.data.length,
-          new_scholars: filteredData.length  
-         })
-        }else{
-          this.setState({
-            total_scholars: 0
-           })
-        }
-      }, error => {
-        console.log(error)
-      })
-    }
-    getTotalApplicant(){
-      API.request('scholar_request/retrieveAll', {
-        
-      }, response => {
-        if (response && response.data) {
-         this.setState({
-          total_applicants: response.data.length
-         })
-        }else{
-          this.setState({
-            total_applicants: 0
-           })
-        }
-      }, error => {
-        console.log(error)
-      })
-    }
+    
     render() {
-      const {applicant_count, endorsed_count, total_scholars, total_applicants, pending_applications, new_scholars} = this.state
+      const {applicant_count, endorsed_count, total_scholars, total_applicants, pending_applications, total_approved} = this.state
       const data = [
         {
           title: "Total Applicants",
@@ -148,8 +71,8 @@ class Dashboard extends Component {
           count: total_applicants
         },
         {
-          title: "New Scholars This Semester",
-          count: new_scholars
+          title: "Total Approved Applications",
+          count: total_approved
         },
       ]
         return (
@@ -161,11 +84,11 @@ class Dashboard extends Component {
               <Container>
               <BarChart
                 series={[
-                  { data: [applicant_count, endorsed_count, total_scholars, pending_applications, pending_applications, new_scholars] },
+                  { data: [applicant_count, endorsed_count, total_scholars, pending_applications, pending_applications, total_approved] },
                   
                 ]}
                 height={290}
-                xAxis={[{ data: ['Total Applicants', 'Total Endorsed Applicants', 'Total Scholars', 'Pending Applications', 'Total Applicants', 'New Scholars This Semester'], scaleType: 'band' }]}
+                xAxis={[{ data: ['Total Applicants', 'Total Endorsed Applicants', 'Total Scholars', 'Pending Applications', 'Total Applicants', 'Total Approved Applications'], scaleType: 'band' }]}
                 margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
               />
               </Container>

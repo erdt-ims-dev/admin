@@ -78,9 +78,10 @@ class Register extends Component {
       first_name: firstName,
       last_name: lastName,
     }, response => {
-      if (response && response.data) (
-        console.log(response)
-      )
+      if (response && response.data) {
+        alert('Account Created')
+        this.props.history.push('/login')
+      }
     }, error => {
       console.log(error)
     })

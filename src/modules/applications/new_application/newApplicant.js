@@ -84,7 +84,7 @@ class newApplicant extends Component {
         };
         
         
-        viewFile = (alias) => {
+            viewFile = (alias) => {
             const { selectedFiles } = this.state;
             const { fileURL } = selectedFiles[alias] || {}; // Use an empty object as a fallback
             if (fileURL) {
@@ -148,24 +148,24 @@ class newApplicant extends Component {
                 errorCallback(new Error('Email is not provided'));
             }
         }
-           handleUpload = () => {
+        //    handleUpload = () => {
 
-            // find existing user via email
-            this.retrieveUser(
-                (userFound, errorCallback, user) => {
-                    if (userFound) {
-                        console.log("user found")
-                    } else {
-                        // User not found or is not new, handle accordingly
-                        console.log("error on callback")
-                    }
-                },
-                (error) => {
-                    // Handle error
-                    console.error(error);
-                }
-            );
-           };
+        //     // find existing user via email
+        //     this.retrieveUser(
+        //         (userFound, errorCallback, user) => {
+        //             if (userFound) {
+        //                 console.log("user found")
+        //             } else {
+        //                 // User not found or is not new, handle accordingly
+        //                 console.log("error on callback")
+        //             }
+        //         },
+        //         (error) => {
+        //             // Handle error
+        //             console.error(error);
+        //         }
+        //     );
+        //    };
 
            uploadFile(user){
             const {selectedFiles} = this.state
@@ -190,40 +190,40 @@ class newApplicant extends Component {
              });
            }
            
-        //    handleUpload = async () => {
-        //     const { user, selectedFiles } = this.state;
-        //     try {
-        //         const userFound = await this.retrieveUser();
-        //         if (userFound && user != null) {
-        //             // Use Promise.all to wait for all API calls to complete
-        //             await Promise.all(Object.entries(selectedFiles).map(async ([field, file]) => {
-        //                 if (file) {
-        //                     console.log(file)
-        //                     const response = await API.request('account_details/update', {
-        //                         user_id: user.id,
-        //                         file: file,
-        //                         field: field
-        //                     });
-        //                     if (!response || !response.data) {
-        //                         console.log('error on retrieve');
-        //                     }
-        //                 } else {
-        //                     console.log('No file uploaded for', field);
-        //                 }
-        //             }));
-        //             // All API calls completed successfully
-        //             console.log('All files uploaded successfully');
-        //         } else {
-        //             this.setState({ errorEmail: 'Email not found' });
-        //         }
-        //     } catch (error) {
-        //         console.error('Error retrieving user:', error);
-        //         this.setState({ errorEmail: 'An error occurred while retrieving user' });
-        //     }
-        // };
+           handleUpload = async () => {
+            const { user, selectedFiles } = this.state;
+            try {
+                const userFound = await this.retrieveUser();
+                if (userFound && user != null) {
+                    // Use Promise.all to wait for all API calls to complete
+                    await Promise.all(Object.entries(selectedFiles).map(async ([field, file]) => {
+                        if (file) {
+                            console.log(file)
+                            const response = await API.request('account_details/update', {
+                                user_id: user.id,
+                                file: file,
+                                field: field
+                            });
+                            if (!response || !response.data) {
+                                console.log('error on retrieve');
+                            }
+                        } else {
+                            console.log('No file uploaded for', field);
+                        }
+                    }));
+                    // All API calls completed successfully
+                    console.log('All files uploaded successfully');
+                } else {
+                    this.setState({ errorEmail: 'Email not found' });
+                }
+            } catch (error) {
+                console.error('Error retrieving user:', error);
+                this.setState({ errorEmail: 'An error occurred while retrieving user' });
+            }
+        };
         
     render() {
-        const {retrieveError, retrievedExisting} = this.state
+        const {retrieveError, retrievedExisting, selectedFiles} = this.state
         return (
             <div>
                 {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -352,7 +352,7 @@ class newApplicant extends Component {
                                             </Col>
                                             <Col md={4} className='switch'>
                                                 <Col>
-                                                <span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>
+                                                {selectedFiles[item.alias] ? (<span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>) : ""}
 
                                                 </Col>
 

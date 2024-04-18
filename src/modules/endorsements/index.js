@@ -50,8 +50,8 @@ class Endorsements extends Component {
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' >Accept</span>
-                <span className='link' >Reject</span>
+                <span className='link' onClick={() => this.handleApprove(row.original)}>Approve</span>
+                <span className='link' onClick={() => this.handleReject(row.original)}>Reject</span>
               </div>
             ),
           },
@@ -61,6 +61,31 @@ class Endorsements extends Component {
           setData: null
           };
       };
+      // Methods
+      handleApprove(data){
+        // console.log("data", data)
+        API.request('scholar_request/approveApplicant', {
+        }, response => {
+           if (response && response.data) {
+             const details = [];
+             const list = [];
+       
+             response.data.forEach(element => {
+               details.push(element.details);
+               list.push(element.list);
+             });
+       
+             this.setState({
+               data: details,
+               list: list
+             });
+           } else {
+             console.log('error on retrieve');
+           }
+        }, error => {
+           console.log(error);
+        });
+      }
       // Modal Handling
     handleView(rowData){
       this.setState({
