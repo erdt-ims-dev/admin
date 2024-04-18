@@ -167,27 +167,31 @@ class newApplicant extends Component {
         //     );
         //    };
 
-           uploadFile(user){
-            const {selectedFiles} = this.state
+        uploadFile(user) {
+            const { selectedFiles } = this.state;
+            let formData = new FormData();
+           
+            // Append user_id to the FormData
+            formData.append('user_id', user.id);
+           
+            // Loop through each file and append it to the FormData
             Object.entries(selectedFiles).forEach(([field, fileData]) => {
-                if (fileData && fileData.file) {
-                  let formData = new FormData();
-                  formData.append('file', fileData.file);
-                  formData.append('user_id', user.id);
-                  formData.append('field', field);
-
-                  API.uploadFile('account_details/update', formData, response => {
-                    if (response && response.data) {
-                      console.log(response)
-                    }else{
-                      console.log('error on retrieve')
-                    }
-                  }, error => {
-                    console.log(error)
-                  })
-
-                }
-             });
+               if (fileData && fileData.file) {
+                 // Append each file with its field name as the key
+                 formData.append(field, fileData.file);
+               }
+            });
+           
+            // Make a single API call with all files
+            API.uploadFile('account_details/update', formData, response => {
+               if (response && response.data) {
+                 console.log(response);
+               } else {
+                 console.log('error on retrieve');
+               }
+            }, error => {
+               console.log(error);
+            });
            }
            
            handleUpload = async () => {
