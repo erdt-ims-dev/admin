@@ -22,6 +22,7 @@ import {
   faFileInvoice,
   faGear,
   faList,
+  faClipboardCheck
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./style.css";
@@ -42,7 +43,7 @@ const item = [
   {
     name: "Endorsements",
     route: "/endorsements",
-    icon: faListCheck,
+    icon: faClipboardCheck,
   },
   {
     name: "Scholar Requests",

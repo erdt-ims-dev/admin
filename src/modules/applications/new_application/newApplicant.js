@@ -24,33 +24,33 @@ const files = [
     {
         title: "Birth Certificate",
         disabled: false,
-        alias: "birth"
+        alias: "birth_certificate"
     },
     {
         title: "Recommendation Letter",
         disabled: false,
-        alias: "recommendation"
+        alias: "recommendation_letter"
         
     },
     {
         title: "Narrative Essay",
         disabled: false,
-        alias: "essay"
+        alias: "narrative_essay"
     },
     {
         title: "Medical Cerificate",
         disabled: false,
-        alias: "medical"
+        alias: "medical_certificate"
     },
     {
         title: "NBI Clearance",
         disabled: false,
-        alias: "nbi"
+        alias: "nbi_clearance"
     },
     {
         title: "Admission Notice",
         disabled: false,
-        alias: "notice"
+        alias: "admission_notice"
     },
 ]
 
@@ -73,7 +73,7 @@ class newApplicant extends Component {
             birth_certificate: null,
             narrative_essay: null,
             medical_certificate: null,
-            nbi: null,
+            nbi_clearance: null,
             admission_notice: null,
           },
 
@@ -129,9 +129,9 @@ class newApplicant extends Component {
                             this.setState({
                                 retrievedExisting: true
                             });
-                            successCallback(false);
+                            // successCallback(false);
                         } else {
-                            successCallback(true, response.data);
+                            // successCallback(true, response.data);
                         }
                     } else {
                         console.log('error on retrieve', response.error);
