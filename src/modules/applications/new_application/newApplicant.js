@@ -123,13 +123,12 @@ class newApplicant extends Component {
                             user: response.data,
                             retrieveError: false
                         }, () => {
-                            this.uploadFile(response.data)
                         });
                         if (response.data.account_type != 'new') {
                             this.setState({
                                 retrievedExisting: true
                             });
-                            // successCallback(false);
+                            this.uploadFile(response.data)
                         } else {
                             // successCallback(true, response.data);
                         }
@@ -148,25 +147,6 @@ class newApplicant extends Component {
                 errorCallback(new Error('Email is not provided'));
             }
         }
-        //    handleUpload = () => {
-
-        //     // find existing user via email
-        //     this.retrieveUser(
-        //         (userFound, errorCallback, user) => {
-        //             if (userFound) {
-        //                 console.log("user found")
-        //             } else {
-        //                 // User not found or is not new, handle accordingly
-        //                 console.log("error on callback")
-        //             }
-        //         },
-        //         (error) => {
-        //             // Handle error
-        //             console.error(error);
-        //         }
-        //     );
-        //    };
-
         uploadFile(user) {
             const { selectedFiles } = this.state;
             let formData = new FormData();
@@ -199,24 +179,8 @@ class newApplicant extends Component {
             try {
                 const userFound = await this.retrieveUser();
                 if (userFound && user != null) {
-                    // Use Promise.all to wait for all API calls to complete
-                    await Promise.all(Object.entries(selectedFiles).map(async ([field, file]) => {
-                        if (file) {
-                            console.log(file)
-                            const response = await API.request('account_details/update', {
-                                user_id: user.id,
-                                file: file,
-                                field: field
-                            });
-                            if (!response || !response.data) {
-                                console.log('error on retrieve');
-                            }
-                        } else {
-                            console.log('No file uploaded for', field);
-                        }
-                    }));
-                    // All API calls completed successfully
-                    console.log('All files uploaded successfully');
+                    
+                    console.log('User found and files uploaded successfully');
                 } else {
                     this.setState({ errorEmail: 'Email not found' });
                 }
