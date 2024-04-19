@@ -178,7 +178,11 @@
     padding: 10px;
 }
 .sectionHeader{
-    text-align: left;
+    text-align: center;
+}
+.options{
+    display: flex;
+    justify-content: end;
 }
 p{
     margin-bottom: 0px;

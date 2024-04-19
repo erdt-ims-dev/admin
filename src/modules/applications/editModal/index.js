@@ -164,7 +164,7 @@ class editModal extends Component {
             </Col>
         </Row>
         <Row className='Row'>
-            {/* <Col>
+            <Col>
             <InputField
                 id={2}
                 type={'email'}
@@ -177,7 +177,7 @@ class editModal extends Component {
                     })
                     }}
                 />
-            </Col> */}
+            </Col>
             <Col>
             <InputField
                 id={3}
@@ -234,7 +234,7 @@ class editModal extends Component {
                                     <span 
                                     className='icon'
                                     onClick={()=>{}}
-                                    >Upload File</span>
+                                    >Update File</span>
                             </Col>
                         </Row>
                 </div>

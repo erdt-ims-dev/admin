@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputField from 'modules/generic/input';
+import InputFieldV3 from 'modules/generic/inputV3';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -79,7 +80,8 @@ class newApplicant extends Component {
 
           user: [],
           retrieveError: false, 
-          retrievedExisting: false
+          retrievedExisting: false,
+          errorMessage: ""
         };
         };
         
@@ -97,6 +99,7 @@ class newApplicant extends Component {
            handleFileChange = (event, alias) => {
             const file = event.target.files[0];
             let fileURL = null; 
+            // warning modal here
             if(file){
                 fileURL = URL.createObjectURL(file);
                 this.setState(prevState => ({
@@ -121,26 +124,24 @@ class newApplicant extends Component {
                     if (response && response.data) {
                         this.setState({
                             user: response.data,
-                            retrieveError: false
                         }, () => {
                         });
-                        if (response.data.account_type != 'new') {
-                            this.setState({
-                                retrievedExisting: true
-                            });
+
+                        if (response.data.account_type == 'new') {
+    
                             this.uploadFile(response.data)
                         } else {
+                            this.setState({
+                                errorMessage: "This email already has an existing application"
+                            });
                             // successCallback(true, response.data);
                         }
                     } else {
-                        console.log('error on retrieve', response.error);
                         this.setState({
-                            retrieveError: true
+                            errorMessage: "Email Not Found"
                         });
-                        errorCallback(new Error('Error retrieving user'));
                     }
                 }, error => {
-                    console.log(error);
                     errorCallback(error);
                 });
             } else {
@@ -177,6 +178,9 @@ class newApplicant extends Component {
            handleUpload = async () => {
             const { user, selectedFiles } = this.state;
             try {
+                this.setState({
+                    errorMessage: ""
+                })
                 const userFound = await this.retrieveUser();
                 if (userFound && user != null) {
                     
@@ -191,7 +195,7 @@ class newApplicant extends Component {
         };
         
     render() {
-        const {retrieveError, retrievedExisting, selectedFiles} = this.state
+        const {errorMessage, retrieveError, retrievedExisting, selectedFiles} = this.state
         return (
             <div>
                 {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -220,53 +224,7 @@ class newApplicant extends Component {
                                 <p className=''>This will be the profile picture displayed</p>
                             </Col>
                         </Row>
-                        <Row className='Row'>
-                            <Col className=''>
-                                <InputField
-                                id={1}
-                                type={'name'}
-                                label={'First Name'}
-                                placeholder={'First Name'}
-                                locked={false}
-                                active={false}
-                                onChange={(value) => {
-                                    this.setState({
-                                        first_name: value
-                                    })
-                                  }}
-                                />
-                            </Col>
-                            <Col className=''>
-                                <InputField
-                                id={1}
-                                type={'name'}
-                                label={'Middle Name'}
-                                placeholder={'Middle Name'}
-                                locked={false}
-                                active={false}
-                                onChange={(value) => {
-                                    this.setState({
-                                        middle_name: value
-                                    })
-                                  }}
-                                />
-                            </Col>
-                            <Col className=''>
-                                <InputField
-                                id={1}
-                                type={'name'}
-                                label={'Last Name'}
-                                placeholder={'Last Name'}
-                                locked={false}
-                                active={false}
-                                onChange={(value) => {
-                                    this.setState({
-                                        last_name: value
-                                    })
-                                  }}
-                                />
-                            </Col>
-                        </Row>
+                        
                         <Row className='Row'>
                             <Col >
                             <InputField
@@ -279,18 +237,19 @@ class newApplicant extends Component {
                             active={true}
                             onChange={(value) => {
                                 this.setState({
+                                    errorMessage: "",
                                     email: value
                                 },)
                             }}
                         />
-                                <p className='errorText'>{retrieveError ? "Email not Found" : ""}</p>
-                                <p className='errorText'>{retrievedExisting ? "This email already has a pending/endorsed application" : ""}</p>
+                                <p className='errorText'>{errorMessage != "" ? errorMessage : ""}</p>
                             </Col>
                             <Col>
-                            <InputField
+                            <InputFieldV3
                                 id={3}
                                 type={'field'}
-                                label={'Applicant'}
+                                label={'Type'}
+                                inject={'Applicant'}
                                 placeholder={'Applicant'}
                                 locked={true}
                                 active={false}
@@ -347,20 +306,20 @@ class newApplicant extends Component {
                     }
                     <hr className='break'/>
                     <Row className='sectionHeader'> 
-                    <Col md={10}>
-                    
-                    </Col>
-                    <Col md={2}>
+                    <Col className='options'>
+                        <Button variant="danger" onClick={this.handleUpload}>
+                            Discard
+                        </Button>
                         <Button onClick={this.handleUpload}>
                             Create Applicant
                         </Button>
                     </Col>
                     </Row>
-                   
                     </Container>
                    
                     
                 </div> 
+
             </div>
         )
     }

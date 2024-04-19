@@ -85,6 +85,7 @@ class ViewModal extends Component {
     render() {
         const {data, setEmail} = this.state
         const {setData} = this.props
+        console.log("view", setData)
     return (
         <div className=''>
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
