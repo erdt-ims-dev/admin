@@ -42,7 +42,7 @@ class InputField extends Component {
                 value={value} 
                 className=''  
                 type={type} 
-                placeholder={focussed ? '' : label}
+                placeholder={focussed ? '' : placeholder}
                 onChange={this.onChange}
                 onFocus={() => !locked && this.setState({ focussed: true })}
                 onBlur={() => !locked && this.setState({ focussed: false })}

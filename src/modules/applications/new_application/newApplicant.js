@@ -6,6 +6,7 @@ import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputField from 'modules/generic/input';
 import InputFieldV3 from 'modules/generic/inputV3';
+import WarningModal from 'modules/generic/warningModal'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -79,9 +80,12 @@ class newApplicant extends Component {
           },
 
           user: [],
-          retrieveError: false, 
-          retrievedExisting: false,
-          errorMessage: ""
+          errorMessage: null,
+          overwriteModal: false,
+          discardModal: false,
+          fileToOverwrite: null,
+          fileToUpload: null,
+          emailRetrieved: false
         };
         };
         
@@ -98,54 +102,138 @@ class newApplicant extends Component {
            };
            handleFileChange = (event, alias) => {
             const file = event.target.files[0];
-            let fileURL = null; 
-            // warning modal here
-            if(file){
-                fileURL = URL.createObjectURL(file);
-                this.setState(prevState => ({
-                    selectedFiles: {
-                      ...prevState.selectedFiles,
-                      [alias]: { file, fileURL },
-                    },
-                 }), ()=>{
-                    // console.log("File", this.state.selectedFiles)
-                 });
-            }else{
-                // console.log('no selected file')
-            }
-           };
-           retrieveUser(successCallback, errorCallback, user = null) {
-            const { email } = this.state;
-            if (email) {
-                API.request('user/retrieveOne', {
-                    col: 'email',
-                    value: email
-                }, response => {
-                    if (response && response.data) {
-                        this.setState({
-                            user: response.data,
-                        }, () => {
-                        });
-
-                        if (response.data.account_type == 'new') {
-    
-                            this.uploadFile(response.data)
-                        } else {
-                            this.setState({
-                                errorMessage: "This email already has an existing application"
-                            });
-                            // successCallback(true, response.data);
-                        }
-                    } else {
-                        this.setState({
-                            errorMessage: "Email Not Found"
-                        });
-                    }
-                }, error => {
-                    errorCallback(error);
+            let fileURL = null;
+        
+            // Check if a file has already been uploaded for the given alias
+            const existingFile = this.state.selectedFiles[alias];
+            if (existingFile) {
+                // If a file exists, show the warning modal and store the file to be uploaded
+                this.setState({
+                    overwriteModal: true,
+                    fileToOverwrite: alias, // Store the alias of the file to be overwritten
+                    fileToUpload: file, // Store the file to be uploaded
                 });
             } else {
-                errorCallback(new Error('Email is not provided'));
+                // If no file exists, proceed as before
+                if (file) {
+                    fileURL = URL.createObjectURL(file);
+                    this.setState(prevState => ({
+                        selectedFiles: {
+                            ...prevState.selectedFiles,
+                            [alias]: { file, fileURL },
+                        },
+                    }), () => {
+                        // console.log("File", this.state.selectedFiles)
+                    });
+                } else {
+                    // console.log('no selected file')
+                }
+            }
+        };
+        handleFileOverwrite = () => {
+            const { fileToOverwrite, fileToUpload } = this.state;
+            let fileURL = URL.createObjectURL(fileToUpload);
+        
+            // Overwrite the existing file
+            this.setState(prevState => ({
+                selectedFiles: {
+                    ...prevState.selectedFiles,
+                    [fileToOverwrite]: { file: fileToUpload, fileURL },
+                },
+                overwriteModal: false, // Close the warning modal
+                fileToUpload: null, // Clear the file to upload reference
+            }), () => {
+                // console.log("File overwritten", this.state.selectedFiles)
+            });
+        };
+        //    retrieveUser(successCallback, errorCallback, user = null) {
+        //     const { email } = this.state;
+        //     if (email) {
+        //         API.request('user/retrieveOne', {
+        //             col: 'email',
+        //             value: email
+        //         }, response => {
+        //             if (response && response.data) {
+        //                 this.setState({
+        //                     user: response.data,
+        //                 }, () => {
+        //                 });
+
+        //                 if (response.data.account_type == 'new') {
+    
+        //                     this.uploadFile(response.data)
+        //                 } else {
+        //                     this.setState({
+        //                         errorMessage: "This email already has an existing application"
+        //                     });
+        //                     // successCallback(true, response.data);
+        //                 }
+        //             } else {
+        //                 this.setState({
+        //                     errorMessage: "Email Not Found"
+        //                 });
+        //             }
+        //         }, error => {
+        //             errorCallback(error);
+        //         });
+        //     } else {
+        //         errorCallback(new Error('Email is not provided'));
+        //     }
+        // }
+        handleDiscard(){
+            this.setState({
+                showModal: this.props,
+                email: null,
+                errorEmail: null,
+                selectedFiles: {
+                    tor: null,
+                    birth_certificate: null,
+                    narrative_essay: null,
+                    medical_certificate: null,
+                    nbi_clearance: null,
+                    admission_notice: null,
+                },
+                user: [],
+                errorMessage: null,
+                overwriteModal: false,
+                discardModal: false,
+                fileToOverwrite: null,
+                fileToUpload: null,
+                emailRetrieved: false
+            });
+        }
+        retrieveUser(){
+            const { email } = this.state;
+            if(email){
+                API.request('user/retrieveOne', {
+                                col: 'email',
+                                value: email
+                            }, response => {
+                                if (response && response.data) {
+                                    if(response.data.account_type != 'new'){
+                                        this.setState({
+                                            errorMessage: "This email already has an existing application"
+                                        });
+                                    }else{
+                                        this.setState({
+                                            user: response.data,
+                                            errorMessage: "",
+                                            emailRetrieved: true // Set emailRetrieved to true
+                                        }, () => {
+                                        });
+                                    }
+                                } else {
+                                    this.setState({
+                                        errorMessage: "Email Not Found"
+                                    });
+                                }
+                            }, error => {
+                                // errorCallback(error);
+                            });
+            }else{
+                this.setState({
+                    errorMessage: "Field is blank"
+                });
             }
         }
         uploadFile(user) {
@@ -195,13 +283,13 @@ class newApplicant extends Component {
         };
         
     render() {
-        const {errorMessage, retrieveError, retrievedExisting, selectedFiles} = this.state
+        const {errorMessage, overwriteModal, selectedFiles} = this.state
+        const hasFilesSelected = Object.values(selectedFiles).some(file => file !== null);
         return (
             <div>
-                {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
                 
                 <Breadcrumb
-                    header={"Create New Applicant"}
+                    header={"Create New Application"}
                     subheader={"Application Form"}/>
 
                 <div className='containerBlue' style={{
@@ -229,15 +317,15 @@ class newApplicant extends Component {
                             <Col >
                             <InputField
                             id={2}
-                            className={retrieveError || retrievedExisting ? "error" : ""}
+                            className={errorMessage ? "error" : ""}
                             type={'email'}
                             label={'Email'}
-                            placeholder={'Email'}
+                            placeholder={'Enter Registered Email'}
                             locked={false}
                             active={true}
                             onChange={(value) => {
                                 this.setState({
-                                    errorMessage: "",
+                                    errorMessage: null,
                                     email: value
                                 },)
                             }}
@@ -262,7 +350,9 @@ class newApplicant extends Component {
                     
                     {/* Notification */}
                     <hr className='break'/>
-                    <Row className='sectionHeader'>
+                    {errorMessage === "" && (
+                        <>
+                        <Row className='sectionHeader'>
                         <p>File Uploads</p>
                     </Row>
                     {
@@ -271,7 +361,10 @@ class newApplicant extends Component {
                                 <div>
                                     
                                         <Row className='Row' key={index}>
-                                            <Col md={4}>
+                                            <Col style={{
+                                                justifyContent: 'start',
+                                                display: 'flex'
+                                            }} md={4}>
                                                 <p>{item.title}</p>
                                             </Col>
                                             <Col md={4}>
@@ -305,21 +398,50 @@ class newApplicant extends Component {
                         })
                     }
                     <hr className='break'/>
-                    <Row className='sectionHeader'> 
-                    <Col className='options'>
-                        <Button variant="danger" onClick={this.handleUpload}>
-                            Discard
-                        </Button>
-                        <Button onClick={this.handleUpload}>
-                            Create Applicant
-                        </Button>
-                    </Col>
-                    </Row>
+                        </>
+                    )}
+                    {!hasFilesSelected  && !this.state.emailRetrieved && (
+                        <>
+                        <Row className='sectionHeader'> 
+                        <Col className='options'>
+                            <Button onClick={()=>{this.retrieveUser()}}>
+                                Find Email
+                            </Button>
+                        </Col>
+                        </Row>
+                        </>
+                    )}
+                    {hasFilesSelected && (
+                        <>
+                        <Row className='sectionHeader'> 
+                        <Col className='options'>
+                            <Button variant="danger" onClick={()=>{this.setState({ discardModal: true})}}>
+                                Discard
+                            </Button>
+                            <Button onClick={this.handleUpload}>
+                                Create Applicant
+                            </Button>
+                        </Col>
+                        </Row>
+                        </>
+                    )}
+                    
                     </Container>
                    
                     
                 </div> 
-
+                <WarningModal
+                    show={this.state.overwriteModal}
+                    message={"Are you sure you want to overwrite uploaded file?"}
+                    onContinue={this.handleFileOverwrite}
+                    onHide={() => this.setState({ overwriteModal: false })}
+                />
+                <WarningModal
+                    show={this.state.discardModal}
+                    onContinue={()=>{this.handleDiscard()}}
+                    message={"Are you sure you want to discard everything"}
+                    onHide={() => this.setState({ discardModal: false })}
+                />
             </div>
         )
     }

@@ -10,7 +10,7 @@ class endorseModal extends Component {
           
         };
       }
-      
+
     render() {
         const {message} = this.props
     return (
@@ -31,13 +31,13 @@ class endorseModal extends Component {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body >
-        Are you sure you want to overwrite uploaded file?
+        {message}
       </Modal.Body>
       <Modal.Footer style={{
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Discard</Button>
-        <Button onClick={()=>{this.props.onContinue(setData)}}>Continue</Button>
+        <Button onClick={()=>{this.props.onContinue()}}>Continue</Button>
       </Modal.Footer>
     </Modal>    
     </div> 
