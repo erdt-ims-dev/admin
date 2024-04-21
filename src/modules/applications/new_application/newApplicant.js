@@ -236,8 +236,8 @@ class newApplicant extends Component {
                 });
             }
         }
-        uploadFile(user) {
-            const { selectedFiles } = this.state;
+        uploadFile() {
+            const { selectedFiles, user } = this.state;
             let formData = new FormData();
            
             // Append user_id to the FormData
@@ -254,34 +254,16 @@ class newApplicant extends Component {
             // Make a single API call with all files
             API.uploadFile('account_details/update', formData, response => {
                if (response && response.data) {
-                 console.log(response);
+                 alert("File(s) uploaded to server")
                } else {
-                 console.log('error on retrieve');
+                alert("There has been an error uploading your files to the server. Please try again")
+                this.handleDiscard()
                }
             }, error => {
                console.log(error);
             });
            }
-           
-           handleUpload = async () => {
-            const { user, selectedFiles } = this.state;
-            try {
-                this.setState({
-                    errorMessage: ""
-                })
-                const userFound = await this.retrieveUser();
-                if (userFound && user != null) {
-                    
-                    console.log('User found and files uploaded successfully');
-                } else {
-                    this.setState({ errorEmail: 'Email not found' });
-                }
-            } catch (error) {
-                console.error('Error retrieving user:', error);
-                this.setState({ errorEmail: 'An error occurred while retrieving user' });
-            }
-        };
-        
+                   
     render() {
         const {errorMessage, overwriteModal, selectedFiles} = this.state
         const hasFilesSelected = Object.values(selectedFiles).some(file => file !== null);
@@ -418,7 +400,7 @@ class newApplicant extends Component {
                             <Button variant="danger" onClick={()=>{this.setState({ discardModal: true})}}>
                                 Discard
                             </Button>
-                            <Button onClick={this.handleUpload}>
+                            <Button onClick={()=>{this.uploadFile()}}>
                                 Create Applicant
                             </Button>
                         </Col>
