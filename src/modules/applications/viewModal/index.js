@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputField from 'modules/generic/input';
+import InputFieldV3 from 'modules/generic/inputV3';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,35 +17,38 @@ import API from 'services/Api'
 const files = [
     {
         title: "Transcript of Record",
-        disabled: false
+        disabled: false,
+        key: 'tor'
     },
     {
         title: "Birth Certificate",
-        disabled: false
-    },
-    {
-        title: "Valid ID",
-        disabled: false
+        disabled: false,
+        key: 'birth_certificate'
     },
     {
         title: "Narrative Essay",
-        disabled: false
+        disabled: false,
+        key: 'narrative_essay'
     },
     {
         title: "Medical Certificate",
-        disabled: false
+        disabled: false,
+        key: 'medical_certificate'
     },
     {
         title: "NBI Clearance",
-        disabled: false
+        disabled: false,
+        key: 'nbi_clearance'
     },
     {
         title: "Admission Notice",
-        disabled: false
+        disabled: false,
+        key: 'admission_notice'
     },
     {
         title: "Program Study",
-        disabled: false
+        disabled: false,
+        key: 'program'
     },
 ]
 
@@ -117,15 +121,16 @@ class ViewModal extends Component {
                 <img className='circle' src={placeholder}></img>
             </Col>
             <Col className='imageText'>
-                <p className=''>This will be the profile picture displayed</p>
+                <p className=''>{setData ? setData.program : ''}</p>
             </Col>
         </Row>
         <Row className='Row'>
             <Col className=''>
-                <InputField
+                <InputFieldV3
                 id={1}
                 type={'name'}
-                label={setData ? setData.first_name : ''}
+                label={'First Name'}
+                inject={setData ? setData.first_name : ''}
                 locked={true}
                 active={false}
                 onChange={(first_name, error_first_name) => {
@@ -136,10 +141,11 @@ class ViewModal extends Component {
                 />
             </Col>
             <Col className=''>
-                <InputField
+                <InputFieldV3
                 id={1}
                 type={'name'}
-                label={setData ? setData.middle_name : ''}
+                label={'Middle Name'}
+                inject={setData ? setData.middle_name : ''}
                 locked={true}
                 active={false}
                 onChange={(middle_name, error_middle_name) => {
@@ -150,10 +156,11 @@ class ViewModal extends Component {
                 />
             </Col>
             <Col className=''>
-                <InputField
+                <InputFieldV3
                 id={1}
                 type={'name'}
-                label={setData ? setData.last_name : ''}
+                label={'Last Name'}
+                inject={setData ? setData.last_name : ''}
                 locked={true}
                 active={false}
                 onChange={(last_name, error_last_name) => {
@@ -180,10 +187,11 @@ class ViewModal extends Component {
                 />
             </Col> */}
             <Col>
-            <InputField
+            <InputFieldV3
                 id={3}
                 type={'field'}
-                label={'Applicant'}
+                label={'Account Type'}
+                inject={'Applicant'}
                 locked={true}
                 active={false}
                 />
@@ -195,8 +203,9 @@ class ViewModal extends Component {
     </Row>
     <hr className='break'></hr>
     {
-        files.map((item, index)=>{
-            return(
+        files.map((item, index) => {
+            const fileUrl = setData[item.key]; // Get the file URL from setData
+            return (
                 <div key={index}>
                     
                         <Row className='Row'>
@@ -208,30 +217,14 @@ class ViewModal extends Component {
                             </Col>
                             <Col md={3}></Col>
                             <Col md={3} className='switch'>
-                                {/* <FontAwesomeIcon
-                                    className="icon"
-                                    icon={faEye}
-                                    size="md"
-                                    onClick={() => {}}
-                                    style={{
-                                        marginLeft: 10,
-                                        marginRight: 10
-                                    }}
-                                    />
-                                    <FontAwesomeIcon
-                                    className="icon"
-                                    icon={faUpload}
-                                    size="md"
-                                    onClick={() => {}}
-                                    style={{
-                                        marginLeft: 10,
-                                        marginRight: 10
-                                    }}
-                                    /> */}
-                                    <span 
+                            {fileUrl && (
+                                <span 
                                     className='icon'
-                                    onClick={()=>{}}
-                                    >View File</span>
+                                    onClick={() => {
+                                        window.open(fileUrl, '_blank');
+                                    }}
+                                >View Uploaded File</span>
+                            )}
                             </Col>
                         </Row>
                 </div>
