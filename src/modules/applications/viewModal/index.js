@@ -204,7 +204,7 @@ class ViewModal extends Component {
     <hr className='break'></hr>
     {
         files.map((item, index) => {
-            const fileUrl = setData[item.key]; // Get the file URL from setData
+            const fileUrl = setData ? setData[item.key] : ''; // Get the file URL from setData
             return (
                 <div key={index}>
                     
