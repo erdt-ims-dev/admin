@@ -105,7 +105,6 @@ class Applications extends Component {
         showRemarks: !this.state.showRemarks,
         setData: rowData
       },() => {
-        console.log("reow", rowData)
      })
     }
     closeRemarks(){

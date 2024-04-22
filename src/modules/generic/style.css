@@ -102,3 +102,9 @@
  .field label.error {
   color: #f56260; /* Red text color for error message */
  }
+
+ /*  Modal */
+ .custom-width-modal .modal-content {
+  border-color: #ffb6c1; /* Warning red color */
+  border-width: 2px; /* Adjust the border width as needed */
+ }

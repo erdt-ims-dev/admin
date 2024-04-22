@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import 'modules/applications/applications.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputField from 'modules/generic/input';
 import InputFieldV3 from 'modules/generic/inputV3';
@@ -13,7 +11,6 @@ import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { Button } from 'react-bootstrap';
 import API from 'services/Api'
-import CONFIG from 'config.js';
 // create application form on behalf of existing user.
 // to create, user must be registered and have account_type == new
 

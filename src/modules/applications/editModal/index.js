@@ -6,6 +6,7 @@ import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputField from 'modules/generic/input';
 import InputFieldV3 from 'modules/generic/inputV3';
+import WarningModal from 'modules/generic/warningModalV2'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -70,8 +71,20 @@ class EditModal extends Component {
           errorConfirm: null,
         //   Id: props.setData.id,
           data: null, 
-          setEmail: null
+          setEmail: null,
+          selectedFiles: {
+            tor: null,
+            birth_certificate: null,
+            narrative_essay: null,
+            medical_certificate: null,
+            nbi_clearance: null,
+            admission_notice: null,
+          },
+            fileToOverwrite: null,
+            fileToUpload: null,
+            overwriteModal: false
         };
+        
       }
     componentDidMount() {
         
@@ -98,6 +111,9 @@ class EditModal extends Component {
         } else {
             // If no file exists, proceed as before
             if (file) {
+                this.setState({
+                    overwriteModal: true,
+                });
                 fileURL = URL.createObjectURL(file);
                 this.setState(prevState => ({
                     selectedFiles: {
@@ -112,10 +128,88 @@ class EditModal extends Component {
             }
         }
     };
+    handleFileOverwrite = () => {
+            const { fileToOverwrite, fileToUpload } = this.state;
+            let fileURL = URL.createObjectURL(fileToUpload);
+        
+            // Overwrite the existing file
+            this.setState(prevState => ({
+                selectedFiles: {
+                    ...prevState.selectedFiles,
+                    [fileToOverwrite]: { file: fileToUpload, fileURL },
+                },
+                overwriteModal: false, // Close the warning modal
+                fileToUpload: null, // Clear the file to upload reference
+            }), () => {
+                // console.log("File overwritten", this.state.selectedFiles)
+            });
+        };
+
+        handleWarning = () => {
+            this.setState({
+                overwriteModal: false
+            })
+        }
+        uploadFile() {
+            const { selectedFiles, user } = this.state;
+            let formData = new FormData();
+           
+            // Append user_id to the FormData
+            formData.append('user_id', user.id);
+           
+            // Loop through each file and append it to the FormData
+            Object.entries(selectedFiles).forEach(([field, fileData]) => {
+               if (fileData && fileData.file) {
+                 // Append each file with its field name as the key
+                 formData.append(field, fileData.file);
+               }
+            });
+           
+            // Make a single API call with all files
+            API.uploadFile('account_details/update', formData, response => {
+               if (response && response.data) {
+                 alert("File(s) uploaded to server")
+               } else {
+                alert("There has been an error uploading your files to the server. Please try again")
+                this.handleDiscard()
+               }
+            }, error => {
+               console.log(error);
+            });
+           }
+           handleDiscard(){
+            this.setState({
+                first_name: null,
+          error_first_name: null,
+          middle_name: null,
+          error_middle_name: null,
+          last_name: null,
+          error_last_name:  null,
+          email: null,
+          errorEmail: null,
+          password: null,
+          errorPassowrd: null,
+          confirmPassowrd: null,
+          errorConfirm: null,
+          data: null, 
+          setEmail: null,
+          selectedFiles: {
+            tor: null,
+            birth_certificate: null,
+            narrative_essay: null,
+            medical_certificate: null,
+            nbi_clearance: null,
+            admission_notice: null,
+          },
+            fileToOverwrite: null,
+            fileToUpload: null,
+            overwriteModal: false
+
+            });
+        }
     render() {
         const {data, setEmail} = this.state
         const {setData} = this.props
-        console.log("view", setData)
     return (
         <div className=''>
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -249,7 +343,7 @@ class EditModal extends Component {
                                     onClick={() => {
                                         window.open(fileUrl, '_blank');
                                     }}
-                                >View Uploaded File</span>
+                                >View File</span>
                                <input
                                 type="file"
                                 style={{ display: 'none' }}
@@ -274,12 +368,21 @@ class EditModal extends Component {
             )
         })
     }
+    <WarningModal
+        show={this.state.overwriteModal}
+        message={"Are you sure you want to overwrite uploaded file? Files will only be updated once changes are saved."}
+        onContinue={() => {this.setState({
+            overwriteModal: false
+        })}}
+        onHide={() => {this.handleDiscard()}}
+    />
+
     </Container>
         
       </Modal.Body>
       <Modal.Footer>
-        <Button variant='secondary' onClick={this.props.onHide}>Discard Changes</Button>
-        <Button variant='primary' onClick={this.props.onHide}>Save Changes</Button>
+        <Button variant='secondary' onClick={()=>{this.handleDiscard()}}>Discard Changes</Button>
+        <Button variant='primary' onClick={()=>{this.uploadFile()}}>Save Changes</Button>
       </Modal.Footer>
     </Modal>
                     

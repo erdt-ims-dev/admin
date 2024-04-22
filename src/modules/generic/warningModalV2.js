@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import 'modules/applications/applications.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal } from 'react-bootstrap';
-// centered on screen modal
-class WarningModal extends Component {
+import './style.css'
+// centered on top screen modal, bright borders
+class WarningModalV2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,9 +20,9 @@ class WarningModal extends Component {
     <Modal
       show={this.props.show}
       onHide={this.props.onHide}
-      size="lg"
+      size="md"
       aria-labelledby="contained-modal-title-vcenter"
-      centered
+        className='custom-width-modal'
     >
       <Modal.Header style={{
         backgroundColor: '#f1f5fb'
@@ -45,4 +46,4 @@ class WarningModal extends Component {
     }
 }
 
-export default WarningModal
+export default WarningModalV2
