@@ -19,43 +19,45 @@ const files = [
     {
         title: "Transcript of Record",
         disabled: false,
-        key: 'tor'
+        alias: "tor"
     },
     {
         title: "Birth Certificate",
         disabled: false,
-        key: 'birth_certificate'
+        alias: "birth_certificate"
+    },
+    {
+        title: "Recommendation Letter",
+        disabled: false,
+        alias: "recommendation_letter"
+        
     },
     {
         title: "Narrative Essay",
         disabled: false,
-        key: 'narrative_essay'
+        alias: "narrative_essay"
     },
     {
-        title: "Medical Certificate",
+        title: "Medical Cerificate",
         disabled: false,
-        key: 'medical_certificate'
+        alias: "medical_certificate"
     },
     {
         title: "NBI Clearance",
         disabled: false,
-        key: 'nbi_clearance'
+        alias: "nbi_clearance"
     },
     {
         title: "Admission Notice",
         disabled: false,
-        key: 'admission_notice'
-    },
-    {
-        title: "Program Study",
-        disabled: false,
-        key: 'program'
+        alias: "admission_notice"
     },
 ]
 
 class EditModal extends Component {
     constructor(props) {
         super(props);
+        this.fileInputs = {};
         this.state = {
           first_name: null,
           error_first_name: null,
@@ -82,7 +84,8 @@ class EditModal extends Component {
           },
             fileToOverwrite: null,
             fileToUpload: null,
-            overwriteModal: false
+            overwriteModal: false,
+            discardModal: false
         };
         
       }
@@ -95,54 +98,48 @@ class EditModal extends Component {
         
     }
 
+    handleUpdateClick = (alias) => {
+        const existingFile = this.state.selectedFiles[alias];
+        if (existingFile) {
+            // If a file with the same alias exists, show the overwrite modal
+            this.setState({
+                overwriteModal: true,
+                fileToOverwrite: alias,
+            });
+        } else {
+            // If no file exists, proceed to cache the file locally
+            this.fileInputs[alias].click();
+        }
+    };
+        
     handleFileChange = (event, alias) => {
         const file = event.target.files[0];
         let fileURL = null;
     
-        // Check if a file has already been uploaded for the given alias
-        const existingFile = this.state.selectedFiles[alias];
-        if (existingFile) {
-            // If a file exists, show the warning modal and store the file to be uploaded
-            this.setState({
-                overwriteModal: true,
-                fileToOverwrite: alias, // Store the alias of the file to be overwritten
-                fileToUpload: file, // Store the file to be uploaded
-            });
-        } else {
-            // If no file exists, proceed as before
-            if (file) {
-                this.setState({
-                    overwriteModal: true,
-                });
-                fileURL = URL.createObjectURL(file);
-                this.setState(prevState => ({
-                    selectedFiles: {
-                        ...prevState.selectedFiles,
-                        [alias]: { file, fileURL },
-                    },
-                }), () => {
-                    // console.log("File", this.state.selectedFiles)
-                });
-            } else {
-                // console.log('no selected file')
-            }
-        }
-    };
-    handleFileOverwrite = () => {
-            const { fileToOverwrite, fileToUpload } = this.state;
-            let fileURL = URL.createObjectURL(fileToUpload);
-        
-            // Overwrite the existing file
+        if (file) {
+            fileURL = URL.createObjectURL(file);
             this.setState(prevState => ({
                 selectedFiles: {
                     ...prevState.selectedFiles,
-                    [fileToOverwrite]: { file: fileToUpload, fileURL },
+                    [alias]: { file, fileURL },
                 },
-                overwriteModal: false, // Close the warning modal
-                fileToUpload: null, // Clear the file to upload reference
             }), () => {
-                // console.log("File overwritten", this.state.selectedFiles)
+                // Optionally, you can close the file selection window here
             });
+        }
+    };
+        handleFileOverwrite = (confirm) => {
+            const { fileToOverwrite } = this.state;
+            if (confirm) {
+                // If the user confirms, proceed with the overwrite
+                this.fileInputs[fileToOverwrite].click();
+            } else {
+                // If the user cancels, close the modal and do nothing
+                this.setState({
+                    overwriteModal: false,
+                    fileToOverwrite: null,
+                });
+            }
         };
 
         handleWarning = () => {
@@ -151,11 +148,12 @@ class EditModal extends Component {
             })
         }
         uploadFile() {
-            const { selectedFiles, user } = this.state;
+            const { selectedFiles } = this.state;
+            const {setData} = this.props
             let formData = new FormData();
            
             // Append user_id to the FormData
-            formData.append('user_id', user.id);
+            formData.append('user_id', setData.user_id);
            
             // Loop through each file and append it to the FormData
             Object.entries(selectedFiles).forEach(([field, fileData]) => {
@@ -166,9 +164,11 @@ class EditModal extends Component {
             });
            
             // Make a single API call with all files
-            API.uploadFile('account_details/update', formData, response => {
+            API.uploadFile('account_details/uploadNewFiles', formData, response => {
                if (response && response.data) {
                  alert("File(s) uploaded to server")
+                 this.props.getList()   
+                 this.props.onHide()
                } else {
                 alert("There has been an error uploading your files to the server. Please try again")
                 this.handleDiscard()
@@ -177,39 +177,51 @@ class EditModal extends Component {
                console.log(error);
             });
            }
-           handleDiscard(){
+        handleDiscard(){
             this.setState({
                 first_name: null,
-          error_first_name: null,
-          middle_name: null,
-          error_middle_name: null,
-          last_name: null,
-          error_last_name:  null,
-          email: null,
-          errorEmail: null,
-          password: null,
-          errorPassowrd: null,
-          confirmPassowrd: null,
-          errorConfirm: null,
-          data: null, 
-          setEmail: null,
-          selectedFiles: {
+            error_first_name: null,
+            middle_name: null,
+            error_middle_name: null,
+            last_name: null,
+            error_last_name:  null,
+            email: null,
+            errorEmail: null,
+            password: null,
+            errorPassowrd: null,
+            confirmPassowrd: null,
+            errorConfirm: null,
+            data: null, 
+            setEmail: null,
+            selectedFiles: {
             tor: null,
             birth_certificate: null,
             narrative_essay: null,
             medical_certificate: null,
             nbi_clearance: null,
             admission_notice: null,
-          },
+            },
             fileToOverwrite: null,
             fileToUpload: null,
-            overwriteModal: false
-
+            overwriteModal: false,
+            discardModal: false
             });
         }
+        viewFile = (alias) => {
+            const { selectedFiles } = this.state;
+            const { fileURL } = selectedFiles[alias] || {}; // Use an empty object as a fallback
+            if (fileURL) {
+               // Display the file using the fileURL
+               window.open(fileURL, '_blank');
+            } else {
+               alert("No file selected for viewing.");
+            }
+           };
+
     render() {
-        const {data, setEmail} = this.state
+        const { selectedFiles} = this.state
         const {setData} = this.props
+        console.log("setData", setData)
     return (
         <div className=''>
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -324,18 +336,16 @@ class EditModal extends Component {
     <hr className='break'></hr>
     {
         files.map((item, index) => {
-            const fileUrl = setData ? setData[item.key] : ''; // Get the file URL from setData
+            const fileUrl = setData ? setData[item.alias] : ''; // Get the file URL from setData
             return (
                 <div key={index}>
                     
                         <Row className='Row'>
-                            <Col md={4}>
+                            <Col >
                                 <p>{item.title}</p>
                             </Col>
-                            <Col md={4}>
                             
-                            </Col>
-                            <Col md={4} className='switch'>
+                            <Col  className='switch'>
                             {fileUrl && (
                                 <>
                                 <span 
@@ -343,24 +353,31 @@ class EditModal extends Component {
                                     onClick={() => {
                                         window.open(fileUrl, '_blank');
                                     }}
-                                >View File</span>
-                               <input
+                                >View Server File</span>
+                               
+                                </>
+                                
+                            )}
+                            
+                            </Col>
+                            <Col className='switch'>
+                                {selectedFiles[item.alias] ? (<span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>) : ""}
+
+                            </Col>
+                            <Col className='switch'>
+                            <input
                                 type="file"
                                 style={{ display: 'none' }}
                                 onChange={(event) => this.handleFileChange(event, item.alias)}
                                 ref={(input) => {
-                                    this.fileInputs = { ...this.fileInputs, [item.alias]: input };
-                                    }}
-                                />
+                                    this.fileInputs[item.alias] = input;
+                                }}
+                            />
                                 <span 
                                 className='icon'
-                                onClick={() => this.fileInputs[item.alias].click()}
+                                onClick={() => this.handleUpdateClick(item.alias)}
                                 >Update
                                 </span>
-                                </>
-                                
-                                
-                            )}
                             </Col>
 
                         </Row>
@@ -370,10 +387,30 @@ class EditModal extends Component {
     }
     <WarningModal
         show={this.state.overwriteModal}
-        message={"Are you sure you want to overwrite uploaded file? Files will only be updated once changes are saved."}
-        onContinue={() => {this.setState({
+        message={"Are you sure you want to overwrite locally uploaded file?"}
+        button1={"Discard"}
+        button2={"Continue"}
+        onContinue={() => {
+            this.handleFileOverwrite(true)
+            this.setState({
+            overwriteModal: false
+        })}
+        }
+        onHide={() => {this.setState({
             overwriteModal: false
         })}}
+    />
+    <WarningModal
+        show={this.state.discardModal}
+        message={"Are you sure you want to discard changes?"}
+        button1={"No"}
+        button2={"Yes"}
+        onContinue={() => {
+            this.setState({
+            discardModal: false
+            })
+            this.props.onHide()
+    }}
         onHide={() => {this.handleDiscard()}}
     />
 
@@ -381,7 +418,12 @@ class EditModal extends Component {
         
       </Modal.Body>
       <Modal.Footer>
-        <Button variant='secondary' onClick={()=>{this.handleDiscard()}}>Discard Changes</Button>
+        <Button variant='secondary' onClick={()=>{
+            this.handleDiscard()
+            this.setState({
+                discardModal: true
+            })
+            }}>Discard Changes</Button>
         <Button variant='primary' onClick={()=>{this.uploadFile()}}>Save Changes</Button>
       </Modal.Footer>
     </Modal>

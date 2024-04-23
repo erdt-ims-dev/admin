@@ -26,6 +26,12 @@ const files = [
         key: 'birth_certificate'
     },
     {
+        title: "Recommendation Letter",
+        disabled: false,
+        key: "recommendation_letter"
+        
+    },
+    {
         title: "Narrative Essay",
         disabled: false,
         key: 'narrative_essay'
