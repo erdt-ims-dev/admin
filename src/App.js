@@ -97,7 +97,9 @@ function App(props) {
             className="login-body"
           >
             <RouterList />
+            <Footer/>
           </div>
+          
         )
       }
     </div>

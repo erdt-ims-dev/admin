@@ -90,6 +90,7 @@ class Register extends Component {
     const { firstName, lastName, email, password, confirmPassword} = this.state;
     const { errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword, errorMessage} = this.state;
     return (
+      <>
       <div className="loginContainer">
         <div className="loginForm">
           <Container
@@ -102,10 +103,14 @@ class Register extends Component {
             className=""
           >
             <Row className="Row">
-              <h3>Hi There</h3>
+              <h3 style={{
+                display: 'flex',
+                justifyContent: 'center'
+              }}>Hi There</h3>
               <p style={{
                 color: "red",
-                fontSize: 10
+                fontSize: 10,
+                
               }}>
                 {
                   errorMessage
@@ -198,25 +203,27 @@ class Register extends Component {
                 Register
               </Button>
             </Row>
-          </Container>
-          <Container className="">
-            <div className="rContainer">
-              <Row className="Row">
-                <p>Sign Up for USC-ERDt: IMS</p>
+            <Row className="Row">
+                <p style={{
+                display: 'flex',
+                justifyContent: 'center',
+                color: 'white'
+              }}>Already have an account? Sign in{" "} 
+              <a href="/login" style={{
+                color: "white"
+              }}>here</a>
+              </p>
               </Row>
-              <Row className="Row">Create a new account to sign in to</Row>
-              <Row className="Row">
-                <p>Already Have an Account?</p>
-              </Row>
-              <Row className="Row">
-                <p>
-                  Sign in <a href="/login">here</a>
-                </p>
-              </Row>
-            </div>
           </Container>
         </div>
       </div>
+      <div>
+        <Container>
+
+        </Container>
+      </div>
+      </>
+      
     );
     // const handleSubmit = (event) => {
     //   event.preventDefault();

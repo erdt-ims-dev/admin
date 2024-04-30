@@ -66,7 +66,10 @@ class Login extends Component {
         <div className="loginForm">
           <Container className="LeftFlex">
             <Row className="Row">
-              <h3>Welcome</h3>
+              <h3 style={{
+                display: 'flex',
+                justifyContent: 'center'
+              }}>Welcome</h3>
             </Row>
             <Row className="Row mx-4">
               <InputField
@@ -103,6 +106,14 @@ class Login extends Component {
                 Sign In
               </Button>
             </Row>
+            <Row className="Row">
+                <p style={{
+                  color: 'white'
+                }}>
+                  Don't have an Account? you can register{" "}
+                  <a href="/register">here</a>
+                </p>
+              </Row>
             <Row>{/* Or */}</Row>
             {/* <Row className="Row mx-4">
               <hr></hr>
@@ -114,7 +125,7 @@ class Login extends Component {
               </Button>
             </Row> */}
           </Container>
-          <Container className="">
+          {/* <Container className="">
             <div className="rContainer">
               <Row className="Row">
                 <p>About USC-ERDT:IMS</p>
@@ -131,7 +142,7 @@ class Login extends Component {
                 </p>
               </Row>
             </div>
-          </Container>
+          </Container> */}
         </div>
       </div>
     );
