@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'; // Import connect from react-redux
+
 import 'modules/applications/applications.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Breadcrumb from 'modules/generic/breadcrumb';
@@ -101,82 +103,46 @@ class newApplicant extends Component {
             const file = event.target.files[0];
             let fileURL = null;
         
-            // Check if a file has already been uploaded for the given alias
-            const existingFile = this.state.selectedFiles[alias];
-            if (existingFile) {
-                // If a file exists, show the warning modal and store the file to be uploaded
-                this.setState({
-                    overwriteModal: true,
-                    fileToOverwrite: alias, // Store the alias of the file to be overwritten
-                    fileToUpload: file, // Store the file to be uploaded
+            if (file) {
+                fileURL = URL.createObjectURL(file);
+                this.setState(prevState => ({
+                    selectedFiles: {
+                        ...prevState.selectedFiles,
+                        [alias]: { file, fileURL },
+                    },
+                }), () => {
+                    // Optionally, you can close the file selection window here
                 });
-            } else {
-                // If no file exists, proceed as before
-                if (file) {
-                    fileURL = URL.createObjectURL(file);
-                    this.setState(prevState => ({
-                        selectedFiles: {
-                            ...prevState.selectedFiles,
-                            [alias]: { file, fileURL },
-                        },
-                    }), () => {
-                        // console.log("File", this.state.selectedFiles)
-                    });
-                } else {
-                    // console.log('no selected file')
-                }
             }
         };
-        handleFileOverwrite = () => {
-            const { fileToOverwrite, fileToUpload } = this.state;
-            let fileURL = URL.createObjectURL(fileToUpload);
-        
-            // Overwrite the existing file
-            this.setState(prevState => ({
-                selectedFiles: {
-                    ...prevState.selectedFiles,
-                    [fileToOverwrite]: { file: fileToUpload, fileURL },
-                },
-                overwriteModal: false, // Close the warning modal
-                fileToUpload: null, // Clear the file to upload reference
-            }), () => {
-                // console.log("File overwritten", this.state.selectedFiles)
-            });
-        };
-        //    retrieveUser(successCallback, errorCallback, user = null) {
-        //     const { email } = this.state;
-        //     if (email) {
-        //         API.request('user/retrieveOne', {
-        //             col: 'email',
-        //             value: email
-        //         }, response => {
-        //             if (response && response.data) {
-        //                 this.setState({
-        //                     user: response.data,
-        //                 }, () => {
-        //                 });
 
-        //                 if (response.data.account_type == 'new') {
-    
-        //                     this.uploadFile(response.data)
-        //                 } else {
-        //                     this.setState({
-        //                         errorMessage: "This email already has an existing application"
-        //                     });
-        //                     // successCallback(true, response.data);
-        //                 }
-        //             } else {
-        //                 this.setState({
-        //                     errorMessage: "Email Not Found"
-        //                 });
-        //             }
-        //         }, error => {
-        //             errorCallback(error);
-        //         });
-        //     } else {
-        //         errorCallback(new Error('Email is not provided'));
-        //     }
-        // }
+        handleUpdateClick = (alias) => {
+            const existingFile = this.state.selectedFiles[alias];
+            if (existingFile) {
+                // If a file with the same alias exists, show the overwrite modal
+                this.setState({
+                    overwriteModal: true,
+                    fileToOverwrite: alias,
+                });
+            } else {
+                // If no file exists, proceed to cache the file locally
+                this.fileInputs[alias].click();
+            }
+        };
+
+        handleFileOverwrite = (confirm) => {
+            const { fileToOverwrite } = this.state;
+            if (confirm) {
+                // If the user confirms, proceed with the overwrite
+                this.fileInputs[fileToOverwrite].click();
+            } else {
+                // If the user cancels, close the modal and do nothing
+                this.setState({
+                    overwriteModal: false,
+                    fileToOverwrite: null,
+                });
+            }
+        };
         handleDiscard(){
             this.setState({
                 showModal: this.props,
@@ -236,7 +202,7 @@ class newApplicant extends Component {
         uploadFile() {
             const { selectedFiles, user } = this.state;
             let formData = new FormData();
-           
+            this.props.setIsLoading(true)
             // Append user_id to the FormData
             formData.append('user_id', user.id);
            
@@ -251,7 +217,9 @@ class newApplicant extends Component {
             // Make a single API call with all files
             API.uploadFile('account_details/update', formData, response => {
                if (response && response.data) {
+                this.props.setIsLoading(false)
                  alert("File(s) uploaded to server")
+                 this.props.history.push('/dashboard')
                } else {
                 alert("There has been an error uploading your files to the server. Please try again")
                 this.handleDiscard()
@@ -366,7 +334,7 @@ class newApplicant extends Component {
                                                 />
                                                 <span 
                                                 className='icon'
-                                                onClick={() => this.fileInputs[item.alias].click()}
+                                                onClick={() => this.handleUpdateClick(item.alias)}
                                                 >Upload
                                                 </span>
                                                 </Col>
@@ -411,9 +379,18 @@ class newApplicant extends Component {
                 </div> 
                 <WarningModal
                     show={this.state.overwriteModal}
-                    message={"Are you sure you want to overwrite uploaded file?"}
-                    onContinue={this.handleFileOverwrite}
-                    onHide={() => this.setState({ overwriteModal: false })}
+                    message={"Are you sure you want to overwrite locally uploaded file?"}
+                    button1={"Discard"}
+                    button2={"Continue"}
+                    onContinue={() => {
+                        this.handleFileOverwrite(true)
+                        this.setState({
+                        overwriteModal: false
+                    })}
+                    }
+                    onHide={() => {this.setState({
+                        overwriteModal: false
+                    })}}
                 />
                 <WarningModal
                     show={this.state.discardModal}
@@ -426,4 +403,14 @@ class newApplicant extends Component {
     }
 }
 
-export default newApplicant
+const mapStateToProps = (state) => ({ state: state });
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsLoading: (details) => {
+        dispatch({ type: 'SET_IS_LOADING', payload: { details } });
+      }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(newApplicant);

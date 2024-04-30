@@ -1,18 +1,11 @@
 import React, { Component } from "react";
-import { ListGroup } from "react-bootstrap";
-import ERDT from "../../assets/img/erdtl.png";
-import USCLogo from "../../assets/img/usc.png";
-import DCISM from "../../assets/img/dcism.png";
-import Circuit from "../../assets/img/circuitboard.png";
+import {connect, useDispatch} from 'react-redux'
 import "./style.css";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-
 import InputField from "../generic/inputV2";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
 import { GoogleLogin } from "@react-oauth/google";
 import { withRouter } from "react-router-dom";
 
@@ -50,28 +43,44 @@ class Register extends Component {
     const { firstName, lastName, email, password, confirmPassword} = this.state;
     const { errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword, errorMessage} = this.state;
     
-    
+    const fields = {
+      firstName: 'Please fill in missing field',
+      lastName: 'Please fill in missing field',
+      email: 'Please fill in missing field',
+      password: 'Please fill in missing field',
+      confirmPassword: 'Please fill in missing field',
+   };
     // Check for missing fields
-    if(firstName == null || firstName == '' || lastName == null || lastName == '' || email == null || email == '' || password == null || password == '' || confirmPassword == null || confirmPassword == ''){
-      this.setState({errorMessage: 'Please fill in missing fields'})
-      return false
+    for (const [field, errorMessage] of Object.entries(fields)) {
+      if (this.state[field] == null || this.state[field] === '') {
+        this.setState({ [field]: errorMessage });
+        return false;
+      }
+   }
+    // Validate email
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|ph|edu)$/;
+    if (!emailRegex.test(email)) {
+    this.setState({errorEmail: 'Please enter a valid email address with .com, .ph, or .edu domain'});
+    return false;
     }
-    
-    
     // Validate Password
     if(this.validatePassword(password) === false) {
-      this.setState({errorMessage: 'Passwords should be atleast 8 characters. It must be alphanumeric characters. It should contain 1 number, 1 special character and 1 capital letter.'})
+      this.setState({
+        errorPassword: 'Passwords should be atleast 8 characters. It must be alphanumeric characters. It should contain 1 number, 1 special character and 1 capital letter.'
+      })
       return
     } else {
-      this.setState({errorMessage: null})
+      this.setState({errorMessage: ''})
     }
     // Check if CPass matches pass
     if (password !== confirmPassword) {
       this.setState({
-        errorMessage: 'Passwords do not match'
+        errorPassword: 'Passwords do not match',
+        errorConfirmPassword: 'Passwords do not match'
       })
       return false
     }
+    this.props.setIsLoading(true)
     // Requests
     API.request('register', {
       email, password,
@@ -79,8 +88,12 @@ class Register extends Component {
       last_name: lastName,
     }, response => {
       if (response && response.data) {
+        this.props.setIsLoading(false)
         alert('Account Created')
         this.props.history.push('/login')
+      }else{
+        alert('Error on Submit')
+        this.props.setIsLoading(false)
       }
     }, error => {
       console.log(error)
@@ -112,9 +125,6 @@ class Register extends Component {
                 fontSize: 10,
                 
               }}>
-                {
-                  errorMessage
-                }
               </p>
             </Row>
             <Row className="Row mx-4">
@@ -132,6 +142,7 @@ class Register extends Component {
                     });
                   }}
                 />
+                <p className='errorText'>{errorFirstName != "" ? errorFirstName : ""}</p>
               </Col>
 
               <Col className="Col-Gap-Right">
@@ -148,6 +159,7 @@ class Register extends Component {
                     });
                   }}
                 />
+                <p className='errorText'>{errorLastName != "" ? errorLastName : ""}</p>
               </Col>
             </Row>
 
@@ -165,6 +177,7 @@ class Register extends Component {
                   });
                 }}
               />
+              <p className='errorText'>{errorEmail != "" ? errorEmail : ""}</p>
             </Row>
             <Row className="Row mx-4">
               <InputField
@@ -180,6 +193,7 @@ class Register extends Component {
                   });
                 }}
               />
+                <p className='errorText'>{errorPassword != "" ? errorPassword : ""}</p>
             </Row>
             <Row className="Row mx-4">
               <InputField
@@ -195,6 +209,7 @@ class Register extends Component {
                   });
                 }}
               />
+                <p className='errorText'>{errorConfirmPassword != "" ? errorConfirmPassword : ""}</p>
             </Row>
             <Row className="Row mx-4">
               <Button variant="primary" size="lg" onClick={()=>{
@@ -225,10 +240,17 @@ class Register extends Component {
       </>
       
     );
-    // const handleSubmit = (event) => {
-    //   event.preventDefault();
-    //   console.log(`Email: ${email}, Password: ${password}`);
+    
   }
 }
+const mapStateToProps = (state) => ({ state: state });
 
-export default withRouter(Register);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsLoading: (status) => {
+      dispatch({ type: 'SET_IS_LOADING', payload: { status } });
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Register));
