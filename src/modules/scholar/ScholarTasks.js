@@ -63,7 +63,7 @@ function ScholarTasks() {
       e.preventDefault();
       //console.log(newPortfolios);
       API.request('scholar_tasks/create', {
-        user_id: scholar.user_id,
+        scholar_id: scholar.user_id,
         midterm_assessment: newTask.midterm_assessment,
         final_assessment: newTask.final_assessment,
       }, response => {
@@ -71,6 +71,8 @@ function ScholarTasks() {
       }, error => {
         console.log(error)
       })
+      
+      console.log(newTask);
       setShow(false);
     };
 
@@ -150,11 +152,11 @@ function ScholarTasks() {
         <Form>
           <Form.Group controlId="formStudyName">
               <Form.Label>Midterm</Form.Label>
-              <Form.Control type="file" placeholder="Midterm Assessment" onChange={(event) => handleInputChange('midterm_assessment', event)} />
+              <Form.Control type="file" placeholder="Midterm Assessment" onChange={(event) => handleInputChange('midterm_assessment', event)}/>
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Final</Form.Label>
-              <Form.Control type="file" placeholder="Final Assessment" onChange={(event) => handleInputChange('final_assessment', event)}  />
+              <Form.Control type="file" placeholder="Final Assessment" onChange={(event) => handleInputChange('final_assessment', event)}/>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
