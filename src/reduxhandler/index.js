@@ -67,9 +67,10 @@ const reducer = (state = initialState, action) => {
         user,
       };
     case 'SET_IS_LOADING':
+      console.log('IS LOADING');
       return {
         ...state,
-        isLoading: isLoading
+        isLoading: action.payload.status
       }
     case 'RESET_LOGIN_TIME':
       console.log('RESETTING TIMER');
