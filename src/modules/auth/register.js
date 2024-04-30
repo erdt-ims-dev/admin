@@ -70,7 +70,7 @@ class Register extends Component {
       })
       return
     } else {
-      this.setState({errorMessage: ''})
+      this.setState({errorPassword: ''})
     }
     // Check if CPass matches pass
     if (password !== confirmPassword) {
