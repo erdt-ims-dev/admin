@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import API from 'services/Api'
@@ -15,6 +15,10 @@ function ScholarTasks() {
       final_assessment: '',
       approval_status: 'pending',
     });
+
+    // create refs for input elements
+    const midtermInput = useRef(null);
+    const finalInput = useRef(null);
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -62,15 +66,21 @@ function ScholarTasks() {
     const createTask = async (e) => {
       e.preventDefault();
       //console.log(newPortfolios);
-      API.request('scholar_tasks/create', {
-        scholar_id: scholar.user_id,
-        midterm_assessment: newTask.midterm_assessment,
-        final_assessment: newTask.final_assessment,
-      }, response => {
-        console.log('Data created successfully');
-      }, error => {
-        console.log(error)
-      })
+
+      const formData = new FormData();
+      
+      console.log(midtermInput.current[0]);
+      console.log(finalInput);
+
+      // formData.append('scholar_id', scholar.user_id);
+      // formData.append('midterm_assessment', midtermFile);
+      // formData.append('final_assessment', finalFile);
+      // API.request('scholar_tasks/create', formData, response => {
+      //   console.log('Data created successfully');
+      // }, error => {
+      //   console.log(error)
+      // });
+
       
       console.log(newTask);
       setShow(false);
@@ -152,11 +162,11 @@ function ScholarTasks() {
         <Form>
           <Form.Group controlId="formStudyName">
               <Form.Label>Midterm</Form.Label>
-              <Form.Control type="file" placeholder="Midterm Assessment" onChange={(event) => handleInputChange('midterm_assessment', event)}/>
+              <Form.Control type="file" placeholder="Midterm Assessment" onChange={(event) => handleInputChange('midterm_assessment', event)} ref={midtermInput}  />
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Final</Form.Label>
-              <Form.Control type="file" placeholder="Final Assessment" onChange={(event) => handleInputChange('final_assessment', event)}/>
+              <Form.Control type="file" placeholder="Final Assessment" onChange={(event) => handleInputChange('final_assessment', event)} ref={finalInput}  />
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
