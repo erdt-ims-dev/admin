@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import API from 'services/Api'
 import { Table, Button, Modal, Form } from "react-bootstrap";
+import { v4 as uuidv4 } from 'uuid';
 
 import "./style.scss";
 const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type", "Action"];
@@ -19,7 +20,8 @@ function ScholarPortfolio() {
       study_category: '',
       publish_type: '',
     });
-    
+    // create refs for file elements
+    const studyFile = useRef(null);
     //create modal
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -52,12 +54,19 @@ function ScholarPortfolio() {
           [fieldName]: event.target.value
       }));
     };
+    //separate bind for files
+    const handleFileChange = (fieldName, event) => {
+      const file = event.target.files[0];
+      setNewPortfolios((prevState) => ({
+      ...prevState,
+        [fieldName]: file,
+      }));
+    };
 
     //fetch
     const fetchPortfolio = async () => {
       API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.user_id }, response => {
         if (response && response.data) {
-          // Make the second API call to retrieve account details
           setPortfolios(response.data)
         } else {
           console.log('error on retrieve');
@@ -70,15 +79,22 @@ function ScholarPortfolio() {
     //set newPortfolios to API
     const createNewPortfolio = async (e) => {
       e.preventDefault();
+      const formData = new FormData();
+      formData.append('scholar_id', scholar.user_id);
+      formData.append('study_name', newPortfolios.study_name);
+      formData.append('study', studyFile.current.files[0]); 
+      formData.append('study_category', newPortfolios.study_category);
+      formData.append('publish_type', newPortfolios.publish_type);
       //console.log(newPortfolios);
-      API.request('scholar_portfolio/create', {
-        scholar_id: scholar.user_id,
-        study_name: newPortfolios.study_name,
-        study: newPortfolios.study,
-        study_category: newPortfolios.study_category,
-        publish_type: newPortfolios.publish_type,
-      }, response => {
-        console.log('Data created successfully');
+      API.uploadFile('scholar_portfolio/create', formData, response => {
+        if (response && response.data) {
+          console.log('Data created successfully', response.data);
+          const newPortfolio = {...response.data, tempId: uuidv4() };
+          setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
+          fetchPortfolio();
+        } else {
+          console.log('error on retrieve');
+        }
       }, error => {
         console.log(error)
       })
@@ -88,13 +104,20 @@ function ScholarPortfolio() {
     //edit specific portfolios
     const editPortfolio = async (e) => {
       e.preventDefault();
-      API.request('scholar_portfolio/update', {
-        study_name: selectedPortfolio.study_name,
-        study: selectedPortfolio.study,
-        study_category: selectedPortfolio.study_category,
-        publish_type: selectedPortfolio.publish_type,
-      }, response => {
-        console.log('Data updated successfully');
+      const formData = new FormData();
+      formData.append('id', selectedPortfolio.id);
+      formData.append('scholar_id', scholar.user_id);
+      formData.append('study_name', selectedPortfolio.study_name);
+      formData.append('study', studyFile.current.files[0]); 
+      formData.append('study_category', selectedPortfolio.study_category);
+      formData.append('publish_type', selectedPortfolio.publish_type);
+      API.uploadFile('scholar_portfolio/updateOne', formData, response => {
+        if (response && response.data) {
+          console.log('Data updated successfully', response.data);
+          fetchPortfolio();
+        } else {
+          console.log('error on retrieve');
+        }
       }, error => {
         console.log(error)
       })
@@ -170,7 +193,7 @@ function ScholarPortfolio() {
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Study</Form.Label>
-              <Form.Control type="file" placeholder="Enter first name" onChange={(event) => handleInputChange('study', event)}  />
+              <Form.Control type="file" placeholder="Enter Study" onChange={(event) => handleInputChange('study', event)} ref={studyFile} />
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Study Category</Form.Label>
@@ -201,19 +224,43 @@ function ScholarPortfolio() {
         <Form>
           <Form.Group controlId="formStudyName">
               <Form.Label>Study Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Name" onChange={(event) => handleInputChange('study_name', event)} value={selectedPortfolio?.study} />
+              <Form.Control type="text" placeholder="Enter Study Name" 
+                            onChange={(event) => {
+                              // Extract the new value from the event
+                              const newValue = event.target.value;
+                              // Update the selectedPortfolio state with the new approval_status
+                              setSelectedPortfolio(prevTask => ({...prevTask, study_name: newValue }));
+                            }} 
+                            value={selectedPortfolio?.study_name} 
+                          />
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Study</Form.Label>
-              <Form.Control type="file" placeholder="Enter first name" onChange={(event) => handleInputChange('study', event)}  />
+              <Form.Control type="file" placeholder="Enter first name" onChange={(event) => handleFileChange('study', event)}  ref={studyFile}/>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Study Category</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('study_category', event)} value={selectedPortfolio?.study_category}/>
+              <Form.Control type="text" placeholder="Enter Study Category" 
+                            onChange={(event) => {
+                              // Extract the new value from the event
+                              const newValue = event.target.value;
+                              // Update the selectedPortfolio state with the new study_category
+                              setSelectedPortfolio(prevTask => ({...prevTask, study_category: newValue }));
+                            }} 
+                            value={selectedPortfolio?.study_category} 
+                          />
           </Form.Group>
           <Form.Group controlId="formPublishType">
               <Form.Label>Publish Type</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Type" onChange={(event) => handleInputChange('publish_type', event)} value={selectedPortfolio?.publish_type}/>
+              <Form.Control type="text" placeholder="Enter Publish Type" 
+                            onChange={(event) => {
+                              // Extract the new value from the event
+                              const newValue = event.target.value;
+                              // Update the selectedPortfolio state with the new publish_type
+                              setSelectedPortfolio(prevTask => ({...prevTask, publish_type: newValue }));
+                            }} 
+                            value={selectedPortfolio?.publish_type} 
+                          />
           </Form.Group>
         </Form>
         </Modal.Body>
@@ -253,19 +300,12 @@ function ScholarPortfolio() {
           </thead>
           <tbody>
             {portfolios.map((portfolio, index) => (
-                <tr key={portfolio.id}>
+                <tr key={portfolio.id || portfolio.tempId}>
                   <td>{index+1}</td>
                   {/* <td>{portfolio.scholar_id}</td> */}
-                  <td>{portfolio.study}</td>
+                  <td>{portfolio.study_name}</td>
                   {/* <td>{portfolio.study_category}</td> */}
-                  <td> <input 
-                          type="file" 
-                          style={{ display: 'block', padding: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 0, marginBottom: 0, width: '200px' }} 
-                          // onChange={(event) => this.handleFileChange(event, item.alias)}
-                          // ref={(input) => {
-                          //     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
-                          //  }}
-                          /> </td>
+                  <td> <a href={portfolio.study}> View link</a></td>
                   <td>{portfolio.study_category}</td>
                   <td>{portfolio.publish_type} </td>
                   <td>
