@@ -215,14 +215,6 @@ const useScholarList = () => {
           </Link>
           <Link
             to={{
-              pathname: `scholars/${selectedScholar?.user_id}/scholar_requests`,
-              state: { scholar: selectedScholar }
-            }}
-          >
-            <Button variant="primary" onClick={() => handleShow()}>Scholar Requests</Button>
-          </Link>
-          <Link
-            to={{
               pathname: `scholars/${selectedScholar?.user_id}/scholar_leave_applications`,
               state: { scholar: selectedScholar }
             }}
