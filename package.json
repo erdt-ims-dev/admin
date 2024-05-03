@@ -27,10 +27,6 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
-<<<<<<< HEAD
-    "react-error-boundary": "^4.0.13",
-=======
->>>>>>> beb1280a1eaacef29123075d160cfab5428d5a03
     "react-loading-skeleton": "^3.4.0",
     "react-pdf": "^7.7.1",
     "react-pro-sidebar": "^1.1.0",
