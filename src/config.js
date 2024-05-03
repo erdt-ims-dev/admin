@@ -3,7 +3,7 @@ let DEV_BACKEND_URL = 'http://localhost:8000/api/app'
 let PRODUCTION_BACKEND_URL = 'http://bindr.site/api'
 let SANDBOX_BACKEND_URL = ''
 let BACKEND_URL = null
-switch(2){
+switch(0){
   case 0:
     BACKEND_URL = DEV_BACKEND_URL
     break

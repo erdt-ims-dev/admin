@@ -63,22 +63,12 @@ class Endorsements extends Component {
       };
       // Methods
       handleApprove(data){
-        // console.log("data", data)
+        console.log("data", data)
         API.request('scholar_request/approveApplicant', {
+          id: data.id
         }, response => {
            if (response && response.data) {
-             const details = [];
-             const list = [];
-       
-             response.data.forEach(element => {
-               details.push(element.details);
-               list.push(element.list);
-             });
-       
-             this.setState({
-               data: details,
-               list: list
-             });
+             this.getList()
            } else {
              console.log('error on retrieve');
            }
