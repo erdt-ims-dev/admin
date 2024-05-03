@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState , useRef} from "react";
 import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import API from 'services/Api'
+import { v4 as uuidv4 } from 'uuid';
 
 const TABLE_HEADERS = ["#", "Leave Start", "Leave End", "Leave Letter", "Status", "Comment", "Action"];
 
@@ -17,6 +18,7 @@ function ScholarLeaveApplication() {
     status: 'pending',
     comment: '',
   });
+  const letterFile = useRef(null);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -49,6 +51,13 @@ function ScholarLeaveApplication() {
         [fieldName]: event.target.value
     }));
   };
+  const handleFileChange = (fieldName, event) => {
+    const file = event.target.files[0];
+      setNewLeaveRequest((prevState) => ({
+      ...prevState,
+        [fieldName]: file,
+      }));
+  };
 
   const fetchRequests = async () => {
     API.request('leave_application/retrieveMultipleByParameter', { col: 'user_id', value: scholar.user_id }, response => {
@@ -67,34 +76,46 @@ function ScholarLeaveApplication() {
   //create
   const createRequest = async (e) => {
     e.preventDefault();
-    console.log(newLeaveRequest);
-    // API.request('leave_application/create', {
-    //   user_id: scholar.user_id,
-    //   leave_start: newLeaveRequest.leave_start,
-    //   leave_end: newLeaveRequest.leave_end,
-    //   leave_letter: newLeaveRequest.leave_letter,
-    //   status: newLeaveRequest.status,
-    // }, response => {
-    //   console.log('Data created successfully');
-    // }, error => {
-    //   console.log(error)
-    // })
+    const formData = new FormData();
+      formData.append('user_id', scholar.user_id);
+      formData.append('leave_letter', letterFile.current.files[0]);
+      formData.append('leave_start', newLeaveRequest.leave_start);
+      formData.append('leave_end', newLeaveRequest.leave_end);
+      formData.append('status', newLeaveRequest.status);
+      console.log(formData);
+      API.uploadFile('leave_application/create', formData, response => {
+        if (response && response.data) {
+          console.log('Data created successfully', response.data);
+          const newTask = {...response.data, tempId: uuidv4() };
+          setLeaveRequests(prevTasks => [...prevTasks, newTask]);
+          fetchRequests();
+        } else {
+          console.log('error on retrieve');
+        }
+      }, error => {
+        console.log(error)
+      });
     setShow(false);
   };
 
     //edit 
     const editRequest = async (e) => {
       e.preventDefault();
+      const formData = new FormData();
+      formData.append('user_id', scholar.user_id);
+      formData.append('id', selectedRequest.id);
+      formData.append('leave_letter', letterFile.current.files[0]);
+      formData.append('leave_start', selectedRequest.leave_start);
+      formData.append('leave_end', selectedRequest.leave_end);
+      formData.append('status', selectedRequest.status);
       //console.log(selectedRequest.id);
-      API.request('leave_application/update', {
-        id: scholar.user_id,
-        leave_start: selectedRequest.leave_start,
-        leave_end: selectedRequest.leave_end,
-        leave_reason: selectedRequest.leave_letter,
-        status: 'pending',
-        //comment: already set in the controller
-      }, response => {
-        console.log('Data updated successfully');
+      API.uploadFile('leave_application/updateOne', formData, response => {
+        if (response && response.data) {
+          console.log('Data updated successfully', response.data);
+          fetchRequests();
+        } else {
+          console.log('error on retrieve');
+        }
       }, error => {
         console.log(error)
       })
@@ -118,8 +139,6 @@ function ScholarLeaveApplication() {
       setLeaveRequests(leaverequests.filter(leaverequests => leaverequests.id !== selectedRequest.id));
       setDeleteRequestShow(false);
     };
-
-  console.log(leaverequests);
   useEffect(() => {
     fetchRequests();
   }, []);
@@ -175,7 +194,7 @@ function ScholarLeaveApplication() {
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>
-              <Form.Control type="file" placeholder="Enter Study Category" onChange={(event) => handleInputChange('leave_letter', event)}/>
+              <Form.Control type="file" placeholder="Enter Study Category" onChange={(event) => handleInputChange('leave_letter', event)} ref={letterFile}/>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
@@ -203,20 +222,44 @@ function ScholarLeaveApplication() {
           <Form.Group controlId="formStudyName">
               <Form.Label>Leave-Start</Form.Label>
               {/* <Form.Control type="text" placeholder="Midterm file" onChange={(event) => handleInputChange('leave_start', event)} /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_start', event)}></input>
+              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} 
+                            onChange={(event) => {
+                              // Extract the new value from the event
+                              const newValue = event.target.value;
+                              // Update the setSelectedRequest state with the new leave_start
+                              setSelectedRequest(prevTask => ({...prevTask, leave_start: newValue }));
+                            }} 
+                            value={selectedRequest?.leave_start} 
+                          />
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Leave End</Form.Label>
               {/* <Form.Control type="text" placeholder="Final file" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
+              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} 
+                            onChange={(event) => {
+                              // Extract the new value from the event
+                              const newValue = event.target.value;
+                              // Update the setSelectedRequest state with the new leave_end
+                              setSelectedRequest(prevTask => ({...prevTask, leave_end: newValue }));
+                            }} 
+                            value={selectedRequest?.leave_end} 
+                          />
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>
-              <Form.Control type="file" placeholder="Upload Leave Upload" onChange={(event) => handleInputChange('leave_letter', event)} />
+              <Form.Control type="file" placeholder="Upload Leave Upload" onChange={(event) => handleFileChange('leave_letter', event)} ref={letterFile}/>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
-              <Form.Control type="text" placeholder="" onChange={(event) => handleInputChange('status', event)} value={selectedRequest?.status} />
+              <Form.Control type="text" placeholder="" 
+                            onChange={(event) => {
+                              // Extract the new value from the event
+                              const newValue = event.target.value;
+                              // Update the setSelectedRequest state with the new status
+                              setSelectedRequest(prevTask => ({...prevTask, status: newValue }));
+                            }} 
+                            value={selectedRequest?.status} 
+                          />
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Comment</Form.Label>
@@ -260,18 +303,11 @@ function ScholarLeaveApplication() {
           </thead>
           <tbody>
             {leaverequests.map((request, index) => (
-                <tr key={request.id}>
+                <tr key={request.id || request.tempId}>
                   <td>{index + 1}</td>
                   <td>{request.leave_start}</td>
                   <td>{request.leave_end}</td>
-                  <td> <input 
-                          type="file" 
-                          style={{ display: 'block', padding: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 0, marginBottom: 0, width: '200px' }} 
-                          // onChange={(event) => this.handleFileChange(event, item.alias)}
-                          // ref={(input) => {
-                          //     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
-                          //  }}
-                          /> </td>
+                  <td> <a href={request.leave_letter}>View File</a></td>
                   <td>{request.status}</td>
                   <td>{request.comment_id}</td>
                   <td>

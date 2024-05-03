@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
+import { v4 as uuidv4 } from 'uuid';
 import API from 'services/Api'
 
 const TABLE_HEADERS = ["#", "Midterm Assessment", "Final Assessment", "Status", "Action"];
@@ -25,10 +26,11 @@ function ScholarTasks() {
     const handleShow = () => setShow(true);
     
     //edit modal
-    const [selectedTask, setSelectedTask] = useState(null);
+    const [selectedTask, setSelectedTask] = useState([]);
     const [editTaskShow, setEditTaskShow] = useState(false);
 
     const handleEditTaskShow = (task) => {
+      console.log(task);
       setSelectedTask(task);
       setEditTaskShow(true);
     }
@@ -44,9 +46,10 @@ function ScholarTasks() {
 
     //input binding; not sure if works for files
     const handleInputChange = (fieldName, event) => {
-      setNewTask(prevState => ({
-          ...prevState,
-          [fieldName]: event.target.value
+      const file = event.target.files[0];
+      setNewTask((prevState) => ({
+      ...prevState,
+        [fieldName]: file,
       }));
     };
     //fetch all
@@ -54,6 +57,7 @@ function ScholarTasks() {
       API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.user_id }, response => {
         if (response && response.data) {
           setTasks(response.data)
+          console.log(response.data)
         } else {
           console.log('error on retrieve');
         }
@@ -65,22 +69,24 @@ function ScholarTasks() {
     //create
     const createTask = async (e) => {
       e.preventDefault();
-      //console.log(newPortfolios);
-
       const formData = new FormData();
-      
-      console.log(midtermInput.current[0]);
-      console.log(finalInput);
+      formData.append('scholar_id', scholar.user_id);
+      formData.append('midterm_assessment', midtermInput.current.files[0]);
+      formData.append('final_assessment', finalInput.current.files[0]);
+      //publish_type set to 'pending' by default;
 
-      // formData.append('scholar_id', scholar.user_id);
-      // formData.append('midterm_assessment', midtermFile);
-      // formData.append('final_assessment', finalFile);
-      // API.request('scholar_tasks/create', formData, response => {
-      //   console.log('Data created successfully');
-      // }, error => {
-      //   console.log(error)
-      // });
-
+      API.uploadFile('scholar_tasks/create', formData, response => {
+        if (response && response.data) {
+          console.log('Data created successfully', response.data);
+          const newTask = {...response.data, tempId: uuidv4() };
+          setTasks(prevTasks => [...prevTasks, newTask]);
+          fetchTasks();
+        } else {
+          console.log('error on retrieve');
+        }
+      }, error => {
+        console.log(error)
+      });
       
       console.log(newTask);
       setShow(false);
@@ -89,16 +95,27 @@ function ScholarTasks() {
     //edit 
     const editTask = async (e) => {
       e.preventDefault();
-      API.request('scholar_tasks/update', {
-        midterm_assessment: selectedTask.midterm_assessment,
-        final_assessment: selectedTask.final_assessment,
-        publish_type: selectedTask.publish_type,
-      }, response => {
-        console.log('Data updated successfully');
+
+      const formData = new FormData();
+      
+      formData.append('id', selectedTask.id);
+      formData.append('scholar_id', scholar.user_id);
+      formData.append('midterm_assessment', midtermInput.current.files[0]);
+      //(midtermInput.current.files[0] !== null) ? formData.append('midterm_assessment', midtermInput.current.files[0]) : formData.append('midterm_assessment', '');
+      formData.append('final_assessment', finalInput.current.files[0]);
+      //(finalInput.current.files[0] !== null) ? formData.append('final_assessment', finalInput.current.files[0]) : formData.append('final_assessment', '');
+      formData.append('approval_status', selectedTask.approval_status);
+      console.log(formData);
+      API.uploadFile('scholar_tasks/updateOne', formData, response => {
+        if (response && response.data) {
+          console.log('Data updated successfully', response.data);
+          fetchTasks();
+        } else {
+          console.log('error on retrieve');
+        }
       }, error => {
         console.log(error)
       })
-      //console.log(selectedPortfolio);
       setEditTaskShow(false);
     };
 
@@ -120,7 +137,7 @@ function ScholarTasks() {
     };
 
     useEffect(() => {
-      fetchTasks();
+      fetchTasks(); 
     }, []);
 
 
@@ -192,16 +209,28 @@ function ScholarTasks() {
         <Modal.Body>
         <Form>
           <Form.Group controlId="formStudyName">
-              <Form.Label>Midterm</Form.Label>
-              <Form.Control type="file" placeholder="Midterm file" onChange={(event) => handleInputChange('midterm_assessment', event)} />
+              <Form.Label>Midterm</Form.Label><br/>
+              <a href={selectedTask.midterm_assessment}>link</a>
+              <Form.Control type="file" placeholder="Midterm file" onChange={(event) => handleInputChange('midterm_assessment', event)} ref={midtermInput} />
           </Form.Group>
           <Form.Group controlId="formStudy">
-              <Form.Label>Final</Form.Label>
-              <Form.Control type="file" placeholder="Final file" onChange={(event) => handleInputChange('final_assessment', event)}  />
+              <Form.Label>Final</Form.Label><br/>
+              <a href={selectedTask.final_assessment}>link</a>
+              <Form.Control type="file" placeholder="Final file" onChange={(event) => handleInputChange('final_assessment', event)}  ref={finalInput}/>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('study_category', event)} value={selectedTask?.approval_status} readOnly/>
+              <Form.Control 
+                        type="text" 
+                        placeholder="Enter Study Category" 
+                        onChange={(event) => {
+                        // Extract the new value from the event
+                        const newValue = event.target.value;
+                        // Update the selectedTask state with the new approval_status
+                        setSelectedTask(prevTask => ({...prevTask, approval_status: newValue }));
+                      }} 
+                      value={selectedTask?.approval_status}
+                  />
           </Form.Group>
         </Form>
         </Modal.Body>
@@ -222,11 +251,11 @@ function ScholarTasks() {
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteTaskClose}>
-            No
-          </Button>
           <Button variant="primary" onClick={deleteTask}>
             Yes
+          </Button>
+          <Button variant="secondary" onClick={handleDeleteTaskClose}>
+            No
           </Button>
         </Modal.Footer>
       </Modal>
@@ -241,27 +270,13 @@ function ScholarTasks() {
           </thead>
           <tbody>
             {tasks.map((task, index) => (
-                <tr key={task.id}>
-                  <td>{index + 1}</td>
+                <tr key={task.id || task.tempId}>
+                  <td key={index + 1}>{index + 1}</td>
                   {/* <td>{portfolio.scholar_id}</td> */}
                   {/* <td>{portfolio.study}</td> */}
-                  <td> <input 
-                          type="file" 
-                          style={{ display: 'block', padding: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 0, marginBottom: 0, width: '200px' }} 
-                          // onChange={(event) => this.handleFileChange(event, item.alias)}
-                          // ref={(input) => {
-                          //     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
-                          //  }}
-                          /> </td>
+                  <td> <a href={task.midterm_assessment}>View File</a> </td>
                   {/* <td>{portfolio.study_category}</td> */}
-                  <td> <input 
-                          type="file" 
-                          style={{ display: 'block', padding: 0, marginLeft: 'auto', marginRight: 'auto', marginTop: 0, marginBottom: 0, width: '200px' }} 
-                          // onChange={(event) => this.handleFileChange(event, item.alias)}
-                          // ref={(input) => {
-                          //     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
-                          //  }}
-                          /> </td>
+                  <td > <a href={task.final_assessment}>View File</a> </td>
                   <td>{task.approval_status}</td>
                   <td>
                     <span className='link' 
