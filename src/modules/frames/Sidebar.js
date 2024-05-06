@@ -45,11 +45,11 @@ const item = [
     route: "/endorsements",
     icon: faClipboardCheck,
   },
-  {
-    name: "Scholar Requests",
-    route: "/scholar_dashboard",
-    icon: faPerson,
-  },
+  // {
+  //   name: "Scholar Requests",
+  //   route: "/scholar_dashboard",
+  //   icon: faPerson,
+  // },
   {
     name: "Scholar Management",
     route: "/scholars",

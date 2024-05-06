@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import Breadcrumb from 'modules/generic/breadcrumb';
-import InputField from 'modules/generic/input';
+import InputField from 'modules/generic/inputV2';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';

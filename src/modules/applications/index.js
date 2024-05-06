@@ -227,7 +227,7 @@ class Applications extends Component {
 }
 const mapStateToProps = (state) => ({
   user: state.user,
-  details: state.details, // Adjust this path according to your Redux store's structure
+  details: state.details, 
  });
 
 export default connect(mapStateToProps)(Applications);
