@@ -49,9 +49,7 @@
     max-width: 100%;
     margin: 0;
     display: flex;
-    /* height: 20vh;
-    bottom: 0;
-    display: flex; */
+    justify-content: center;
     background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
   }
   .footerContent{
@@ -278,4 +276,81 @@ input {
 .sidebarImage{
   height: auto!important;
   width: 50%!important;
+}
+/* Footer */
+
+.redirectLink{
+  color: white;
+  text-decoration: none; /* Removes the default underline from links */
+  position: relative;
+  cursor: pointer;
+  font-family: "Roboto Slab", serif;
+}
+
+.redirectLink::after{
+  content: '';
+    position: absolute;
+    width: 0;
+    height: 2px; /* Thickness of the underline */
+    bottom: 0; /* Position at the bottom of the text */
+    left: 50%; /* Start from the center */
+    background-color: white; /* Color of the underline */
+    transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+}
+.redirectLink:hover::after{
+  width: 100%; /* Full width of the underline */
+    left: 0; /* Align to the left */
+}
+/* Footer */
+.redirectLinkFooter{
+  color: white;
+  text-decoration: none; /* Removes the default underline from links */
+  position: relative;
+  cursor: pointer;
+  font-family: "Roboto Slab", serif;
+  margin-top: 10px;
+}
+
+.redirectLinkFooter::after{
+  content: '';
+    position: absolute;
+    width: 0;
+    height: 2px; /* Thickness of the underline */
+    bottom: 0; /* Position at the bottom of the text */
+    left: 50%; /* Start from the center */
+    background-color: white; /* Color of the underline */
+    transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+}
+.redirectLinkFooter:hover::after{
+  width: 100%; /* Full width of the underline */
+    left: 0; /* Align to the left */
+}
+
+.logo-container {
+  display: flex;
+  justify-content: start; /* Center the logo horizontally */
+  align-items: center; /* Center the logo vertically */
+  height: 100px; /* Adjust based on your needs */
+}
+
+.logo {
+  width: 60%; /* Adjust the width as needed */
+  height: auto; /* Maintain the aspect ratio */
+}
+
+@font-face {
+  font-family: 'ChunkFive';
+  src: url('/public/fonts/chunkfive/Chunk.otf') format('opentype'),
+        url('/public/fonts/chunkfive/Chunk.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+.logo-container {
+  height: 25vh; /* Adjust this value based on your desired height */
+  display: flex;
+  align-items: center; /* This centers the logos vertically */
+}
+
+.logo-item {
+  height: 100%; /* This makes the logo take the full height of the container */
 }

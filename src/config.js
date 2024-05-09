@@ -1,9 +1,9 @@
 let LIVE_BACKEND_URL = null
 let DEV_BACKEND_URL = 'http://localhost:8000/api/app'
-let PRODUCTION_BACKEND_URL = 'http://bindr.site/api'
+let PRODUCTION_BACKEND_URL = 'http://api.bindr.site/api/app'
 let SANDBOX_BACKEND_URL = ''
 let BACKEND_URL = null
-switch(0){
+switch(2){
   case 0:
     BACKEND_URL = DEV_BACKEND_URL
     break
@@ -20,6 +20,5 @@ export default {
   BACKEND_URL: BACKEND_URL,
   TEST: false,
   HOST: 'http://localhost:8000',
-//   background: "url('https://api.production.payhiram.ph/public/increment/v1/storage/logo/background.jpg')",
   
 }

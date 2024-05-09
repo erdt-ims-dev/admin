@@ -362,7 +362,11 @@ class newApplicant extends Component {
                         <>
                         <Row className='sectionHeader'> 
                         <Col className='options'>
-                            <Button variant="danger" onClick={()=>{this.setState({ discardModal: true})}}>
+                            <Button variant="danger" onClick={()=>{
+                                this.setState({ discardModal: true})
+                                this.props.history.push('/applications')
+                                
+                                }}>
                                 Discard
                             </Button>
                             <Button onClick={()=>{this.uploadFile()}}>
