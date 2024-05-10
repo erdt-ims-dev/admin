@@ -282,7 +282,7 @@ function ScholarDetails() {
                 </Col>
                 <Col md={4} className='switch'>
                   <Col>
-                  <input type="file" id="file" name="file" onChange={(event) => handleFileChange(item.link, event)} ref={item.ref}/>
+                  <input type="file" id="file" name="file" onChange={(event) => handleFileChange(item.link, event)} ref={item.ref} target="_blank" rel="noreferrer noopener"/>
                   </Col>
                   <Col>
                     <input

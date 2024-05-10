@@ -33,7 +33,7 @@ function ScholarPortfolio() {
 
     const handleEditShow = (portfolio) => {
       setSelectedPortfolio(portfolio);
-      //console.log(portfolio);
+      console.log(portfolio);
       setEditShow(true);
     }
     const handleEditClose = () => setEditShow(false);
@@ -108,9 +108,10 @@ function ScholarPortfolio() {
       formData.append('id', selectedPortfolio.id);
       formData.append('scholar_id', scholar.user_id);
       formData.append('study_name', selectedPortfolio.study_name);
-      formData.append('study', studyFile.current.files[0]); 
+      formData.append('study', (selectedPortfolio.study) ? selectedPortfolio.study : studyFile.current.files[0]); 
       formData.append('study_category', selectedPortfolio.study_category);
       formData.append('publish_type', selectedPortfolio.publish_type);
+      console.log(formData);
       API.uploadFile('scholar_portfolio/updateOne', formData, response => {
         if (response && response.data) {
           console.log('Data updated successfully', response.data);
@@ -121,7 +122,7 @@ function ScholarPortfolio() {
       }, error => {
         console.log(error)
       })
-      //console.log(selectedPortfolio);
+      console.log(selectedPortfolio);
       setEditShow(false);
     };
 
@@ -197,11 +198,24 @@ function ScholarPortfolio() {
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Study Category</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('study_category', event)} />
+              <Form.Select aria-label="Select Study Category" value={newPortfolios.study_category} onChange={(event) => handleInputChange('study_category', event)}>
+                <option value="">Select Study Category</option>
+                <option value="Journal">Journal</option>
+                <option value="Research Paper">Research Paper</option>
+                <option value="Case Study">Case Study</option>
+                <option value="Other">Other</option>
+              </Form.Select>
           </Form.Group>
+          
+          <br/>
           <Form.Group controlId="formPublishType">
               <Form.Label>Publish Type</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Type" onChange={(event) => handleInputChange('publish_type', event)} />
+              {/* <Form.Control type="text" placeholder="Enter Study Type" onChange={(event) => handleInputChange('publish_type', event)} /> */}
+              <Form.Select aria-label="Select Publish Type" value={newPortfolios.publish_type} onChange={(event) => handleInputChange('publish_type', event)}>
+                <option value="">Select Publish Type</option>
+                <option value="Local">Local</option>
+                <option value="International">International</option>
+              </Form.Select>
           </Form.Group>
         </Form>
         </Modal.Body>
@@ -240,27 +254,40 @@ function ScholarPortfolio() {
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Study Category</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" 
-                            onChange={(event) => {
+              <Form.Select 
+                    aria-label="Select Study Category" 
+                    value={selectedPortfolio?.study_category} 
+                    onChange={(event) => {
                               // Extract the new value from the event
                               const newValue = event.target.value;
                               // Update the selectedPortfolio state with the new study_category
                               setSelectedPortfolio(prevTask => ({...prevTask, study_category: newValue }));
                             }} 
-                            value={selectedPortfolio?.study_category} 
-                          />
+                    >
+                <option value="">Select Study Category</option>
+                <option value="Journal">Journal</option>
+                <option value="Research Paper">Research Paper</option>
+                <option value="Case Study">Case Study</option>
+                <option value="Other">Other</option>
+              </Form.Select>
           </Form.Group>
+          <br/>
           <Form.Group controlId="formPublishType">
               <Form.Label>Publish Type</Form.Label>
-              <Form.Control type="text" placeholder="Enter Publish Type" 
-                            onChange={(event) => {
+              <Form.Select 
+                    aria-label="Select Study Category" 
+                    value={selectedPortfolio?.publish_type} 
+                    onChange={(event) => {
                               // Extract the new value from the event
                               const newValue = event.target.value;
                               // Update the selectedPortfolio state with the new publish_type
                               setSelectedPortfolio(prevTask => ({...prevTask, publish_type: newValue }));
                             }} 
-                            value={selectedPortfolio?.publish_type} 
-                          />
+                        >
+                    <option value="">Select Study Category</option>
+                    <option value="Local">Local</option>
+                    <option value="International">International</option>
+              </Form.Select>      
           </Form.Group>
         </Form>
         </Modal.Body>
@@ -305,7 +332,7 @@ function ScholarPortfolio() {
                   {/* <td>{portfolio.scholar_id}</td> */}
                   <td>{portfolio.study_name}</td>
                   {/* <td>{portfolio.study_category}</td> */}
-                  <td> <a href={portfolio.study}> View link</a></td>
+                  <td> <a href={portfolio.study} target="_blank" rel="noreferrer noopener"> View link</a></td>
                   <td>{portfolio.study_category}</td>
                   <td>{portfolio.publish_type} </td>
                   <td>

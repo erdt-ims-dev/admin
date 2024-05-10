@@ -274,9 +274,9 @@ function ScholarTasks() {
                   <td key={index + 1}>{index + 1}</td>
                   {/* <td>{portfolio.scholar_id}</td> */}
                   {/* <td>{portfolio.study}</td> */}
-                  <td> <a href={task.midterm_assessment}>View File</a> </td>
+                  <td> <a href={task.midterm_assessment} target="_blank" rel="noreferrer noopener">View File</a> </td>
                   {/* <td>{portfolio.study_category}</td> */}
-                  <td > <a href={task.final_assessment}>View File</a> </td>
+                  <td > <a href={task.final_assessment} target="_blank" rel="noreferrer noopener">View File</a> </td>
                   <td>{task.approval_status}</td>
                   <td>
                     <span className='link' 
