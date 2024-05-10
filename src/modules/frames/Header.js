@@ -45,10 +45,13 @@ export class Header extends Component {
                   <FontAwesomeIcon icon={faUser} className='white fa-lg' style={{
                     padding: 10
                   }}/>
-                  <span  style={{
-                    padding: 10,
-                    color: "white"
-                  }}> Hi {details.first_name ? details.first_name : "User"}!</span>
+                  {
+                    details && (
+                      <span style={{ padding: 10, color: "white" }}>
+                        Hi {details.first_name || "User"}!
+                      </span>
+                    )
+                  }
                   <FontAwesomeIcon icon={faEllipsisV} className='white fa-lg' style={{
                     padding: 10
                   }}/>

@@ -1,52 +1,10 @@
 import React, { Component } from 'react'
 import 'modules/applications/applications.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
-import Breadcrumb from 'modules/generic/breadcrumb';
-import InputField from 'modules/generic/input';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
+import { connect } from 'react-redux'
 
-
-const files = [
-    {
-        title: "Transcript of Record",
-        disabled: false
-    },
-    {
-        title: "Birth Certificate",
-        disabled: false
-    },
-    {
-        title: "Valid ID",
-        disabled: false
-    },
-    {
-        title: "Narrative Essay",
-        disabled: false
-    },
-    {
-        title: "Medical Certificate",
-        disabled: false
-    },
-    {
-        title: "NBI Clearance",
-        disabled: false
-    },
-    {
-        title: "Admission Notice",
-        disabled: false
-    },
-    {
-        title: "Program Study",
-        disabled: false
-    },
-]
 
 class DeleteModal extends Component {
     constructor(props) {
@@ -57,16 +15,32 @@ class DeleteModal extends Component {
       }
     componentDidMount() {
         
-        // this.updateData();
     }
     
     componentDidUpdate(prevProps) {
         
     }
 
-    updateData() {
-        
-       
+    onDeactivate(){
+      const {setData} = this.props
+      // Trigger loading state to true before the API call
+      this.props.setIsLoadingV2(true);
+      console.log( setData)
+      API.request('admin_system_message/delete', {
+          id: setData.id
+      }, response => {
+        this.props.setIsLoadingV2(true);
+        if (response && response.data) {
+          this.props.onHide()
+          this.props.refreshList()
+          this.setState()
+        }else{
+          console.log('error on retrieve')
+        }
+      }, error => {
+        this.props.setIsLoadingV2(true);
+        console.log(error)
+      })
     }
     render() {
         const {data, setEmail} = this.state
@@ -94,8 +68,8 @@ class DeleteModal extends Component {
       <Modal.Footer style={{
         backgroundColor: '#f1f5fb'
       }}>
-        <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={this.props.onDeactivate}>Deactivate</Button>
+        <Button variant='secondary' onClick={()=>{this.props.onHide()}}>Close</Button>
+        <Button onClick={()=>{this.onDeactivate()}}>Deactivate</Button>
       </Modal.Footer>
     </Modal>
                     
@@ -106,4 +80,16 @@ class DeleteModal extends Component {
     }
 }
 
-export default DeleteModal
+const mapStateToProps = (state) => ({
+  user: state.user,
+  details: state.details, 
+ });
+ const mapDispatchToProps = (dispatch) => {
+  return {
+      setIsLoadingV2: (details) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { details } });
+      }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteModal);

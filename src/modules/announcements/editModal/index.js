@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import '../style.css';
 import API from 'services/Api'
+import { connect } from 'react-redux'
 
 class EditModal extends Component {
     constructor(props) {
@@ -18,6 +19,8 @@ class EditModal extends Component {
             title: this.props.setData ? this.props.setData.message_title : "",
             message: this.props.setData ? this.props.setData.message_body : ""
         });
+      console.log(this.props.setData)
+
     }
     }
     handleTitleChange = (e) => {
@@ -28,11 +31,35 @@ class EditModal extends Component {
         this.setState({ message: e.target.value });
      };
     
-     handleEditSubmit = (e) => {
-        e.preventDefault();
-        this.props.handleEditSubmit({ title: this.state.title, message: this.state.message });
-        this.setState({ title: '', message: '' });
-     };
+     handleSubmit() {
+      const loggedInUser = this.props.user
+      const {setData} = this.props
+      const {title, message} = this.state
+    
+      // Trigger loading state to true before the API call
+      this.props.setIsLoadingV2(true);
+      API.request('admin_system_message/update', {
+        id: setData.id,
+        message_title: title,
+        message_body: message
+      }, response => {
+        this.props.setIsLoadingV2(false);
+        if (response && response.data) {
+          this.props.onHide()
+          this.props.refreshList()
+          this.setState({
+            title: '',
+            message: ''
+          })
+        }else{
+          console.log('error on retrieve')
+        }
+      }, error => {
+        this.props.setIsLoadingV2(false);
+        console.log(error)
+      })
+      // this.closeCreate();
+    };
     
     render() {
         const { show, onHide, setData } = this.props;
@@ -52,7 +79,9 @@ class EditModal extends Component {
               <Form.Label>Message</Form.Label>
               <Form.Control as="textarea" rows={3} placeholder="Enter message" value={message} onChange={this.handleMessageChange} />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button style={{
+              marginTop: 25
+            }} variant="primary" onClick={()=>{this.handleSubmit()}}>
               Submit
             </Button>
           </Form>
@@ -62,4 +91,16 @@ class EditModal extends Component {
     }
 }
 
-export default EditModal
+const mapStateToProps = (state) => ({
+  user: state.user,
+  details: state.details, 
+ });
+ const mapDispatchToProps = (dispatch) => {
+  return {
+      setIsLoadingV2: (details) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { details } });
+      }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditModal);

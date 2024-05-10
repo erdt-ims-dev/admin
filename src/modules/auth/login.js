@@ -145,7 +145,8 @@ class Login extends Component {
                 <p style={{
                   color: 'white',
                   display: 'flex',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  marginBottom: 25
                 }}>
                   Don't have an Account? you can register{" "}
                   <a href="/register">here</a>
