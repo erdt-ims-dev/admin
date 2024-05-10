@@ -8,6 +8,7 @@ const types = {
   SET_DETAILS: 'SET_DETAILS',
   UPDATE_USER: 'UPDATE_USER',
   SET_IS_LOADING: 'SET_IS_LOADING',
+  SET_IS_LOADING_V2: 'SET_IS_LOADING_V2',
 };
 
 export const actions = {
@@ -26,6 +27,9 @@ export const actions = {
   setIsLoading(isLoading) {
     return { type: types.SET_IS_LOADING, isLoading };
   },
+  setIsLoadingC2(isLoadingV2) {
+    return { type: types.SET_IS_LOADING, isLoadingV2 };
+  },
 
 };
 
@@ -36,17 +40,18 @@ const initialState = {
   isLoggedIn: false,
   isLoading: false,
   loginTime: null,
+  isLoadingV2: false
 };
 
 const reducer = (state = initialState, action) => {
   const { user, token, isLoading } = action;
   switch (action.type) {
     case 'LOGOUT':
-      console.log('INITIALIZING LOGOUT');
+      // console.log('INITIALIZING LOGOUT');
       localStorage.removeItem(`${Helper.APP_NAME}token`);
       return Object.assign({}, initialState);
     case 'LOGIN':
-      console.log('INITIALIZING LOGIN');
+      // console.log('INITIALIZING LOGIN');
       localStorage.setItem(`${Helper.APP_NAME}token`, action.payload.token,);
       return {
         ...state,
@@ -56,7 +61,7 @@ const reducer = (state = initialState, action) => {
         loginTime: new Date().getTime(), // Store the current time
       };
     case 'SET_DETAILS':
-    console.log('SETTING DETAILS');
+    // console.log('SETTING DETAILS');
     return{
       ...state,
       details: action.payload.details,
@@ -67,10 +72,16 @@ const reducer = (state = initialState, action) => {
         user,
       };
     case 'SET_IS_LOADING':
-      console.log('IS LOADING');
+      // console.log('IS LOADING');
       return {
         ...state,
         isLoading: action.payload.status
+      }
+      case 'SET_IS_LOADING_V2':
+      // console.log('IS LOADINGV2');
+      return {
+        ...state,
+        isLoadingV2: action.payload.status
       }
     case 'RESET_LOGIN_TIME':
       console.log('RESETTING TIMER');

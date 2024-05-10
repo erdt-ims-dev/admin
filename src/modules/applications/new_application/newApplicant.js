@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputField from 'modules/generic/input';
 import InputFieldV3 from 'modules/generic/inputV3';
-import WarningModal from 'modules/generic/warningModal'
+import WarningModal from 'modules/generic/warningModalV2'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -165,72 +165,87 @@ class newApplicant extends Component {
                 emailRetrieved: false
             });
         }
-        retrieveUser(){
+        retrieveUser() {
             const { email } = this.state;
-            if(email){
+            // Trigger loading state to true before the API call
+            this.props.setIsLoadingV2(true);
+        
+            if (email) {
                 API.request('user/retrieveOne', {
-                                col: 'email',
-                                value: email
-                            }, response => {
-                                if (response && response.data) {
-                                    if(response.data.account_type != 'new'){
-                                        this.setState({
-                                            errorMessage: "This email already has an existing application"
-                                        });
-                                    }else{
-                                        this.setState({
-                                            user: response.data,
-                                            errorMessage: "",
-                                            emailRetrieved: true // Set emailRetrieved to true
-                                        }, () => {
-                                        });
-                                    }
-                                } else {
-                                    this.setState({
-                                        errorMessage: "Email Not Found"
-                                    });
-                                }
-                            }, error => {
-                                // errorCallback(error);
+                    col: 'email',
+                    value: email
+                }, response => {
+                    // Trigger loading state to false after the API call is completed
+                    this.props.setIsLoadingV2(false);
+        
+                    if (response && response.data) {
+                        if (response.data.account_type!== 'new') {
+                            this.setState({
+                                errorMessage: "This email already has an existing application"
                             });
-            }else{
+                        } else {
+                            this.setState({
+                                user: response.data,
+                                errorMessage: "",
+                                emailRetrieved: true // Set emailRetrieved to true
+                            });
+                        }
+                    } else {
+                        this.setState({
+                            errorMessage: "Email Not Found"
+                        });
+                    }
+                }, error => {
+                    // Trigger loading state to false in case of an error
+                    this.props.setIsLoadingV2(false);
+                    // errorCallback(error);
+                });
+            } else {
                 this.setState({
                     errorMessage: "Field is blank"
                 });
+                // Trigger loading state to false if email is not provided
+                this.props.setIsLoadingV2(false);
             }
         }
         uploadFile() {
             const { selectedFiles, user } = this.state;
             let formData = new FormData();
-            this.props.setIsLoading(true)
+            // Trigger loading state to true before the API call
+            this.props.setIsLoadingV2(true);
+        
             // Append user_id to the FormData
             formData.append('user_id', user.id);
-           
+        
             // Loop through each file and append it to the FormData
             Object.entries(selectedFiles).forEach(([field, fileData]) => {
-               if (fileData && fileData.file) {
-                 // Append each file with its field name as the key
-                 formData.append(field, fileData.file);
-               }
+                if (fileData && fileData.file) {
+                    // Append each file with its field name as the key
+                    formData.append(field, fileData.file);
+                }
             });
-           
+        
             // Make a single API call with all files
             API.uploadFile('account_details/update', formData, response => {
-               if (response && response.data) {
-                this.props.setIsLoading(false)
-                 alert("File(s) uploaded to server")
-                 this.props.history.push('/dashboard')
-               } else {
-                alert("There has been an error uploading your files to the server. Please try again")
-                this.handleDiscard()
-               }
+                // Trigger loading state to false after the API call is completed
+                this.props.setIsLoadingV2(false);
+        
+                if (response && response.data) {
+                    alert("File(s) uploaded to server");
+                    this.props.history.push('/application');
+                } else {
+                    alert("There has been an error uploading your files to the server. Please try again");
+                    this.handleDiscard();
+                }
             }, error => {
-               console.log(error);
+                // Trigger loading state to false in case of an error
+                this.props.setIsLoadingV2(false);
+                console.log(error);
             });
-           }
+        }
                    
     render() {
-        const {errorMessage, overwriteModal, selectedFiles} = this.state
+        const {errorMessage, selectedFiles} = this.state
         const hasFilesSelected = Object.values(selectedFiles).some(file => file !== null);
         return (
             <div>
@@ -253,7 +268,7 @@ class newApplicant extends Component {
 
                         <Row className='Row'>
                             <Col className='imageCircle'>
-                                <img className='circle' src={placeholder}></img>
+                                <img className='circle' src={placeholder} alt='profile'></img>
                             </Col>
                             <Col className='imageText'>
                                 <p className=''>This will be the profile picture displayed</p>
@@ -277,7 +292,7 @@ class newApplicant extends Component {
                                 },)
                             }}
                         />
-                                <p className='errorText'>{errorMessage != "" ? errorMessage : ""}</p>
+                                <p className='errorText'>{errorMessage !== "" ? errorMessage : ""}</p>
                             </Col>
                             <Col>
                             <InputFieldV3
@@ -362,7 +377,10 @@ class newApplicant extends Component {
                         <>
                         <Row className='sectionHeader'> 
                         <Col className='options'>
-                            <Button variant="danger" onClick={()=>{this.setState({ discardModal: true})}}>
+                            <Button variant="danger" onClick={()=>{
+                                this.setState({ discardModal: true})
+                                
+                                }}>
                                 Discard
                             </Button>
                             <Button onClick={()=>{this.uploadFile()}}>
@@ -394,8 +412,13 @@ class newApplicant extends Component {
                 />
                 <WarningModal
                     show={this.state.discardModal}
-                    onContinue={()=>{this.handleDiscard()}}
-                    message={"Are you sure you want to discard everything"}
+                    onContinue={()=>{
+                        this.handleDiscard()
+                        this.props.history.push('/applications')
+                    }}
+                    button1={"No"}
+                    button2={"Yes"}
+                    message={"Are you sure you want to discard everything?"}
                     onHide={() => this.setState({ discardModal: false })}
                 />
             </div>
@@ -407,8 +430,8 @@ const mapStateToProps = (state) => ({ state: state });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIsLoading: (details) => {
-        dispatch({ type: 'SET_IS_LOADING', payload: { details } });
+      setIsLoadingV2: (details) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { details } });
       }
   };
 };

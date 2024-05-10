@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-
+import { connect } from 'react-redux';
+import API from 'services/Api'
 class RemarksModal extends Component {
  constructor(props) {
     super(props);
@@ -14,12 +15,34 @@ class RemarksModal extends Component {
     this.setState({ message: e.target.value });
  };
 
- handleSubmitForm = (e) => {
-    let {setData} = this.props
-    e.preventDefault();
-    this.props.handleRemarkSubmit({ message: this.state.message, details: setData });
-    this.setState({  message: '' });
- };
+
+ handleRemarkSubmit(){
+  const { details } = this.props;
+  let {setData} = this.props;
+  // Trigger loading state to true before the API call
+  this.props.setIsLoadingV2(true);
+
+  API.request('comments/createViaApplication', {
+    id: setData.id, // take account_detail_id, find it in BE
+    message: this.state.message,
+    comment_by: details.user_id  
+  }, response => {
+    // Trigger loading state to false after the API call is completed
+    this.props.setIsLoadingV2(false);
+    if (response && response.comments) {
+      this.props.onHide()
+      this.props.refreshList()
+      this.setState({
+        message: ''
+      })
+    }else{
+      console.log('error on retrieve')
+    }
+  }, error => {
+    this.props.setIsLoadingV2(false);
+    console.log(error);
+  })
+}
 
  render() {
     return (
@@ -28,13 +51,16 @@ class RemarksModal extends Component {
           <Modal.Title>Add Remarks</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={this.handleSubmitForm}>
+          <Form>
             
-            <Form.Group controlId="formMessage">
+            <Form.Group controlId="formMessage" style={{
+              marginTop: 10,
+              marginBottom: 10
+            }}>
               <Form.Label>Add Remarks for Applicant</Form.Label>
               <Form.Control as="textarea" rows={3} placeholder="Enter remarks" value={this.state.message} onChange={this.handleMessageChange} />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" onClick={()=>{this.handleRemarkSubmit()}}>
               Submit
             </Button>
           </Form>
@@ -44,4 +70,16 @@ class RemarksModal extends Component {
  }
 }
 
-export default RemarksModal;
+const mapStateToProps = (state) => ({
+  user: state.user,
+  details: state.details, 
+ });
+ const mapDispatchToProps = (dispatch) => {
+  return {
+      setIsLoadingV2: (details) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { details } });
+      }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RemarksModal);

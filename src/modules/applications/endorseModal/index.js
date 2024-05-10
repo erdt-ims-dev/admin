@@ -3,14 +3,9 @@ import 'modules/applications/applications.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
-import Breadcrumb from 'modules/generic/breadcrumb';
-import InputField from 'modules/generic/input';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
+import { connect } from 'react-redux';
 
 
 const files = [
@@ -57,19 +52,36 @@ class endorseModal extends Component {
       }
     componentDidMount() {
         
-        // this.updateData();
     }
     
     componentDidUpdate(prevProps) {
         
     }
 
-    updateData() {
-        
-       
-    }
+    handleEndorse() {
+      const {setData} = this.props
+      // Trigger loading state to true before the API call
+      this.props.setIsLoadingV2(true);
+  
+      API.request('scholar_request/updateToEndorsed', {
+          id: setData.id,
+      }, response => {
+          // Trigger loading state to false after the API call is completed
+          this.props.setIsLoadingV2(false);
+  
+          if (response && response.data) {
+              this.props.onHide();
+              this.props.refreshList();
+          } else {
+              console.log('error on retrieve');
+          }
+      }, error => {
+          // Trigger loading state to false in case of an error
+          this.props.setIsLoadingV2(false);
+          console.log(error);
+      });
+  }
     render() {
-        const {data, setEmail} = this.state
         const {setData} = this.props
     return (
         <div className=''>
@@ -95,7 +107,7 @@ class endorseModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={()=>{this.props.onEndorse(setData)}}>Endorse</Button>
+        <Button onClick={()=>{this.handleEndorse()}}>Endorse</Button>
       </Modal.Footer>
     </Modal>
                     
@@ -106,4 +118,16 @@ class endorseModal extends Component {
     }
 }
 
-export default endorseModal
+const mapStateToProps = (state) => ({
+  user: state.user,
+  details: state.details, 
+ });
+ const mapDispatchToProps = (dispatch) => {
+  return {
+      setIsLoadingV2: (details) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { details } });
+      }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(endorseModal);
