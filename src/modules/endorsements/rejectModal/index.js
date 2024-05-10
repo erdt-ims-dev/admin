@@ -7,42 +7,6 @@ import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
 import { connect } from 'react-redux';
 
-
-const files = [
-    {
-        title: "Transcript of Record",
-        disabled: false
-    },
-    {
-        title: "Birth Certificate",
-        disabled: false
-    },
-    {
-        title: "Valid ID",
-        disabled: false
-    },
-    {
-        title: "Narrative Essay",
-        disabled: false
-    },
-    {
-        title: "Medical Certificate",
-        disabled: false
-    },
-    {
-        title: "NBI Clearance",
-        disabled: false
-    },
-    {
-        title: "Admission Notice",
-        disabled: false
-    },
-    {
-        title: "Program Study",
-        disabled: false
-    },
-]
-
 class endorseModal extends Component {
     constructor(props) {
         super(props);
@@ -50,20 +14,13 @@ class endorseModal extends Component {
           
         };
       }
-    componentDidMount() {
-        
-    }
-    
-    componentDidUpdate(prevProps) {
-        
-    }
 
-    handleEndorse() {
+    handleReject() {
       const {setData} = this.props
       // Trigger loading state to true before the API call
       this.props.setIsLoadingV2(true);
   
-      API.request('scholar_request/updateToEndorsed', {
+      API.request('scholar_request/reject', {
           id: setData.id,
       }, response => {
           // Trigger loading state to false after the API call is completed
@@ -101,13 +58,13 @@ class endorseModal extends Component {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body >
-        Are you sure you want to endorse applicant?
+        Are you sure you want to reject applicant?
       </Modal.Body>
       <Modal.Footer style={{
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={()=>{this.handleEndorse()}}>Endorse</Button>
+        <Button onClick={()=>{this.handleReject()}}>Reject</Button>
       </Modal.Footer>
     </Modal>
                     

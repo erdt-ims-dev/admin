@@ -51,11 +51,6 @@ const files = [
         disabled: false,
         key: 'admission_notice'
     },
-    {
-        title: "Program Study",
-        disabled: false,
-        key: 'program'
-    },
 ]
 
 class ViewModal extends Component {
@@ -95,7 +90,6 @@ class ViewModal extends Component {
     render() {
         const {data, setEmail} = this.state
         const {setData} = this.props
-        console.log("view", setData)
     return (
         <div className=''>
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}

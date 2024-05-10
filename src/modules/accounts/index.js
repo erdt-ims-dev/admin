@@ -9,7 +9,7 @@ import { Box } from "@mui/material";
 import Breadcrumbs from "../generic/breadcrumb";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import  TableComponent  from 'modules/generic/table/index';
+import  TableComponent  from 'modules/generic/tableV3/index';
 import ViewModal from './viewModal/index'
 import EditModal from './editModal/index'
 import DeleteModal from './deleteModal/index'
@@ -50,7 +50,8 @@ class Accounts extends Component {
           },
           ],
           data: [],
-          setData: null
+          setData: null,
+          tableLoader: true
           };
       };
       // Modal Handling
@@ -113,27 +114,45 @@ class Accounts extends Component {
      })
     }
     // State
-    componentDidMount(){
-      this.getList()
-    }
-    getList(){
-        API.request('user/retrieveAll', {
-          
-        }, response => {
+    getList(callback){
+      API.request('user/retrieveAll', {
+      }, response => {
           if (response && response.data) {
-            this.setState({
-                account_list: response.data
-            })
-          }else{
-            console.log('error on retrieve')
+              this.setState({
+                  account_list: response.data
+              }, () => {
+                  // Call the callback function after setting the state
+                  if (typeof callback === 'function') {
+                      callback();
+                  }
+              });
+          } else {
+              console.log('error on retrieve');
+              // Optionally, call the callback function with an error or a specific value
+              if (typeof callback === 'function') {
+                  callback(false);
+              }
           }
-        }, error => {
-          console.log(error)
-        })
-      }
+      }, error => {
+          console.log(error);
+          // Optionally, call the callback function with an error or a specific value
+          if (typeof callback === 'function') {
+              callback(false);
+          }
+      });
+  }
+  
+  componentDidMount(){
+      this.getList(() => {
+          // This function will be called after getList successfully retrieves data
+          this.setState({
+              tableLoader: false,
+          });
+      });
+  }
     
     render() {
-      const { columns, account_list, showEdit, showDelete, showView, setData } = this.state;
+      const { columns, account_list, showEdit, showDelete, showView, setData, tableLoader } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -151,7 +170,7 @@ class Accounts extends Component {
       </Box>
 
       <div className="table-container">
-        <TableComponent columns={columns} data={account_list} onRowClick={(row) => console.log(row.original.program)}/>
+        <TableComponent columns={columns} data={account_list} isLoading={tableLoader}/>
         
       </div>
       <ViewModal

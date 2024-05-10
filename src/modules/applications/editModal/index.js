@@ -13,6 +13,7 @@ import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
+import { connect } from 'react-redux'; // Import connect from react-redux
 
 
 const files = [
@@ -149,34 +150,43 @@ class EditModal extends Component {
         }
         uploadFile() {
             const { selectedFiles } = this.state;
-            const {setData} = this.props
+            const { setData } = this.props;
             let formData = new FormData();
-           
+        
             // Append user_id to the FormData
             formData.append('user_id', setData.user_id);
-           
+        
             // Loop through each file and append it to the FormData
             Object.entries(selectedFiles).forEach(([field, fileData]) => {
-               if (fileData && fileData.file) {
-                 // Append each file with its field name as the key
-                 formData.append(field, fileData.file);
-               }
+                if (fileData && fileData.file) {
+                    // Append each file with its field name as the key
+                    formData.append(field, fileData.file);
+                }
             });
-           
+        
+            // Set loading to true before starting the API call
+            this.props.setIsLoadingV2(true);
+        
             // Make a single API call with all files
             API.uploadFile('account_details/uploadNewFiles', formData, response => {
-               if (response && response.data) {
-                 alert("File(s) uploaded to server")
-                 this.props.getList()   
-                 this.props.onHide()
-               } else {
-                alert("There has been an error uploading your files to the server. Please try again")
-                this.handleDiscard()
-               }
+                // Set loading to false after the API call is completed
+                this.props.setIsLoadingV2(false);
+        
+                if (response && response.data) {
+                    alert("File(s) uploaded to server");
+                    this.handleDiscard();
+                    this.props.refreshList();
+                    this.props.onHide();
+                } else {
+                    alert("There has been an error uploading your files to the server. Please try again");
+                    this.handleDiscard();
+                }
             }, error => {
-               console.log(error);
+                // Set loading to false in case of an error
+                this.props.setIsLoadingV2(false);
+                console.log(error);
             });
-           }
+        }
         handleDiscard(){
             this.setState({
                 first_name: null,
@@ -221,7 +231,6 @@ class EditModal extends Component {
     render() {
         const { selectedFiles} = this.state
         const {setData} = this.props
-        console.log("setData", setData)
     return (
         <div className=''>
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -435,4 +444,14 @@ class EditModal extends Component {
     }
 }
 
-export default EditModal
+const mapStateToProps = (state) => ({ state: state });
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsLoadingV2: (status) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
+      }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditModal);

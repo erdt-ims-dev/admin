@@ -6,6 +6,8 @@ import { faArrowRightFromBracket, faBars, faBell, faEllipsisV, faGear, faUser } 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { connect } from 'react-redux'
+
 export class Header extends Component {
     constructor(props) {
         super(props);
@@ -14,6 +16,7 @@ export class Header extends Component {
         };
       }
     render() {
+      const {details} = this.props
         return (
             <div className='headerContainer'>
               <Container className='left-headerContainer'>
@@ -45,7 +48,7 @@ export class Header extends Component {
                   <span  style={{
                     padding: 10,
                     color: "white"
-                  }}> Hi User!</span>
+                  }}> Hi {details.first_name ? details.first_name : "User"}!</span>
                   <FontAwesomeIcon icon={faEllipsisV} className='white fa-lg' style={{
                     padding: 10
                   }}/>
@@ -66,4 +69,10 @@ export class Header extends Component {
     }
 }
 
-export default Header
+const mapStateToProps = (state) => {
+  return {
+      details: state.details
+  };
+};
+
+export default connect(mapStateToProps)(Header);

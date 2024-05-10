@@ -9,8 +9,10 @@ import { Box } from "@mui/material";
 import Breadcrumbs from "modules/generic/breadcrumb";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import  TableComponent  from 'modules/generic/table/index';
+import  TableComponent  from 'modules/generic/tableV3/variation1';
 import ViewModal from 'modules/applications/viewModal/index'
+import RejectModal from 'modules/endorsements/rejectModal/index'
+import ApproveModal from 'modules/endorsements/approveModal/index'
 
 import API from 'services/Api'
 
@@ -21,7 +23,8 @@ class Endorsements extends Component {
       this.state = {
         applicant_list: [],
         showView: false,
-        showEndorse: false,
+        showApprove: false,
+        showReject: false,
         showEdit: false,
         columns: [
           {
@@ -50,32 +53,21 @@ class Endorsements extends Component {
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.handleApprove(row.original)}>Approve</span>
                 <span className='link' onClick={() => this.handleReject(row.original)}>Reject</span>
+
+                <span className='link' onClick={() => this.handleApprove(row.original)}>Approve</span>
               </div>
             ),
           },
           ],
           data: [],
           list: [],
-          setData: null
+          setData: null,
+          tableLoader: true
           };
       };
       // Methods
-      handleApprove(data){
-        console.log("data", data)
-        API.request('scholar_request/approveApplicant', {
-          id: data.id
-        }, response => {
-           if (response && response.data) {
-             this.getList()
-           } else {
-             console.log('error on retrieve');
-           }
-        }, error => {
-           console.log(error);
-        });
-      }
+      
       // Modal Handling
     handleView(rowData){
       this.setState({
@@ -91,38 +83,84 @@ class Endorsements extends Component {
       },() => {
      })
     }
-    
-    // State
-    componentDidMount(){
-      this.getList()
+    //
+    handleApprove(rowData){
+      this.setState({
+        showApprove: !this.state.showApprove,
+        setData: rowData
+      },() => {
+     })
     }
-    getList() {
+    closeApprove(){
+      this.setState({
+        showApprove: !this.state.showApprove,
+        setData: null
+      },() => {
+     })
+    }
+    handleReject(rowData){
+      this.setState({
+        showReject: !this.state.showReject,
+        setData: rowData
+      },() => {
+     })
+    }
+    closeReject(){
+      this.setState({
+        showReject: !this.state.showReject,
+        setData: null
+      },() => {
+     })
+    }
+    // State
+    getList(callback){
       API.request('scholar_request/retrieveEndorsedTableAndDetail', {
       }, response => {
-         if (response && response.data) {
-           const details = [];
-           const list = [];
-     
-           response.data.forEach(element => {
-             details.push(element.details);
-             list.push(element.list);
-           });
-     
-           this.setState({
-             data: details,
-             list: list
-           });
-         } else {
-           console.log('error on retrieve');
-         }
+          if (response && response.data) {
+              const details = [];
+              const list = [];
+  
+              response.data.forEach(element => {
+                  details.push(element.details);
+                  list.push(element.list);
+              });
+  
+              this.setState({
+                  data: details,
+                  list: list
+              }, () => {
+                  // Call the callback function after setting the state
+                  if (typeof callback === 'function') {
+                      callback();
+                  }
+              });
+          } else {
+              console.log('error on retrieve');
+              // Optionally, call the callback function with an error or a specific value
+              if (typeof callback === 'function') {
+                  callback(false);
+              }
+          }
       }, error => {
-         console.log(error);
+          console.log(error);
+          // Optionally, call the callback function with an error or a specific value
+          if (typeof callback === 'function') {
+              callback(false);
+          }
       });
-     }
+  }
+  
+  componentDidMount(){
+      this.getList(() => {
+          // This function will be called after getList successfully retrieves data
+          this.setState({
+              tableLoader: false,
+          });
+      });
+  }
   
     render() {
-      const { columns, data, showEdit, showEndorse, showView, setData } = this.state;
-      const {history} = this.props;
+      const { columns, data, tableLoader, showView, showApprove, showReject, setData } = this.state;
       return (
       <div className="container">
       <Box
@@ -136,13 +174,25 @@ class Endorsements extends Component {
       </Box>
 
       <div className="table-container">
-        <TableComponent columns={columns} data={data} onRowClick={(row) => console.log(row.original.program)}/>
+        <TableComponent columns={columns} data={data} isLoading={tableLoader}/>
         
       </div>
       <ViewModal
       setData={setData}
       show={showView}
       onHide={()=>{this.closeView()}}
+      />
+      <ApproveModal
+      setData={setData}
+      show={showApprove}
+      refreshList={()=>{this.getList()}}
+      onHide={()=>{this.closeApprove()}}
+      />
+      <RejectModal
+      setData={setData}
+      show={showReject}
+      refreshList={()=>{this.getList()}}
+      onHide={()=>{this.closeReject()}}
       />
     </div>
         )

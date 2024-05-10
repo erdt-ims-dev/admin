@@ -7,7 +7,7 @@ export default class Stack extends React.Component {
     super(props);
   }
 
-
+  // White background spinner, covers the entire screen
 
   render() {
     return (

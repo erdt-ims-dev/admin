@@ -18,6 +18,7 @@ import Colors from 'common/Colors'
 import Login from "./modules/auth/login"
 import Register from "./modules/auth/register"
 import Spinner from 'modules/generic/spinner'
+import SpinnerV2 from 'modules/generic/spinnerV2'
 function App(props) {
   const history = useHistory();
   const location = useLocation()
@@ -45,7 +46,7 @@ function App(props) {
   }else{
     renderComponent = <Login navigate={navigate} />;
   }
-  const {user, token, details, isLoading, isLoggedIn} = props.state
+  const {user, token, isLoading, isLoadingV2 } = props.state
   return (
     <div>
     {
@@ -83,6 +84,19 @@ function App(props) {
             backgroundColor: Colors.white
           }}>
             <Spinner />
+          </div>
+        )
+      }
+      {
+        isLoadingV2 && (
+          <div style={{
+            // minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // backgroundColor: Colors.white
+          }}>
+            <SpinnerV2 />
           </div>
         )
       }

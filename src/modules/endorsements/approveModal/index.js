@@ -43,7 +43,7 @@ const files = [
     },
 ]
 
-class endorseModal extends Component {
+class approveModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,29 +58,21 @@ class endorseModal extends Component {
         
     }
 
-    handleEndorse() {
+    handleApprove(){
       const {setData} = this.props
-      // Trigger loading state to true before the API call
-      this.props.setIsLoadingV2(true);
-  
-      API.request('scholar_request/updateToEndorsed', {
-          id: setData.id,
+      API.request('scholar_request/approveApplicant', {
+        id: setData.id
       }, response => {
-          // Trigger loading state to false after the API call is completed
-          this.props.setIsLoadingV2(false);
-  
-          if (response && response.data) {
-              this.props.onHide();
-              this.props.refreshList();
-          } else {
-              console.log('error on retrieve');
-          }
+         if (response && response.data) {
+          this.props.onHide()
+           this.props.refreshList()
+         } else {
+           console.log('error on retrieve');
+         }
       }, error => {
-          // Trigger loading state to false in case of an error
-          this.props.setIsLoadingV2(false);
-          console.log(error);
+         console.log(error);
       });
-  }
+    }
     render() {
         const {setData} = this.props
     return (
@@ -101,13 +93,13 @@ class endorseModal extends Component {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body >
-        Are you sure you want to endorse applicant?
+        Are you sure you want to approve applicant?
       </Modal.Body>
       <Modal.Footer style={{
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={()=>{this.handleEndorse()}}>Endorse</Button>
+        <Button onClick={()=>{this.handleApprove()}}>Approve</Button>
       </Modal.Footer>
     </Modal>
                     
@@ -130,4 +122,4 @@ const mapStateToProps = (state) => ({
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(endorseModal);
+export default connect(mapStateToProps, mapDispatchToProps)(approveModal);
