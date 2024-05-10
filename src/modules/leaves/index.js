@@ -4,13 +4,14 @@ import { Table, Button, Modal, Form } from "react-bootstrap";
 import API from 'services/Api'
 import { v4 as uuidv4 } from 'uuid';
 
-const TABLE_HEADERS = ["#", "Scholar ID", "Leave Start", "Leave End", "Leave Letter", "Status",  "Action"];
+const TABLE_HEADERS = ["#", "Scholar ID", "Leave Start", "Leave End", "Leave Letter", "Status", "Comments", "Action"];
 
 function ScholarLeaveApplication() {
   const location = useLocation();
 
   const [leaverequests, setLeaveRequests] = useState([]);
   const [newLeaveRequest, setNewLeaveRequest] = useState({
+    id: '',
     leave_start: '',
     leave_end: '',
     leave_letter: '',
@@ -23,12 +24,26 @@ function ScholarLeaveApplication() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  
+  //error modal
+  const [validation, setValidation] = useState({ 
+    id: false,
+    leave_start: false,
+    leave_end: false,
+    leave_letter: false,
+    status: true,
+    comment: false,
+  });
+  const [error, setError] = useState([]);
+  const [errorModal, setErrorModal] = useState(false);
+  const errorClose = () => setErrorModal(false);
+  const errorShow = () => setErrorModal(true);
+
   //edit modal
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [editRequestShow, setEditRequestShow] = useState(false);
   
   const handleEditRequestShow = (request) => {
+    //console.log(request);
     setSelectedRequest(request);
     setEditRequestShow(true);
   }
@@ -48,6 +63,10 @@ function ScholarLeaveApplication() {
     setNewLeaveRequest(prevState => ({
         ...prevState,
         [fieldName]: event.target.value
+    }));
+    setValidation(prevState => ({
+        ...prevState,
+        [fieldName]: true
     }));
   };
   const handleFileChange = (fieldName, event) => {
@@ -71,28 +90,60 @@ function ScholarLeaveApplication() {
     });
   }
 
-  
+  const formValidation = () => {
+    let inputErrorMessage = {
+      message: "Please input fields ",
+      exists: false
+    }
+    Object.entries(validation).forEach(([key, value]) => {
+      if (!value) {
+        inputErrorMessage.message += `${key}, `; 
+        inputErrorMessage.exists = true;
+      }
+    });
+    //Check if the last character is a comma and remove it if necessary
+    if (inputErrorMessage.message.endsWith(', ')) {
+      inputErrorMessage.message = inputErrorMessage.message.slice(0, -2);
+    }
+    //if message exist
+    if(inputErrorMessage.exists) {
+      setError(inputErrorMessage.message)
+      errorShow();
+      return false;
+    }else{
+      return true
+    }
+  }
   //create
   const createRequest = async (e) => {
     e.preventDefault();
+    let validated = formValidation();
+    if (validated) {
     const formData = new FormData();
+      formData.append('user_id', newLeaveRequest.id);
       formData.append('leave_letter', letterFile.current.files[0]);
       formData.append('leave_start', newLeaveRequest.leave_start);
       formData.append('leave_end', newLeaveRequest.leave_end);
       formData.append('status', newLeaveRequest.status);
+      formData.append('comment_id', newLeaveRequest.comment);
       console.log(formData);
       API.uploadFile('leave_application/create', formData, response => {
-        if (response && response.data) {
-          console.log('Data created successfully', response.data);
+        if (!response.data.error) {
+          console.log('response: ', response);
           const newTask = {...response.data, tempId: uuidv4() };
           setLeaveRequests(prevTasks => [...prevTasks, newTask]);
           fetchRequests();
         } else {
-          console.log('error on retrieve');
+          console.log(response.data.error);
+          setError(response.data.error);
+          errorShow();
         }
       }, error => {
         console.log(error)
       });
+    }
+    
+    //console.log(newLeaveRequest, validation)
     setShow(false);
   };
 
@@ -148,54 +199,59 @@ function ScholarLeaveApplication() {
     <Button 
           onClick={handleShow} 
           style={{float:'right'}}> Add New Request </Button>
-    {/* <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>user</th>
-          <th>comment</th>
-          <th>leave start</th>
-          <th>leave end</th>
-          <th>leave letter</th>
-          <th>status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {leaverequests.map((request, index) => (
-          <tr key={request.id}>
-            <td>{index+1}</td>
-            <td>{request.user_id}</td>
-            <td>{request.comment_id}</td>
-            <td>{request.leave_start}</td>
-            <td>{request.leave_end}</td>
-            <td>{request.status}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table> */}
+    
+    {/* error modal */}
+    <Modal show={errorModal} onHide={errorClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{error}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={errorClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    
+    {/* add record modal */}
     <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Add New Leave Application</Modal.Title>
         </Modal.Header>
         <Modal.Body>
         <Form>
+          <p style={{marginLeft:'1rem', marginBottom:'1rem', fontStyle:'italic'}}>please fill all the fields below</p>
           <Form.Group controlId="formStudyName">
-              <Form.Label>Leave Start</Form.Label>
+              <Form.Label>Scholar ID:</Form.Label>
+              <Form.Control type="text" placeholder="Enter ID" onChange={(event) => { handleInputChange('id', event)}}/>
+              {/* <input type="text" placeholder=" User ID" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('id', event)}></input> */}
+              {newLeaveRequest.id === '' && <p style={{color:'red', fontStyle:'italic'}}>enter id</p>}
+          </Form.Group>
+          <Form.Group controlId="formStudyName">
+              <Form.Label>Leave Start:</Form.Label>
               {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_start', event)}></input>
+              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => { handleInputChange('leave_start', event)}}></input>
+              {newLeaveRequest.leave_start === '' && <p style={{color:'red', fontStyle:'italic'}}>enter leave start</p>}
           </Form.Group>
           <Form.Group controlId="formStudy">
-              <Form.Label>Leave End</Form.Label>
+              <Form.Label>Leave End:</Form.Label>
               {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
+              {newLeaveRequest.leave_end === '' && <p style={{color:'red', fontStyle:'italic'}}>enter leave end</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
-              <Form.Label>Leave Letter</Form.Label>
-              <Form.Control type="file" placeholder="Enter Study Category" onChange={(event) => handleInputChange('leave_letter', event)} ref={letterFile}/>
+              <Form.Label>Leave Letter:</Form.Label>
+              <Form.Control type="file" placeholder="Enter Study Category" ref={letterFile} onChange={(event) => handleInputChange('leave_letter', event)} />
+              {newLeaveRequest.leave_letter === '' && <p style={{color:'red', fontStyle:'italic'}}>input file</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
-              <Form.Label>Status</Form.Label>
+              <Form.Label>Status:</Form.Label>
               <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly/>
+          </Form.Group>
+          <Form.Group controlId="formStudyCategory">
+              <Form.Label>Comment:</Form.Label>
+              <Form.Control type="text" placeholder="Enter Comment" onChange={(event) => handleInputChange('comment', event)}/>
+              {newLeaveRequest.comment === '' && <p style={{color:'red', fontStyle:'italic'}}>enter comment</p>}
           </Form.Group>
         </Form>
         </Modal.Body>
@@ -212,6 +268,7 @@ function ScholarLeaveApplication() {
       {/* to edit leave requests */}
       <Modal show={editRequestShow} onHide={handleEditRequestClose}>
         <Modal.Header closeButton>
+          
           <Modal.Title>Edit Request</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -243,24 +300,31 @@ function ScholarLeaveApplication() {
                           />
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
-              <Form.Label>Leave Letter</Form.Label>
+              <Form.Label>Leave Letter</Form.Label><br/>
+              <a style={{fontStyle:'italic'}} href={selectedRequest?.leave_letter} target="_blank" rel="noreferrer noopener">current file</a> 
               <Form.Control type="file" placeholder="Upload Leave Upload" onChange={(event) => handleFileChange('leave_letter', event)} ref={letterFile}/>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
-              <Form.Control type="text" placeholder="" 
+              <Form.Control type="text" placeholder={selectedRequest?.status} 
                             onChange={(event) => {
                               // Extract the new value from the event
                               const newValue = event.target.value;
                               // Update the setSelectedRequest state with the new status
                               setSelectedRequest(prevTask => ({...prevTask, status: newValue }));
                             }} 
-                            value={selectedRequest?.status} 
                           />
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Comment</Form.Label>
-              <Form.Control type="text" placeholder="" onChange={(event) => handleInputChange('comment', event)} value={selectedRequest?.comment} />
+              <Form.Control type="text" placeholder={selectedRequest?.comment_id}
+                            onChange={(event) => {
+                              // Extract the new value from the event
+                              const newValue = event.target.value;
+                              // Update the setSelectedRequest state with the new status
+                              setSelectedRequest(prevTask => ({...prevTask, comment_id: newValue }));
+                            }} 
+                            />
           </Form.Group>
         </Form>
         </Modal.Body>
@@ -305,8 +369,9 @@ function ScholarLeaveApplication() {
                   <td>{request.user_id}</td>
                   <td>{request.leave_start}</td>
                   <td>{request.leave_end}</td>
-                  <td> <a href={request.leave_letter}>View File</a></td>
+                  <td> <a href={request.leave_letter} target="_blank" rel="noreferrer noopener">View File</a></td>
                   <td>{request.status}</td>
+                  <td>{request.comment_id}</td>
                   <td>
                     <span className='link' 
                           onClick={() => handleEditRequestShow(request)} 

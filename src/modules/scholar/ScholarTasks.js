@@ -210,12 +210,12 @@ function ScholarTasks() {
         <Form>
           <Form.Group controlId="formStudyName">
               <Form.Label>Midterm</Form.Label><br/>
-              <a href={selectedTask.midterm_assessment}>link</a>
+              <a href={selectedTask.midterm_assessment} target="_blank" rel="noreferrer noopener">link</a>
               <Form.Control type="file" placeholder="Midterm file" onChange={(event) => handleInputChange('midterm_assessment', event)} ref={midtermInput} />
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Final</Form.Label><br/>
-              <a href={selectedTask.final_assessment}>link</a>
+              <a href={selectedTask.final_assessment} target="_blank" rel="noreferrer noopener">link</a>
               <Form.Control type="file" placeholder="Final file" onChange={(event) => handleInputChange('final_assessment', event)}  ref={finalInput}/>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
