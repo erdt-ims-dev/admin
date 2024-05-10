@@ -96,21 +96,7 @@ class Announcements extends Component {
       },() => {
      })
     }
-    onDeactivate(){
-      const {setData} = this.state
-      API.request('admin_system_message/delete', {
-          id: setData.id
-      }, response => {
-        if (response && response.data) {
-          this.closeDelete()
-          this.getList()
-        }else{
-          console.log('error on retrieve')
-        }
-      }, error => {
-        console.log(error)
-      })
-    }
+    
     closeDelete(){
       this.setState({
         showDelete: !this.state.showDelete,
@@ -131,28 +117,8 @@ class Announcements extends Component {
         },() => {
        })
       }
-      handleSubmitAnnouncement = (announcement) => {
-        const loggedInUser = this.props.user
-        // const announcementString = JSON.stringify(announcement);
-        API.request('admin_system_message/create', {
-          message_by: loggedInUser.email,
-          message_title: announcement.title,
-          message_body: announcement.message
-        }, response => {
-          if (response && response.data) {
-            // this.closeCreate()
-            this.getList()
-          }else{
-            console.log('error on retrieve')
-          }
-        }, error => {
-          console.log(error)
-        })
-        this.closeCreate();
-     };
-     handleEditSubmit = (announcement) => {
-      console.log(announcement)
-     }
+      
+     
     // State
     getList(callback){
       API.request('admin_system_message/retrieveAll', {
@@ -221,30 +187,35 @@ class Announcements extends Component {
       <DeleteModal
       setData={setData}
       show={showDelete}
+      refreshList={()=>{this.getList()}}
       onHide={()=>{this.closeDelete()}}
-      onDeactivate={()=>{this.onDeactivate()}}
       />
       <EditModal
       setData={setData}
       show={showEdit}
-      refresh={()=>{this.getList()}}
+      refreshList={()=>{this.getList()}}
       onHide={()=>{this.closeEdit()}}
-      handleEditSubmit={this.handleEditSubmit}
       />
       <CreateModal
         show={showCreate}
-        handleClose={()=>{this.closeCreate()}}
-        handleSubmit={this.handleSubmitAnnouncement}
+        onHide={()=>{this.closeCreate()}}
+        refreshList={()=>{this.getList()}}
       />
     </div>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        user: state.user
-    };
+const mapStateToProps = (state) => ({
+  user: state.user,
+  details: state.details, 
+ });
+ const mapDispatchToProps = (dispatch) => {
+  return {
+      setIsLoadingV2: (details) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { details } });
+      }
+  };
 };
 
-export default connect(mapStateToProps)(Announcements);
+export default connect(mapStateToProps, mapDispatchToProps)(Announcements);
