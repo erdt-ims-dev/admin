@@ -5,7 +5,7 @@ import { Table, Button, Modal, Form } from "react-bootstrap";
 import { v4 as uuidv4 } from 'uuid';
 
 import "./style.scss";
-const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type", "Action"];
+const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type",  "Action"];
 function ScholarPortfolio() {
     const location = useLocation();
     const scholar = location.state.scholar;

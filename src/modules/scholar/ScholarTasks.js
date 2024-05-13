@@ -180,6 +180,7 @@ function ScholarTasks() {
           <Form.Group controlId="formStudyName">
               <Form.Label>Midterm</Form.Label>
               <Form.Control type="file" placeholder="Midterm Assessment" onChange={(event) => handleInputChange('midterm_assessment', event)} ref={midtermInput}  />
+              {newTask.midterm_assessment === '' && <p style={{color:'red', fontStyle:'italic'}}>enter id</p>}
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Final</Form.Label>

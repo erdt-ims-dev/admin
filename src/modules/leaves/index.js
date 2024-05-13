@@ -90,6 +90,37 @@ function ScholarLeaveApplication() {
     });
   }
 
+  const approveRequest = (request) => {
+    //set the selected request 
+    request.status = "approved";
+    console.log(request);
+    setSelectedRequest(request);
+    //change status to pending  
+    console.log("change: ", request);
+     //apply to form data
+    const formData = new FormData();
+      //formData.append('user_id', selectedRequest.user_id);
+      formData.append('id', selectedRequest.id);
+      formData.append('leave_letter', selectedRequest.leave_letter);
+      formData.append('leave_start', selectedRequest.leave_start);
+      formData.append('leave_end', selectedRequest.leave_end);
+      formData.append('status', selectedRequest.status);
+      console.log(formData);
+      API.uploadFile('leave_application/updateOne', formData, response => {
+        if (!response.data.error) {
+          console.log('Data updated successfully', response.data);
+          fetchRequests();
+        } else {
+          console.log(response.data.error);
+          setError(response.data.error);
+          errorShow();
+        }
+      }, error => {
+        console.log(error)
+      })
+
+  }
+
   const formValidation = () => {
     let inputErrorMessage = {
       message: "Please input fields ",
@@ -119,7 +150,7 @@ function ScholarLeaveApplication() {
     e.preventDefault();
     let validated = formValidation();
     if (validated) {
-    const formData = new FormData();
+      const formData = new FormData();
       formData.append('user_id', newLeaveRequest.id);
       formData.append('leave_letter', letterFile.current.files[0]);
       formData.append('leave_start', newLeaveRequest.leave_start);
@@ -373,6 +404,9 @@ function ScholarLeaveApplication() {
                   <td>{request.status}</td>
                   <td>{request.comment_id}</td>
                   <td>
+                    <span className='link' 
+                          onClick={() => approveRequest(request)} 
+                          >Approve</span>
                     <span className='link' 
                           onClick={() => handleEditRequestShow(request)} 
                           >Edit</span>
