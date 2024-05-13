@@ -3,7 +3,7 @@ import { ListGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './style.css';
-
+// Allows this.props.inject to forcefully inject value to field, good for displays
 class InputField extends Component {
     constructor(props) {
         super(props);

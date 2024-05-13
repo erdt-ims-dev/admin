@@ -181,7 +181,7 @@ class newApplicant extends Component {
                     if (response && response.data) {
                         if (response.data.account_type!== 'new') {
                             this.setState({
-                                errorMessage: "This email already has an existing application"
+                                errorMessage: "This email already has an existing application or is not eligible"
                             });
                         } else {
                             this.setState({
@@ -192,7 +192,7 @@ class newApplicant extends Component {
                         }
                     } else {
                         this.setState({
-                            errorMessage: "Email Not Found"
+                            errorMessage: "Error on retrieve, please try again"
                         });
                     }
                 }, error => {
