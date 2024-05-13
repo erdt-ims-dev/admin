@@ -81,7 +81,7 @@ function ScholarLeaveApplication() {
     API.request('leave_application/retrieveAll', {}, response => {
       if (response && response.data) {
         setLeaveRequests(response.data)
-        console.log(response.data);
+        //console.log(response.data);
       } else {
         console.log('error on retrieve');
       }
@@ -93,32 +93,32 @@ function ScholarLeaveApplication() {
   const approveRequest = (request) => {
     //set the selected request 
     request.status = "approved";
-    console.log(request);
+    
+    //console.log(request);
     setSelectedRequest(request);
     //change status to pending  
-    console.log("change: ", request);
+    //console.log("change: ", selectedRequest); 
      //apply to form data
     const formData = new FormData();
       //formData.append('user_id', selectedRequest.user_id);
-      formData.append('id', selectedRequest.id);
-      formData.append('leave_letter', selectedRequest.leave_letter);
-      formData.append('leave_start', selectedRequest.leave_start);
-      formData.append('leave_end', selectedRequest.leave_end);
-      formData.append('status', selectedRequest.status);
-      console.log(formData);
-      API.uploadFile('leave_application/updateOne', formData, response => {
-        if (!response.data.error) {
-          console.log('Data updated successfully', response.data);
-          fetchRequests();
-        } else {
-          console.log(response.data.error);
-          setError(response.data.error);
-          errorShow();
-        }
-      }, error => {
-        console.log(error)
-      })
-
+    formData.append('id', request.id);
+    formData.append('leave_letter', request.leave_letter);
+    formData.append('leave_start', request.leave_start);
+    formData.append('leave_end', request.leave_end);
+    formData.append('status', request.status);
+    //console.log(formData);
+    API.uploadFile('leave_application/updateOne', formData, response => {
+      if (!response.data.error) {
+        console.log('Data updated successfully', response.data);
+        fetchRequests();
+      } else {
+        console.log(response.data.error);
+        setError(response.data.error);
+        errorShow();
+      }
+    }, error => {
+      console.log(error)
+    })
   }
 
   const formValidation = () => {
@@ -157,7 +157,7 @@ function ScholarLeaveApplication() {
       formData.append('leave_end', newLeaveRequest.leave_end);
       formData.append('status', newLeaveRequest.status);
       formData.append('comment_id', newLeaveRequest.comment);
-      console.log(formData);
+      //console.log(formData);
       API.uploadFile('leave_application/create', formData, response => {
         if (!response.data.error) {
           console.log('response: ', response);
@@ -190,11 +190,12 @@ function ScholarLeaveApplication() {
       formData.append('status', selectedRequest.status);
       //console.log(selectedRequest.id);
       API.uploadFile('leave_application/updateOne', formData, response => {
-        if (response && response.data) {
+        if (!response.data.error) {
           console.log('Data updated successfully', response.data);
           fetchRequests();
         } else {
-          console.log('error on retrieve');
+          setError(response.data.error);
+          errorShow();
         }
       }, error => {
         console.log(error)
@@ -206,17 +207,23 @@ function ScholarLeaveApplication() {
     //delete
     const deleteRequest = async (e) => {
       e.preventDefault();
-      console.log(selectedRequest.id);
-      API.request('leave_application/delete', {
+      //console.log(selectedRequest.id);
+      API.request('leave_application/updateOne', {
         id: selectedRequest.id,
+        leave_letter: selectedRequest.leave_letter,
+        leave_start: selectedRequest.leave_start,
+        leave_end: selectedRequest.leave_end,
+        status: "denied",
+        comment_id: "",
       }, response => {
         console.log('Data deleted successfully');
+        fetchRequests();
       }, error => {
         console.log(error)
       })
       //console.log(selectedPortfolio);
       //to see the changes in the table after and close the modal
-      setLeaveRequests(leaverequests.filter(leaverequests => leaverequests.id !== selectedRequest.id));
+      //setLeaveRequests(leaverequests.filter(leaverequests => leaverequests.id !== selectedRequest.id));
       setDeleteRequestShow(false);
     };
   useEffect(() => {
