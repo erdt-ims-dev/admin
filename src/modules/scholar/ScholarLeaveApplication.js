@@ -16,9 +16,24 @@ function ScholarLeaveApplication() {
     leave_end: '',
     leave_letter: '',
     status: 'pending',
-    comment: '',
+    comment_id: '',
   });
   const letterFile = useRef(null);
+
+
+  //error modal
+  const [validation, setValidation] = useState({ 
+    id: false,
+    leave_start: false,
+    leave_end: false,
+    leave_letter: false,
+    status: true,
+    comment: false,
+  });
+  const [error, setError] = useState([]);
+  const [errorModal, setErrorModal] = useState(false);
+  const errorClose = () => setErrorModal(false);
+  const errorShow = () => setErrorModal(true);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -72,29 +87,59 @@ function ScholarLeaveApplication() {
     });
   }
 
+  const formValidation = () => {
+    let inputErrorMessage = {
+      message: "Please input fields ",
+      exists: false
+    }
+    Object.entries(validation).forEach(([key, value]) => {
+      if (!value) {
+        inputErrorMessage.message += `${key}, `; 
+        inputErrorMessage.exists = true;
+      }
+    });
+    //Check if the last character is a comma and remove it if necessary
+    if (inputErrorMessage.message.endsWith(', ')) {
+      inputErrorMessage.message = inputErrorMessage.message.slice(0, -2);
+    }
+    //if message exist
+    if(inputErrorMessage.exists) {
+      setError(inputErrorMessage.message)
+      errorShow();
+      return false;
+    }else{
+      return true
+    }
+  }
   
   //create
   const createRequest = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
+    let validated = formValidation();
+    if (validated) {
+      const formData = new FormData();
       formData.append('user_id', scholar.user_id);
       formData.append('leave_letter', letterFile.current.files[0]);
       formData.append('leave_start', newLeaveRequest.leave_start);
       formData.append('leave_end', newLeaveRequest.leave_end);
       formData.append('status', newLeaveRequest.status);
+      formData.append('comment_id', newLeaveRequest.comment_id);
       console.log(formData);
       API.uploadFile('leave_application/create', formData, response => {
-        if (response && response.data) {
+        if (!response.data.error) {
           console.log('Data created successfully', response.data);
           const newTask = {...response.data, tempId: uuidv4() };
           setLeaveRequests(prevTasks => [...prevTasks, newTask]);
           fetchRequests();
         } else {
-          console.log('error on retrieve');
+          console.log(response.data.error);
+          setError(response.data.error);
+          errorShow();
         }
       }, error => {
         console.log(error)
       });
+    }
     setShow(false);
   };
 
@@ -151,6 +196,18 @@ function ScholarLeaveApplication() {
     <Button 
           onClick={handleShow} 
           style={{float:'right'}}> Add New Request </Button>
+    {/* error modal */}
+    <Modal show={errorModal} onHide={errorClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{error}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={errorClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     {/* <table>
       <thead>
         <tr>
@@ -186,19 +243,28 @@ function ScholarLeaveApplication() {
               <Form.Label>Leave Start</Form.Label>
               {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_start', event)}></input>
+              {newLeaveRequest.leave_start === '' && <p style={{color:'red', fontStyle:'italic'}}>enter leave start</p>}
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Leave End</Form.Label>
               {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
+              {newLeaveRequest.leave_end === '' && <p style={{color:'red', fontStyle:'italic'}}>enter leave end</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>
               <Form.Control type="file" placeholder="Enter Study Category" onChange={(event) => handleInputChange('leave_letter', event)} ref={letterFile}/>
+              {newLeaveRequest.leave_letter === '' && <p style={{color:'red', fontStyle:'italic'}}>input leave_letter</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly/>
+              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly disabled/>
+              {newLeaveRequest.status === '' && <p style={{color:'red', fontStyle:'italic'}}>enter comment</p>}
+          </Form.Group>
+          <Form.Group controlId="formStudyCategory">
+              <Form.Label>Comment</Form.Label>
+              <Form.Control type="text" placeholder="" onChange={(event) => handleInputChange('status', event)} value={'no comment'} readOnly disabled/>
+              {/* {newLeaveRequest.comment_id === '' && <p style={{color:'red', fontStyle:'italic'}}>enter comment</p>} */}
           </Form.Group>
         </Form>
         </Modal.Body>

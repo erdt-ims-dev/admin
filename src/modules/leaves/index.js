@@ -122,28 +122,28 @@ function ScholarLeaveApplication() {
   }
 
   const formValidation = () => {
-    let inputErrorMessage = {
-      message: "Please input fields ",
-      exists: false
-    }
+    // let inputErrorMessage = {
+    //   message: "Please input fields ",
+    //   exists: false
+    // }
+
+    let formIsValid = true;
     Object.entries(validation).forEach(([key, value]) => {
       if (!value) {
-        inputErrorMessage.message += `${key}, `; 
-        inputErrorMessage.exists = true;
+        // inputErrorMessage.message += `${key}, `; 
+        // inputErrorMessage.exists = true;
+        validation[key] = false;
+        formIsValid = false;
       }
     });
     //Check if the last character is a comma and remove it if necessary
-    if (inputErrorMessage.message.endsWith(', ')) {
-      inputErrorMessage.message = inputErrorMessage.message.slice(0, -2);
-    }
-    //if message exist
-    if(inputErrorMessage.exists) {
-      setError(inputErrorMessage.message)
-      errorShow();
-      return false;
-    }else{
-      return true
-    }
+    // if (inputErrorMessage.message.endsWith(', ')) {
+    //   inputErrorMessage.message = inputErrorMessage.message.slice(0, -2);
+    // }
+    console.log(validation);
+    //if a key in validation is false
+    return (formIsValid) ? true : false;
+    
   }
   //create
   const createRequest = async (e) => {
@@ -167,14 +167,15 @@ function ScholarLeaveApplication() {
         } else {
           console.log(response.data.error);
           setError(response.data.error);
-          errorShow();
+          //setShow(true);
         }
       }, error => {
         console.log(error)
       });
+    } else {
+      console.log('not valid')
+      setShow(true); // Ensure the modal stays open
     }
-    
-    //console.log(newLeaveRequest, validation)
     setShow(false);
   };
 
@@ -182,7 +183,7 @@ function ScholarLeaveApplication() {
     const editRequest = async (e) => {
       e.preventDefault();
       const formData = new FormData();
-      //formData.append('user_id', scholar.user_id);
+      formData.append('user_id', selectedRequest.user_id);
       formData.append('id', selectedRequest.id);
       formData.append('leave_letter', letterFile.current.files[0]);
       formData.append('leave_start', selectedRequest.leave_start);
@@ -257,13 +258,13 @@ function ScholarLeaveApplication() {
           <Modal.Title>Add New Leave Application</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form>
+        <Form onSubmit={createRequest}>
           <p style={{marginLeft:'1rem', marginBottom:'1rem', fontStyle:'italic'}}>please fill all the fields below</p>
           <Form.Group controlId="formStudyName">
               <Form.Label>Scholar ID:</Form.Label>
               <Form.Control type="text" placeholder="Enter ID" onChange={(event) => { handleInputChange('id', event)}}/>
               {/* <input type="text" placeholder=" User ID" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('id', event)}></input> */}
-              {newLeaveRequest.id === '' && <p style={{color:'red', fontStyle:'italic'}}>enter id</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.id === false ? 'enter id' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudyName">
               <Form.Label>Leave Start:</Form.Label>
