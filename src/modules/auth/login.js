@@ -59,7 +59,7 @@ class Login extends Component {
    }
     
    this.props.setIsLoading(true)
-    API.request('login', {
+    API.request('login', {  
       email, password,
     }, response => {
       if (response && response.data) {

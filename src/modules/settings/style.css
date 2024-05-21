@@ -293,3 +293,37 @@ h4 {
     display: flex;
     justify-content: center;
 }
+
+.imageCircle img:hover {
+    filter: brightness(50%);
+}
+
+.imageCircle img:hover +.imageText {
+    display: block;
+}
+
+.overlay {
+    position: relative;
+    display: inline-block;
+}
+
+.overlay img {
+    cursor: pointer;
+}
+
+.overlay.overlayText {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease; /* Smooth transition for opacity */
+}
+
+.overlay:hover.overlayText {
+    opacity: 1; /* Show the text on hover */
+}
