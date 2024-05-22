@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { connect } from 'react-redux'
+import placeholder from 'assets/img/placeholder.jpeg'
 
 export class Header extends Component {
     constructor(props) {
@@ -37,14 +38,16 @@ export class Header extends Component {
                     justifyContent: "end",
                     margin: "1%",
                     gap: "5%",
-                    padding: "3%"
+                    padding: "3%",
+                    alignItems: 'center'
                   }}>
-                  <FontAwesomeIcon icon={faBell} className='white fa-lg' style={{
+                  {/* <FontAwesomeIcon icon={faBell} className='white fa-lg' style={{
                     padding: 10
-                  }}/>
-                  <FontAwesomeIcon icon={faUser} className='white fa-lg' style={{
-                    padding: 10
-                  }}/>
+                  }}/> */}
+                  <div className="profileImageCircle">
+                    <img src={details.profile_picture || placeholder} alt='profile' />
+                  </div>
+
                   {
                     details && (
                       <span style={{ padding: 10, color: "white" }}>

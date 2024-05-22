@@ -50,7 +50,7 @@ class Applications extends Component {
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.openView(row.original)}>View</span>
+                {/* <span className='link' onClick={() => this.openView(row.original)}>View</span> */}
                 <span className='link'onClick={() => this.openEdit(row.original)}>Edit</span>
                 <span className='link'onClick={() => this.openEndorse(row.original)}>Endorse</span>
                 <span className='link'onClick={() => this.openReject(row.original)}>Reject</span>
@@ -66,20 +66,22 @@ class Applications extends Component {
         };
       };
       // Modal Handling
-      openView(rowData){
-      this.setState({
-        showView: !this.state.showView,
-        setData: rowData
-      },() => {
-     })
-    }
-    closeView(){
-      this.setState({
-        showView: !this.state.showView,
-        setData: null
-      },() => {
-     })
-    }
+    //   openView(rowData){
+    //     console.log('Opening ViewModal');
+
+    //   this.setState({
+    //     showView: !this.state.showView,
+    //     setData: rowData
+    //   },() => {
+    //  })
+    // }
+    // closeView(){
+    //   this.setState({
+    //     showView: !this.state.showView,
+    //     setData: null
+    //   },() => {
+    //  })
+    // }
     openEdit(rowData){
       this.setState({
         showEdit: !this.state.showEdit,
@@ -208,11 +210,11 @@ class Applications extends Component {
         <TableComponent columns={columns} data={data} isLoading={tableLoader}/>
         
       </div>
-      <ViewModal
+      {/* <ViewModal
       setData={setData}
       show={showView}
       onHide={()=>{this.closeView()}}
-      />
+      /> */}
       <EndorseModal
       setData={setData}
       show={showEndorse}

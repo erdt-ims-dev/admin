@@ -46,7 +46,7 @@ class Announcements extends Component {
               <div className='flex'>
                 <span className='link' onClick={() => this.handleView(row.original)}>View</span>
                 <span className='link'onClick={() => this.handleEdit(row.original)}>Edit</span>
-                <span className='link'onClick={() => this.handleDeactivate(row.original)}>Deactivate</span>
+                <span className='link'onClick={() => this.handleDeactivate(row.original)}>Unpublish</span>
               </div>
             ),
           },

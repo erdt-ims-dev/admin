@@ -59,17 +59,17 @@ class DeleteModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
-        General Information
+        Unpublish Announcement
         </Modal.Title>
       </Modal.Header>
       <Modal.Body >
-        Are you sure you want to deactivate account?
+        Are you sure you want to unpublish announcement?
       </Modal.Body>
       <Modal.Footer style={{
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={()=>{this.props.onHide()}}>Close</Button>
-        <Button onClick={()=>{this.onDeactivate()}}>Deactivate</Button>
+        <Button onClick={()=>{this.onDeactivate()}}>Unpublish</Button>
       </Modal.Footer>
     </Modal>
                     

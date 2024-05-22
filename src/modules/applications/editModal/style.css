@@ -1,0 +1,17 @@
+.files-container {
+    max-height: 400px; /* Adjust this value based on your needs */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    opacity: 0;
+    transform: scaleY(0);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transform-origin: top; /* Ensures the scale starts from the top */
+}
+
+.files-container.expanded {
+    opacity: 1;
+    transform: scaleY(1);
+}
+.imageCircle{
+    display: flex;
+    justify-content: center;
+}
