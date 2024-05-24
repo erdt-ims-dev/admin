@@ -16,6 +16,8 @@
 .headerContainer{
     display: flex;
     justify-content: start;
+  position: relative;
+
     /* width: 100%; */
     height: 9vh;
     /* background-color: -webkit-linear-gradient(left,#5e17eb,#25006d); */
@@ -353,4 +355,17 @@ input {
 
 .logo-item {
   height: 100%; /* This makes the logo take the full height of the container */
+}
+
+.profileImageCircle {
+  width: 30px; /* Adjust the size as needed */
+  height: 30px; /* Adjust the size as needed */
+  border-radius: 50%;
+  align-items: center;
+  overflow: hidden;
+}
+
+.profileImageCircle img {
+  width: 100%;
+  height: auto;
 }

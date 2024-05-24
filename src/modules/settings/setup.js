@@ -12,6 +12,7 @@ import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { connect } from 'react-redux'
 
+// Used when scholar first sets up their profile
 
 const notification = [
     {
@@ -28,7 +29,7 @@ const notification = [
     },
 ]
 
-class Settings extends Component {
+class Setup extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -211,7 +212,73 @@ class Settings extends Component {
                                 />
                             </Col>
                         </Row>
-                    
+                        <Row className='Row'>
+                            <Col>
+                            <InputFieldV4
+                                id={6}
+                                type={'field'}
+                                label={'Account Type'}
+                                inject={this.state.type}
+                                locked={true}
+                                active={false}
+                                onChange={(type, errorType) => {
+                                    this.setState({
+                                        type, errorType
+                                    })
+                                  }}
+                                />
+                            </Col>
+                            <Col>
+                            <InputField
+                                id={7}
+                                type={'field'}
+                                label={'Account Status'}
+                                inject={this.state.status}
+                                locked={true}
+                                active={false}
+                                onChange={(status, errorStatus) => {
+                                    this.setState({
+                                        status, errorStatus
+                                    })
+                                  }}
+                                />
+                            </Col>
+                        </Row>
+                    {/* Password */}
+                    <hr className='break'/>
+                    <Row className='sectionHeader'>
+                        <p>Password Settings</p>
+                    </Row>
+                    <Row className='Row'>
+                            <Col className=''>
+                                <InputField
+                                id={8}
+                                type={'password'}
+                                label={'Current Password'}
+                                locked={false}
+                                active={false}
+                                onChange={(password, errorPassword) => {
+                                    this.setState({
+                                        password, errorPassword
+                                    })
+                                  }}
+                                />
+                            </Col>
+                            <Col>
+                            <InputField
+                                id={9}
+                                type={'password'}
+                                label={'Confirm New Password'}
+                                locked={false}
+                                active={false}
+                                onChange={(confirmPassword, errorConfirm) => {
+                                    this.setState({
+                                        confirmPassword, errorConfirm
+                                    })
+                                  }}
+                                />
+                            </Col>
+                        </Row>
                     {/* Notification */}
                     <hr className='break'/>
                     <Row className='sectionHeader'>
@@ -259,4 +326,4 @@ const mapStateToProps = (state) => ({
     };
   };
   
-  export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+  export default connect(mapStateToProps, mapDispatchToProps)(Setup);

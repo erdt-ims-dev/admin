@@ -54,7 +54,7 @@ class endorseModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
-        General Information
+        Reject Application?
         </Modal.Title>
       </Modal.Header>
       <Modal.Body >

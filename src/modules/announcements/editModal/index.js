@@ -19,7 +19,6 @@ class EditModal extends Component {
             title: this.props.setData ? this.props.setData.message_title : "",
             message: this.props.setData ? this.props.setData.message_body : ""
         });
-      console.log(this.props.setData)
 
     }
     }

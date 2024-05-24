@@ -2,7 +2,9 @@
   text-align: center;
   background-color: #f1f5fb;
   font-size: 14px!important;
-  
+  overflow-x: hidden;
+  overflow-y: hidden;
+  max-height: auto;
 }
 
 .App-logo {
