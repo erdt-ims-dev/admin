@@ -17,6 +17,12 @@ function ScholarTasks() {
       approval_status: 'pending',
     });
 
+    const [validation, setValidation] = useState({
+      midterm_assessment: true,
+      final_assessment: true,
+      approval_status: true,
+    });
+
     // create refs for input elements
     const midtermInput = useRef(null);
     const finalInput = useRef(null);
@@ -52,6 +58,7 @@ function ScholarTasks() {
         [fieldName]: file,
       }));
     };
+    
     //fetch all
     const fetchTasks = async () => {
       API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.user_id }, response => {
@@ -66,30 +73,56 @@ function ScholarTasks() {
       });
     }
     
+    const formValidation = async () => {
+      let formIsValid = true;
+
+      Object.entries(newTask).forEach(([key, value]) => {
+        if (!value) {
+          setValidation(prevState => ({
+            ...prevState,
+            [key]: false
+          }));
+          formIsValid = false;
+        }
+      });
+      console.log(validation);
+      return (formIsValid) ? true : false;
+    }
+
     //create
     const createTask = async (e) => {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append('scholar_id', scholar.user_id);
-      formData.append('midterm_assessment', midtermInput.current.files[0]);
-      formData.append('final_assessment', finalInput.current.files[0]);
-      //publish_type set to 'pending' by default;
 
-      API.uploadFile('scholar_tasks/create', formData, response => {
-        if (response && response.data) {
-          console.log('Data created successfully', response.data);
-          const newTask = {...response.data, tempId: uuidv4() };
-          setTasks(prevTasks => [...prevTasks, newTask]);
-          fetchTasks();
-        } else {
-          console.log('error on retrieve');
+      e.preventDefault();
+
+      let validated = formValidation();
+      if (validated) 
+        {
+          const formData = new FormData();
+          formData.append('scholar_id', scholar.user_id);
+          formData.append('midterm_assessment', midtermInput.current.files[0]);
+          formData.append('final_assessment', finalInput.current.files[0]);
+          //publish_type set to 'pending' by default;
+
+          API.uploadFile('scholar_tasks/create', formData, response => {
+            if (!response.data.error) {
+              console.log('Data created successfully', response.data);
+              const newTask = {...response.data, tempId: uuidv4() };
+              setTasks(prevTasks => [...prevTasks, newTask]);
+              fetchTasks();
+              setShow(false);
+            } else {
+              console.log('error on retrieve');
+              setShow(true);
+            }
+          }, error => {
+            console.log(error)
+          });
         }
-      }, error => {
-        console.log(error)
-      });
-      
-      console.log(newTask);
-      setShow(false);
+        else
+        {
+          console.log('not valid');
+          setShow(true); // Ensure the modal stays open
+        }
     };
 
     //edit 
@@ -180,15 +213,16 @@ function ScholarTasks() {
           <Form.Group controlId="formStudyName">
               <Form.Label>Midterm</Form.Label>
               <Form.Control type="file" placeholder="Midterm Assessment" onChange={(event) => handleInputChange('midterm_assessment', event)} ref={midtermInput}  />
-              {newTask.midterm_assessment === '' && <p style={{color:'red', fontStyle:'italic'}}>enter id</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.midterm_assessment === false ? 'enter file' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Final</Form.Label>
               <Form.Control type="file" placeholder="Final Assessment" onChange={(event) => handleInputChange('final_assessment', event)} ref={finalInput}  />
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.final_assessment === false ? 'enter file' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('study_category', event)} value={newTask.approval_status} readOnly/>
+              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('study_category', event)} value={newTask.approval_status} disabled/>
           </Form.Group>
         </Form>
         </Modal.Body>
@@ -252,11 +286,11 @@ function ScholarTasks() {
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={deleteTask}>
-            Yes
-          </Button>
           <Button variant="secondary" onClick={handleDeleteTaskClose}>
             No
+          </Button>
+          <Button variant="primary" onClick={deleteTask}>
+            Yes
           </Button>
         </Modal.Footer>
       </Modal>

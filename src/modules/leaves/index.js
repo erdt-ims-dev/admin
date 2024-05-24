@@ -26,12 +26,12 @@ function ScholarLeaveApplication() {
 
   //error modal
   const [validation, setValidation] = useState({ 
-    id: false,
-    leave_start: false,
-    leave_end: false,
-    leave_letter: false,
+    id: true,
+    leave_start: true,
+    leave_end: true,
+    leave_letter: true,
     status: true,
-    comment: false,
+    comment: true,
   });
   const [error, setError] = useState([]);
   const [errorModal, setErrorModal] = useState(false);
@@ -122,26 +122,20 @@ function ScholarLeaveApplication() {
   }
 
   const formValidation = () => {
-    // let inputErrorMessage = {
-    //   message: "Please input fields ",
-    //   exists: false
-    // }
 
     let formIsValid = true;
-    Object.entries(validation).forEach(([key, value]) => {
+    Object.entries(newLeaveRequest).forEach(([key, value]) => {
       if (!value) {
         // inputErrorMessage.message += `${key}, `; 
         // inputErrorMessage.exists = true;
-        validation[key] = false;
+        setValidation(prevState => ({
+          ...prevState,
+          [key]: false
+        }));
         formIsValid = false;
       }
     });
-    //Check if the last character is a comma and remove it if necessary
-    // if (inputErrorMessage.message.endsWith(', ')) {
-    //   inputErrorMessage.message = inputErrorMessage.message.slice(0, -2);
-    // }
     console.log(validation);
-    //if a key in validation is false
     return (formIsValid) ? true : false;
     
   }
@@ -164,19 +158,19 @@ function ScholarLeaveApplication() {
           const newTask = {...response.data, tempId: uuidv4() };
           setLeaveRequests(prevTasks => [...prevTasks, newTask]);
           fetchRequests();
+          setShow(false);
         } else {
           console.log(response.data.error);
           setError(response.data.error);
-          //setShow(true);
+          handleShow();
         }
       }, error => {
         console.log(error)
       });
     } else {
-      console.log('not valid')
+      console.log('not valid');
       setShow(true); // Ensure the modal stays open
     }
-    setShow(false);
   };
 
     //edit 
@@ -270,18 +264,18 @@ function ScholarLeaveApplication() {
               <Form.Label>Leave Start:</Form.Label>
               {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => { handleInputChange('leave_start', event)}}></input>
-              {newLeaveRequest.leave_start === '' && <p style={{color:'red', fontStyle:'italic'}}>enter leave start</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_start === false ? 'enter date' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Leave End:</Form.Label>
               {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
-              {newLeaveRequest.leave_end === '' && <p style={{color:'red', fontStyle:'italic'}}>enter leave end</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_end === false ? 'enter date' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter:</Form.Label>
               <Form.Control type="file" placeholder="Enter Study Category" ref={letterFile} onChange={(event) => handleInputChange('leave_letter', event)} />
-              {newLeaveRequest.leave_letter === '' && <p style={{color:'red', fontStyle:'italic'}}>input file</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_letter === false ? 'enter file' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status:</Form.Label>
@@ -290,7 +284,7 @@ function ScholarLeaveApplication() {
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Comment:</Form.Label>
               <Form.Control type="text" placeholder="Enter Comment" onChange={(event) => handleInputChange('comment', event)}/>
-              {newLeaveRequest.comment === '' && <p style={{color:'red', fontStyle:'italic'}}>enter comment</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.comment === false ? 'enter comment' : ''}</p>}
           </Form.Group>
         </Form>
         </Modal.Body>

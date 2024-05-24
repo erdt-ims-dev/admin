@@ -20,6 +20,14 @@ function ScholarPortfolio() {
       study_category: '',
       publish_type: '',
     });
+
+    const [validation, setValidation] = useState({
+      study_name: true,
+      study: true,
+      study_category: true,
+      publish_type: true,
+    });
+
     // create refs for file elements
     const studyFile = useRef(null);
     //create modal
@@ -76,29 +84,56 @@ function ScholarPortfolio() {
       });
     }
 
+    const formValidation = async () => {
+      let formIsValid = true;
+
+      Object.entries(newPortfolios).forEach(([key, value]) => {
+        if (!value) {
+          setValidation(prevState => ({
+            ...prevState,
+            [key]: false
+          }));
+          formIsValid = false;
+        }
+      });
+      console.log(validation);
+      return (formIsValid) ? true : false;
+    }
+
     //set newPortfolios to API
     const createNewPortfolio = async (e) => {
       e.preventDefault();
-      const formData = new FormData();
-      formData.append('scholar_id', scholar.user_id);
-      formData.append('study_name', newPortfolios.study_name);
-      formData.append('study', studyFile.current.files[0]); 
-      formData.append('study_category', newPortfolios.study_category);
-      formData.append('publish_type', newPortfolios.publish_type);
-      //console.log(newPortfolios);
-      API.uploadFile('scholar_portfolio/create', formData, response => {
-        if (response && response.data) {
-          console.log('Data created successfully', response.data);
-          const newPortfolio = {...response.data, tempId: uuidv4() };
-          setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
-          fetchPortfolio();
-        } else {
-          console.log('error on retrieve');
+
+      let validated = formValidation();
+      if (validated)
+        {
+          const formData = new FormData();
+      
+          formData.append('scholar_id', scholar.user_id);
+          formData.append('study_name', newPortfolios.study_name);
+          formData.append('study', studyFile.current.files[0]);
+          formData.append('study_category', newPortfolios.study_category);
+          formData.append('publish_type', newPortfolios.publish_type);
+          //console.log(newPortfolios);
+          API.uploadFile('scholar_portfolio/create', formData, response => {
+            if (!response.data.error) {
+              console.log('Data created successfully', response.data);
+              const newPortfolio = {...response.data, tempId: uuidv4() };
+              setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
+              fetchPortfolio();
+              setShow(false);
+            } else {
+              console.log('error on retrieve');
+            }
+          }, error => {
+            console.log(error);
+          })
         }
-      }, error => {
-        console.log(error)
-      })
-      setShow(false);
+        else
+        {
+          console.log('not valid');
+          setShow(true); // Ensure the modal stays open
+        }
     };
 
     //edit specific portfolios
@@ -113,7 +148,7 @@ function ScholarPortfolio() {
       formData.append('publish_type', selectedPortfolio.publish_type);
       console.log(formData);
       API.uploadFile('scholar_portfolio/updateOne', formData, response => {
-        if (response && response.data) {
+        if (!response.data.error) {
           console.log('Data updated successfully', response.data);
           fetchPortfolio();
         } else {
@@ -191,10 +226,12 @@ function ScholarPortfolio() {
           <Form.Group controlId="formStudyName">
               <Form.Label>Study Name</Form.Label>
               <Form.Control type="text" placeholder="Enter Study Name" onChange={(event) => handleInputChange('study_name', event)} />
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.study_name === false ? 'enter study' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Study</Form.Label>
               <Form.Control type="file" placeholder="Enter Study" onChange={(event) => handleInputChange('study', event)} ref={studyFile} />
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.study === false ? 'enter file' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Study Category</Form.Label>
@@ -205,8 +242,8 @@ function ScholarPortfolio() {
                 <option value="Case Study">Case Study</option>
                 <option value="Other">Other</option>
               </Form.Select>
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.study_category === false ? 'enter category' : ''}</p>}   
           </Form.Group>
-          
           <br/>
           <Form.Group controlId="formPublishType">
               <Form.Label>Publish Type</Form.Label>
@@ -216,6 +253,7 @@ function ScholarPortfolio() {
                 <option value="Local">Local</option>
                 <option value="International">International</option>
               </Form.Select>
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.publish_type === false ? 'enter category' : ''}</p>}   
           </Form.Group>
         </Form>
         </Modal.Body>
