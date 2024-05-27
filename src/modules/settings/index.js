@@ -131,8 +131,11 @@ class Settings extends Component {
                 // Set loading to false after the API call is completed
                 this.props.setIsLoadingV2(false);
         
-                if (response && response.data) {
-                    this.props.setDetails(response)
+                if (response.data) {
+                    this.props.setDetails(response.data.data)
+                    this.setState({
+                        fileInput: null
+                    })
                 } else {
                     alert("There has been an error updating. Please try again");
                 }
@@ -316,8 +319,8 @@ const mapStateToProps = (state) => ({
    });
    const mapDispatchToProps = (dispatch) => {
     return {
-        setIsLoadingV2: (details) => {
-          dispatch({ type: 'SET_IS_LOADING_V2', payload: { details } });
+        setIsLoadingV2: (status) => {
+          dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
         },
         setDetails: (details) => {
             dispatch({ type: 'SET_DETAILS', payload: { details } });
