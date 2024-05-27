@@ -182,7 +182,7 @@ class ViewModal extends Component {
         </Row>
         <Row className='Row'>
             <Col xs={9} className="text-left">
-                <p>File Uploads</p>
+                <p style={{fontWeight: 'bold'}}>File Uploads</p>
             </Col>
             <Col xs={3} className="text-right d-flex justify-content-end align-items-center">
             <FontAwesomeIcon

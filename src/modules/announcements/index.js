@@ -170,7 +170,9 @@ class Announcements extends Component {
         }}
       >
         <Breadcrumbs header="System Announcements" subheader="All Published System Announcements Are Listed Here"/>
-         <Button onClick={()=>{ this.handleCreate()}}>
+         <Button style={{
+          fontSize: '14px'
+         }} onClick={()=>{ this.handleCreate()}}>
            Create New Announcement
          </Button>
       </Box>

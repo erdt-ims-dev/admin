@@ -6,7 +6,9 @@
   overflow-y: hidden;
   max-height: auto;
 }
-
+p{
+  font-size: 14px;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
