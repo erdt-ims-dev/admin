@@ -9,6 +9,17 @@ import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api';
 
+const defaultUserData = {
+  id: null,
+  uuid: null,
+  email: '',
+  email_verified_at: null,
+  status: '',
+  account_type: '',
+  created_at: '',
+  updated_at: '',
+  deleted_at: null,
+};
 
 function ScholarDetails() {
     const location = useLocation();
@@ -21,7 +32,7 @@ function ScholarDetails() {
       program: scholar.account_details.program,
       email: scholar.account_details.email,
    });
-    const [userData, setUserData] = useState({});
+   const [userData, setUserData] = useState(defaultUserData);
     
     const files = [
     {
@@ -75,7 +86,7 @@ function ScholarDetails() {
         ref: useRef(scholar.account_details.notice),
     },
   ]
-  console.log(files[0])
+  // console.log(files[0])
    //assign links from acc details to files array
    files.forEach(file => {
     if (file.alias in scholar.account_details) {
@@ -84,8 +95,10 @@ function ScholarDetails() {
   });
    //just to set formData.email 
    useEffect(() => {
-    setEmail();
- }, []); 
+    if (JSON.stringify(userData) == JSON.stringify(defaultUserData)) {
+      setEmail();
+    }
+ }, [userData]); 
 
  function setEmail() {
   API.request('user/retrieveOne', {
@@ -94,9 +107,9 @@ function ScholarDetails() {
   }, response => {
     if (response && response.data) {
       // Make the second API call to retrieve account details
+      console.log("res: ", response.data);
       setUserData(response.data);
-      console.log("userData: ", response.data);
-      console.log("id: ", scholar.user_id);
+      console.log("userData: ", userData);
     } else {
       console.log('error on retrieve');
     }
@@ -225,14 +238,14 @@ function ScholarDetails() {
               <InputField
                 id={'email'}
                 type={'email'}
-                label={'email'}
-                placeholder= {userData.email}
+                label={'Email'}
+                placeholder= {'Email'}
                 locked={false}
                 active={setActiveField}
-                onChange={(value) => handleInputChange('last_name', value)} 
+                onChange={(event) => handleInputChange('email', event.target.value)}
                 onFocus={activeField}
                 name="email"
-                value={userData.email}
+                value={userData.email || ''}
               />
               </Col>
               <Col>

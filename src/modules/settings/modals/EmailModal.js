@@ -64,9 +64,13 @@ class EmailModal extends Component {
         
     }
     
-    handleDiscard(){
+    resetValues(){
         this.setState({
-        
+          error: null,
+          registeredEmail: null,
+          errorEmail: null,
+          newEmail: null,
+          errorNewEmail: null,
         });
     }
     updateEmail = () => {
@@ -98,21 +102,30 @@ class EmailModal extends Component {
         this.props.setIsLoadingV2(false);
     
         // Check if there was an error in the response
-        if (response.error!== null) {
-          // Handle validation errors or any other errors returned by the server
-          this.setState({
-            emailError: response.error
-          });
-          return;
-        }
+        // if (response.error !== null || response.error === undefined) {
+        //   // Handle validation errors or any other errors returned by the server
+        //   this.setState({
+        //     emailError: response.error
+        //   });
+        //   console.log('here1')
+
+        //   return;
+        // }
     
         // Check if the update was successful
-        if (response.user && response.details) {
-          this.props.setDetails(response.details)
-          this.props.updateUser(response.user)
+        console.log('here', response.data.user, response.data.details)
+        if (response.data.user && response.data.details) {
+          console.log('here2')
+          this.props.setDetails(response.data.details)
+          this.props.updateUser(response.data.user)
+          this.resetValues()
+          this.props.onHide()
+          window.location.reload();
         } else {
           // Handle unexpected errors
-          alert('Something went wrong. Try again.');
+          this.setState({
+                emailError: response.error
+              });
         }
       }, error => {
         // Set loading to false in case of an error
@@ -224,7 +237,7 @@ class EmailModal extends Component {
       </Modal.Body>
       <Modal.Footer>
         <Button variant='secondary' onClick={()=>{
-            this.handleDiscard()
+            this.resetValues()
             this.setState({
                 discardModal: true
             })

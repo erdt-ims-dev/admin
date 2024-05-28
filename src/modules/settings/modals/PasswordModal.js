@@ -21,29 +21,31 @@ import { connect } from 'react-redux'; // Import connect from react-redux
 class PasswordModal extends Component {
     constructor(props) {
         super(props);
-        this.fileInputs = {};
         this.state = {
             password: null,
             errorPassword: null,
             newPassword: null,
             errorNewPassword: null,
-            isCollapsed: true
+            isCollapsed: true,
+
+            user_id: null,
+            error: null,
+            user_id: null,
+            first_name: null,
+            middle_name: null,
+            last_name: null,
+            program: null,
         };
         
       }
       componentDidMount() {
         this.setState({
-          id: this.props.details.id,
           user_id: this.props.details.user_id,
           first_name: this.props.details.first_name,
           middle_name: this.props.details.middle_name,
           last_name: this.props.details.last_name,
-          email: this.props.user.email,
-          type: this.props.user.account_type,
-          status: this.props.user.status,
           program: this.props.details.program,
-          status: this.props.user.status,
-          profile: this.props.profile_picture
+          
       })
     }
     
@@ -57,14 +59,55 @@ class PasswordModal extends Component {
         
         });
     }
-    updateEmail(){
-
+    updatePassword = () => {
+      const { user_id, password, newPassword } = this.state;
+      if(password == null && newPassword == null){
+        this.setState({
+          error: 'Fields cannot be blank'
+        })
+        return
+      }
+      if ((!password ||!newPassword)) {
+        this.setState({
+            error: 'Fill in missing fields'
+        });
+        return;
+    }
+      let formData = new FormData();
+      formData.append('user_id', user_id);
+      formData.append('current_password', password);
+      formData.append('new_password', newPassword);
+    
+      API.uploadFile('user/updatePassword', formData, response => {
+        // Set loading to false after the API call is completed
+        this.props.setIsLoadingV2(false);
+    
+        // Check if there was an error in the response
+        if (response.error!== null) {
+          // Handle validation errors or any other errors returned by the server
+          this.setState({
+            error: response.error
+          });
+          return;
+        }
+    
+        // Check if the update was successful
+        if (response.data ) {
+          this.props.updateUser(response.user)
+        } else {
+          // Handle unexpected errors
+          alert('Something went wrong. Try again.');
+        }
+      }, error => {
+        // Set loading to false in case of an error
+        this.props.setIsLoadingV2(false);
+        console.log(error);
+        // Optionally display an error message or handle the error differently
+      });
     }
         
 
     render() {
-        const { selectedFiles} = this.state
-        const {setData} = this.props
     return (
         <div className=''>
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}

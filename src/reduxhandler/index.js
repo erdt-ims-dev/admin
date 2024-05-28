@@ -67,6 +67,7 @@ const reducer = (state = initialState, action) => {
       details: action.payload.details,
     }
     case 'UPDATE_USER':
+    console.log('UPDATING USER', action.payload.user);
       return {
         ...state,
         user: action.payload.user
