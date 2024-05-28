@@ -201,7 +201,9 @@ class Applications extends Component {
         }}
       >
         <Breadcrumbs header="Applications" subheader="All Application Requests Are Listed Here"/>
-        <Button onClick={()=>{ history.push('/new_application')}}>
+        <Button style={{
+          fontSize: '14px',
+        }} onClick={()=>{ history.push('/new_application')}}>
           Add New Applicant
         </Button>
       </Box>

@@ -61,7 +61,7 @@ const reducer = (state = initialState, action) => {
         loginTime: new Date().getTime(), // Store the current time
       };
     case 'SET_DETAILS':
-    // console.log('SETTING DETAILS');
+    console.log('SETTING DETAILS', action.payload.details);
     return{
       ...state,
       details: action.payload.details,
@@ -69,7 +69,7 @@ const reducer = (state = initialState, action) => {
     case 'UPDATE_USER':
       return {
         ...state,
-        user,
+        user: action.payload.user
       };
     case 'SET_IS_LOADING':
       // console.log('IS LOADING');

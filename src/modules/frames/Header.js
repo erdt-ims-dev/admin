@@ -45,7 +45,7 @@ export class Header extends Component {
                     padding: 10
                   }}/> */}
                   <div className="profileImageCircle">
-                    <img src={details.profile_picture || placeholder} alt='profile' />
+                      <img src={details && details.profile_picture? details.profile_picture : placeholder} alt='profile' />
                   </div>
 
                   {
