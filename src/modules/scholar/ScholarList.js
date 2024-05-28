@@ -191,19 +191,11 @@ const useScholarList = () => {
           
           <Link
             to={{
-              pathname: `scholars/${selectedScholar?.user_id}/scholar_details`,
-              state: { scholar: selectedScholar }
-            }}
-          >
-            <Button variant="primary" onClick={() => handleShow()}>Scholar Details</Button>
-          </Link>
-          <Link
-            to={{
               pathname: `scholars/${selectedScholar?.user_id}/scholar_portfolio`,
               state: { scholar: selectedScholar }
             }}
           >
-            <Button variant="primary" onClick={() => handleShow()}>View portfolio</Button>
+            <Button variant="primary" onClick={() => handleShow()}>Scholar portfolio</Button>
           </Link>
           <Link
             to={{
@@ -220,6 +212,14 @@ const useScholarList = () => {
             }}
           >
             <Button variant="primary" onClick={() => handleShow()}>Leave Application</Button>
+          </Link>
+          <Link
+            to={{
+              pathname: `scholars/${selectedScholar?.user_id}/scholar_details`,
+              state: { scholar: selectedScholar }
+            }}
+          >
+            <Button variant="primary" onClick={() => handleShow()}>Scholar Details</Button>
           </Link>
         </Modal.Body>
         <Modal.Footer>
