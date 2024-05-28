@@ -84,21 +84,26 @@ function ScholarDetails() {
   });
    //just to set formData.email 
    useEffect(() => {
-    API.request('user/retrieveOne', {
-      col: 'id',
-      value: scholar.id,
-    }, response => {
-      if (response && response.data) {
-        // Make the second API call to retrieve account details
-        setUserData(response.data);
-      } else {
-        console.log('error on retrieve');
-      }
-    }, error => {
-      console.log(error);
-    });
+    setEmail();
  }, []); 
- console.log("scholar: ", scholar);
+
+ function setEmail() {
+  API.request('user/retrieveOne', {
+    col: 'id',
+    value: scholar.id,
+  }, response => {
+    if (response && response.data) {
+      // Make the second API call to retrieve account details
+      setUserData(response.data);
+      console.log("userData: ", response.data);
+      console.log("id: ", scholar.user_id);
+    } else {
+      console.log('error on retrieve');
+    }
+  }, error => {
+    console.log(error);
+  });
+ }
  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -165,7 +170,7 @@ function ScholarDetails() {
 
           <Row className='Row'>
               <Col className='imageCircle'>
-                  <img className='circle' src={placeholder}></img>
+                  <img className='circle' src={placeholder}></img>  
               </Col>
               <Col className='imageText'>
                   <p className=''>This will be the profile picture displayed</p>
@@ -190,7 +195,7 @@ function ScholarDetails() {
                   <InputField
                   id={'middle_name'}
                   type={'name'}
-                  label={'Last Name'}
+                  label={'Middle Name'}
                   placeholder= {scholar.account_details.middle_name}
                   locked={false}
                   active={setActiveField}
@@ -226,7 +231,7 @@ function ScholarDetails() {
                 active={setActiveField}
                 onChange={(value) => handleInputChange('last_name', value)} 
                 onFocus={activeField}
-                name="last_name"
+                name="email"
                 value={userData.email}
               />
               </Col>
