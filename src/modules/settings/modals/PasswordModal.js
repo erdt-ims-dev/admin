@@ -16,7 +16,7 @@ import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
 import { connect } from 'react-redux'; // Import connect from react-redux
-
+import { ToastContainer, toast } from 'react-toastify';
 
 class PasswordModal extends Component {
     constructor(props) {
@@ -53,17 +53,27 @@ class PasswordModal extends Component {
         
         
     }
-    
     handleDiscard(){
         this.setState({
-        
+          password: null,
+          errorPassword: null,
+          newPassword: null,
+          errorNewPassword: null,
         });
     }
     updatePassword = () => {
+      const notify = () => toast("Password Updated");
+
       const { user_id, password, newPassword } = this.state;
       if(password == null && newPassword == null){
         this.setState({
           error: 'Fields cannot be blank'
+        })
+        return
+      }
+      if(password == newPassword){
+        this.setState({
+          error: 'New password cannot be the same as old password'
         })
         return
       }
@@ -83,17 +93,19 @@ class PasswordModal extends Component {
         this.props.setIsLoadingV2(false);
     
         // Check if there was an error in the response
-        if (response.error!== null) {
+        if (response.data.error!== null) {
           // Handle validation errors or any other errors returned by the server
           this.setState({
-            error: response.error
+            error: response.data.error
           });
           return;
         }
-    
+        console.log(response.data)
         // Check if the update was successful
         if (response.data ) {
-          this.props.updateUser(response.user)
+          notify()
+          this.handleDiscard()
+          this.props.onHide()
         } else {
           // Handle unexpected errors
           alert('Something went wrong. Try again.');
@@ -108,6 +120,7 @@ class PasswordModal extends Component {
         
 
     render() {
+      const {error} = this.state
     return (
         <div className=''>
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -155,9 +168,9 @@ class PasswordModal extends Component {
                 placeholder={'Enter Current Password'}
                 locked={false}
                 active={false}
-                onChange={(currentPassword, errorCurrentPassword) => {
+                onChange={(password, errorPassword) => {
                     this.setState({
-                        currentPassword, errorCurrentPassword
+                      password, errorPassword
                     })
                     }}
                 />
@@ -178,6 +191,12 @@ class PasswordModal extends Component {
                     }}
                 />
             </Col>
+            <p style={{
+              color: 'red'
+            }}>
+              {error}
+              
+            </p>
           </Row>
         
     <WarningModal
@@ -193,7 +212,19 @@ class PasswordModal extends Component {
     }}
         onHide={() => {this.props.onHide()}}
     />
-
+      <ToastContainer
+      position="top-center"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+      transition={{ enter: 'animate__animated animate__fadeIn', exit: 'animate__animated animate__fadeOut' }}
+    />
     </Container>
         
       </Modal.Body>
@@ -204,7 +235,7 @@ class PasswordModal extends Component {
                 discardModal: true
             })
             }}>Discard Changes</Button>
-        <Button variant='primary' onClick={()=>{this.uploadFile()}}>Save Changes</Button>
+        <Button variant='primary' onClick={()=>{this.updatePassword()}}>Save Changes</Button>
       </Modal.Footer>
     </Modal>
                     
