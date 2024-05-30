@@ -26,97 +26,77 @@ function ScholarDetails() {
     const scholar = location.state.scholar;
     const [activeField, setActiveField] = useState(false);
     const [formData, setFormData] = useState({
+      id: scholar.id,
+      user_id: scholar.id,
       first_name: scholar.account_details.first_name,
       middle_name: scholar.account_details.middle_name,
       last_name: scholar.account_details.last_name,
       program: scholar.account_details.program,
-      email: scholar.account_details.email,
+      email: scholar.email,
+      tor: scholar.account_details.tor,
+      birth: scholar.account_details.birth_certificate,
+      recommendation: scholar.account_details.recommendation_letter,
+      essay: scholar.account_details.narrative_essay,
+      medical: scholar.account_details.medical_certificate,
+      nbi: scholar.account_details.nbi_clearance,
+      notice: scholar.account_details.admission_notice,
    });
-   const [userData, setUserData] = useState(defaultUserData);
-    
+   console.log("formdata", formData);
+    const [userData, setUserData] = useState({});
+    console.log("scholar", scholar);
     const files = [
     {
         title: "Transcript of Record",
         disabled: false,
         alias: "tor",
-        link: "",
+        link: scholar.account_details.tor,
         ref: useRef(scholar.account_details.tor),
     },
     {
         title: "Birth Certificate",
         disabled: false,
         alias: "birth",
-        link: "",
-        ref: useRef(scholar.account_details.birth),
+        link: scholar.account_details.birth_certificate,
+        ref: useRef(scholar.account_details.birth_certificate),
     },
     {
         title: "Recommendation Letter",
         disabled: false,
         alias: "recommendation",
-        link: "",
-        ref: useRef(scholar.account_details.recommendation),
+        link: scholar.account_details.recommendation_letter,
+        ref: useRef(scholar.account_details.recommendation_letter),
         
     },
     {
         title: "Narrative Essay",
         disabled: false,
         alias: "essay",
-        link: "",
-        ref: useRef(scholar.account_details.essay),
+        link: scholar.account_details.narrative_essay,
+        ref: useRef(scholar.account_details.narrative_essay),
     },
     {
         title: "Medical Cerificate",
         disabled: false,
         alias: "medical",
-        link: "",
-        ref: useRef(scholar.account_details.medical),
+        link: scholar.account_details.medical_certificate,
+        ref: useRef(scholar.account_details.medical_certificate),
     },
     {
         title: "NBI Clearance",
         disabled: false,
         alias: "nbi",
-        link: "",
-        ref: useRef(scholar.account_details.nbi),
+        link: scholar.account_details.nbi_clearance,
+        ref: useRef(scholar.account_details.nbi_clearance),
     },
     {
         title: "Admission Notice",
         disabled: false,
         alias: "notice",
-        link: "",
-        ref: useRef(scholar.account_details.notice),
+        link: scholar.account_details.admission_notice,
+        ref: useRef(scholar.account_details.admission_notice),
     },
   ]
-  // console.log(files[0])
-   //assign links from acc details to files array
-   files.forEach(file => {
-    if (file.alias in scholar.account_details) {
-      file.link = scholar.account_details[file.alias];
-    }
-  });
-   //just to set formData.email 
-   useEffect(() => {
-    if (JSON.stringify(userData) == JSON.stringify(defaultUserData)) {
-      setEmail();
-    }
- }, [userData]); 
-
- function setEmail() {
-  API.request('user/retrieveOne', {
-    col: 'id',
-    value: scholar.id,
-  }, response => {
-    if (response && response.data) {
-      // Make the second API call to retrieve account details
-      console.log("res: ", response.data);
-      setUserData(response.data);
-      console.log("userData: ", userData);
-    } else {
-      console.log('error on retrieve');
-    }
-  }, error => {
-    console.log(error);
-  });
- }
+ console.log(files);
  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -138,17 +118,23 @@ function ScholarDetails() {
   const updateDetails = async (e) =>
   {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('user_id', scholar.user_id);
-    formData.append('tor', files[0].ref.current.files[0]);
-    formData.append('birth_certificate', files[1].ref.current.files[0]);
-    formData.append('recommendation_letter', files[2].ref.current.files[0]);
-    formData.append('narrative_essay', files[3].ref.current.files[0]);
-    formData.append('medical_certificate', files[4].ref.current.files[0]);
-    formData.append('nbi_clearance', files[5].ref.current.files[0]);
-    formData.append('admission_notice', files[6].ref.current.files[0]);
-    API.uploadFile('account_details/uploadNewFiles', formData, response => {
-      if (response && response.data) {
+    const formData1 = new FormData();
+    formData1.append('user_id', formData.user_id);
+    formData1.append('id', formData.id);
+    formData1.append('first_name', formData.first_name);
+    formData1.append('middle_name', formData.middle_name);
+    formData1.append('last_name', formData.last_name);
+    formData1.append('program', formData.program);
+    formData1.append('email', formData.email);
+    formData1.append('tor', formData.tor ? formData.tor : files[0].ref.current.files[0]);
+    formData1.append('birth_certificate', formData.birth_certificate ? formData.birth_certificate : files[1].ref.current.files[0]);
+    formData1.append('recommendation_letter', formData.recommendation_letter ? formData.recommendation_letter : files[2].ref.current.files[0]);
+    formData1.append('narrative_essay', formData.narrative_essay ? formData.narrative_essay : files[3].ref.current.files[0]);
+    formData1.append('medical_certificate', formData.medical_certificate ? formData.medical_certificate : files[4].ref.current.files[0]);
+    formData1.append('nbi_clearance', formData.nbi_clearance ? formData.nbi_clearance : files[5].ref.current.files[0]);
+    formData1.append('admission_notice', formData.admission_notice ? formData.admission_notice : files[6].ref.current.files[0]);
+    API.uploadFile('account_details/updateDataAndFiles', formData1, response => {
+      if (!response.data.error) {
         console.log(formData);
         console.log('Data updated successfully', response.data);
       } else {
@@ -157,20 +143,13 @@ function ScholarDetails() {
     }, error => {
       console.log(error)
     })
-
-    if (formData.email !== '') {
-      API.request('user/update', {
-        id: scholar.id,
-        col: 'email',
-        value: formData.email,
-      }, response => {
-        console.log('email updated successfully');
-      }, error => {
-        console.log(error)
-      })
-    }
+     
     setActiveField(false); 
   }
+
+  useEffect(() => {
+    
+  }, []); 
   
     return (
       <>
@@ -238,14 +217,14 @@ function ScholarDetails() {
               <InputField
                 id={'email'}
                 type={'email'}
-                label={'Email'}
-                placeholder= {'Email'}
+                label={'email'}
+                placeholder= {formData.email}
                 locked={false}
                 active={setActiveField}
-                onChange={(event) => handleInputChange('email', event.target.value)}
+                onChange={(value) => handleInputChange('email', value)} 
                 onFocus={activeField}
                 name="email"
-                value={userData.email || ''}
+                value={formData.email}
               />
               </Col>
               <Col>
@@ -266,13 +245,14 @@ function ScholarDetails() {
               <InputField
                   id={3}
                   type={'field'}
-                  label={'Applicant'}
-                  placeholder={'Applicant'}
+                  label={'Status'}
+                  placeholder={'Status'}
                   locked={true}
                   active={false}
                   onChange={() => {
                       
                     }}
+                  value={scholar.status}
                   />
               </Col>
           </Row>
@@ -296,7 +276,7 @@ function ScholarDetails() {
                 </Col>
                 <Col md={4}>
                   {/* Conditionally render the file link */}  {/* <a className='icon' href={fileLink} target='_blank' rel='noopener noreferrer'>View File</a> */}
-                  <a href={(item.link !== null) ? item.link : "#"}>View File</a>
+                  <a href={(item.link !== null) ? item.link : "#"} target="_blank" rel="noreferrer noopener">View File</a>
                 </Col>
                 <Col md={4} className='switch'>
                   <Col>
@@ -308,7 +288,7 @@ function ScholarDetails() {
                       style={{ display: 'none' }}
                       onChange={(event) => this.handleFileChange(event, item.alias)}
                     />
-                    <span className='icon' onClick={() => {item.ref = null; alert(item.title + " link is removed")}}>Delete</span>
+                    
                   </Col>
                 </Col>
               </Row>

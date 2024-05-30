@@ -9,18 +9,17 @@ const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Ty
 function ScholarPortfolio() {
     const location = useLocation();
     const scholar = location.state.scholar;
-    
     //to display table
     const [portfolios, setPortfolios] = useState([]);
 
     //initialize for new portfolio
     const [newPortfolios, setNewPortfolios] = useState({
+      id: scholar.id,
       study_name: '',
       study: '',
       study_category: '',
       publish_type: '',
     });
-
     const [validation, setValidation] = useState({
       study_name: true,
       study: true,
@@ -69,11 +68,15 @@ function ScholarPortfolio() {
       ...prevState,
         [fieldName]: file,
       }));
+      // Also update selectedPortfolio.study if editing
+      if (selectedPortfolio) {
+        setSelectedPortfolio({...selectedPortfolio, [fieldName]: file });
+      }
     };
 
     //fetch
     const fetchPortfolio = async () => {
-      API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.user_id }, response => {
+      API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: newPortfolios.id }, response => {
         if (response && response.data) {
           setPortfolios(response.data)
         } else {
@@ -94,9 +97,9 @@ function ScholarPortfolio() {
             [key]: false
           }));
           formIsValid = false;
+          console.log("please fill all fields");
         }
       });
-      console.log(validation);
       return (formIsValid) ? true : false;
     }
 
@@ -108,8 +111,8 @@ function ScholarPortfolio() {
       if (validated)
         {
           const formData = new FormData();
-      
-          formData.append('scholar_id', scholar.user_id);
+          //console.log(newPortfolios)
+          formData.append('scholar_id', newPortfolios.id);
           formData.append('study_name', newPortfolios.study_name);
           formData.append('study', studyFile.current.files[0]);
           formData.append('study_category', newPortfolios.study_category);
@@ -140,13 +143,15 @@ function ScholarPortfolio() {
     const editPortfolio = async (e) => {
       e.preventDefault();
       const formData = new FormData();
+      console.log(selectedPortfolio);
       formData.append('id', selectedPortfolio.id);
-      formData.append('scholar_id', scholar.user_id);
+      formData.append('scholar_id', newPortfolios.id);
       formData.append('study_name', selectedPortfolio.study_name);
-      formData.append('study', (selectedPortfolio.study) ? selectedPortfolio.study : studyFile.current.files[0]); 
+      formData.append('study', selectedPortfolio.study ? selectedPortfolio.study : studyFile.current.files[0]); 
+      //formData.append('study', studyFile.current.files[0]); 
       formData.append('study_category', selectedPortfolio.study_category);
       formData.append('publish_type', selectedPortfolio.publish_type);
-      console.log(formData);
+      console.log(studyFile.current.files[0]);
       API.uploadFile('scholar_portfolio/updateOne', formData, response => {
         if (!response.data.error) {
           console.log('Data updated successfully', response.data);
@@ -187,9 +192,11 @@ function ScholarPortfolio() {
 
     return (
       <>
-      <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
-      <p>This is the Scholar Portfolio page</p>
-      <div style={{float:'right'}}>
+      <div style={{ float:'left', textAlign:'left'}}>
+        <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
+        <p>This is the Scholar Portfolio page</p>
+      </div>
+      <div style={{float:'right', marginTop:'1rem'}}>
         <Button onClick={handleShow}> Add New Study </Button>
       </div>
       {/* <table>
@@ -354,7 +361,7 @@ function ScholarPortfolio() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="table-container">
+      <div className="table-container" style={{ marginTop:'4.5rem'}}>
         <Table>
           <thead>
             <tr>
