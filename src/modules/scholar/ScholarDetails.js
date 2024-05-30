@@ -19,10 +19,10 @@ function ScholarDetails() {
       middle_name: scholar.account_details.middle_name,
       last_name: scholar.account_details.last_name,
       program: scholar.account_details.program,
-      email: scholar.account_details.email,
+      email: scholar.email,
    });
     const [userData, setUserData] = useState({});
-    
+    console.log(scholar);
     const files = [
     {
         title: "Transcript of Record",
@@ -75,35 +75,14 @@ function ScholarDetails() {
         ref: useRef(scholar.account_details.notice),
     },
   ]
-  console.log(files[0])
+ 
    //assign links from acc details to files array
    files.forEach(file => {
     if (file.alias in scholar.account_details) {
       file.link = scholar.account_details[file.alias];
     }
   });
-   //just to set formData.email 
-   useEffect(() => {
-    setEmail();
- }, []); 
-
- function setEmail() {
-  API.request('user/retrieveOne', {
-    col: 'id',
-    value: scholar.id,
-  }, response => {
-    if (response && response.data) {
-      // Make the second API call to retrieve account details
-      setUserData(response.data);
-      console.log("userData: ", response.data);
-      console.log("id: ", scholar.user_id);
-    } else {
-      console.log('error on retrieve');
-    }
-  }, error => {
-    console.log(error);
-  });
- }
+ 
  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -127,7 +106,7 @@ function ScholarDetails() {
     e.preventDefault();
     const formData = new FormData();
     formData.append('user_id', scholar.user_id);
-    formData.append('tor', files[0].ref.current.files[0]);
+    formData.append('tor', scholar.account_details.tor ? scholar.account_details.tor : files[0].ref.current.files[0]);
     formData.append('birth_certificate', files[1].ref.current.files[0]);
     formData.append('recommendation_letter', files[2].ref.current.files[0]);
     formData.append('narrative_essay', files[3].ref.current.files[0]);
@@ -144,20 +123,28 @@ function ScholarDetails() {
     }, error => {
       console.log(error)
     })
-
-    if (formData.email !== '') {
-      API.request('user/update', {
-        id: scholar.id,
-        col: 'email',
-        value: formData.email,
-      }, response => {
-        console.log('email updated successfully');
-      }, error => {
-        console.log(error)
-      })
-    }
+    
+    formData.append('id', scholar.user_id);
+    formData.append('first_name', scholar.first_name);
+    formData.append('middle_name', scholar.middle_name);
+    formData.append('last_name', scholar.last_name);
+    formData.append('program', scholar.program);
+    API.uploadFile('account_details/updateDetails', formData, response => {
+      if (response && response.data) {
+        console.log(formData);
+        console.log('Data updated successfully', response.data);
+      } else {
+        console.log('error on update');
+      }
+    }, error => {
+      console.log(error)
+    })
     setActiveField(false); 
   }
+
+  useEffect(() => {
+    
+  }, []); 
   
     return (
       <>
@@ -226,13 +213,13 @@ function ScholarDetails() {
                 id={'email'}
                 type={'email'}
                 label={'email'}
-                placeholder= {userData.email}
+                placeholder= {formData.email}
                 locked={false}
                 active={setActiveField}
-                onChange={(value) => handleInputChange('last_name', value)} 
+                onChange={(value) => handleInputChange('email', value)} 
                 onFocus={activeField}
                 name="email"
-                value={userData.email}
+                value={formData.email}
               />
               </Col>
               <Col>
@@ -253,13 +240,14 @@ function ScholarDetails() {
               <InputField
                   id={3}
                   type={'field'}
-                  label={'Applicant'}
-                  placeholder={'Applicant'}
+                  label={'Status'}
+                  placeholder={'Status'}
                   locked={true}
                   active={false}
                   onChange={() => {
                       
                     }}
+                  value={scholar.status}
                   />
               </Col>
           </Row>
@@ -283,7 +271,7 @@ function ScholarDetails() {
                 </Col>
                 <Col md={4}>
                   {/* Conditionally render the file link */}  {/* <a className='icon' href={fileLink} target='_blank' rel='noopener noreferrer'>View File</a> */}
-                  <a href={(item.link !== null) ? item.link : "#"}>View File</a>
+                  <a href={(item.link !== null) ? item.link : "#"} target="_blank" rel="noreferrer noopener">View File</a>
                 </Col>
                 <Col md={4} className='switch'>
                   <Col>
@@ -295,7 +283,7 @@ function ScholarDetails() {
                       style={{ display: 'none' }}
                       onChange={(event) => this.handleFileChange(event, item.alias)}
                     />
-                    <span className='icon' onClick={() => {item.ref = null; alert(item.title + " link is removed")}}>Delete</span>
+                    
                   </Col>
                 </Col>
               </Row>

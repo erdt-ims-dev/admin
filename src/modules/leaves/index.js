@@ -414,7 +414,7 @@ function ScholarLeaveApplication() {
                           >Edit</span>
                     <span className='link' 
                           onClick={() => handleDeleteRequestShow(request)}
-                          >Delete</span>
+                          >Deny</span>
                   </td>
                 </tr>
               ))}

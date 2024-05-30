@@ -12,6 +12,7 @@ function ScholarTasks() {
 
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState({
+      id: scholar.id,
       midterm_assessment: '',
       final_assessment: '',
       approval_status: 'pending',
@@ -61,9 +62,10 @@ function ScholarTasks() {
     
     //fetch all
     const fetchTasks = async () => {
-      API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.user_id }, response => {
+      API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: newTask.id }, response => {
         if (response && response.data) {
           setTasks(response.data)
+          console.log(tasks);
           console.log(response.data)
         } else {
           console.log('error on retrieve');
@@ -98,7 +100,7 @@ function ScholarTasks() {
       if (validated) 
         {
           const formData = new FormData();
-          formData.append('scholar_id', scholar.user_id);
+          formData.append('scholar_id', newTask.id);
           formData.append('midterm_assessment', midtermInput.current.files[0]);
           formData.append('final_assessment', finalInput.current.files[0]);
           //publish_type set to 'pending' by default;
@@ -131,11 +133,11 @@ function ScholarTasks() {
 
       const formData = new FormData();
       
-      formData.append('id', selectedTask.id);
+      formData.append('id', newTask.id);
       formData.append('scholar_id', scholar.user_id);
-      formData.append('midterm_assessment', midtermInput.current.files[0]);
+      formData.append('midterm_assessment', selectedTask.midterm_assessment ? selectedTask.midterm_assessment : midtermInput.current.files[0]);
       //(midtermInput.current.files[0] !== null) ? formData.append('midterm_assessment', midtermInput.current.files[0]) : formData.append('midterm_assessment', '');
-      formData.append('final_assessment', finalInput.current.files[0]);
+      formData.append('final_assessment', selectedTask.final_assessment ? selectedTask.final_assessment : finalInput.current.files[0]);
       //(finalInput.current.files[0] !== null) ? formData.append('final_assessment', finalInput.current.files[0]) : formData.append('final_assessment', '');
       formData.append('approval_status', selectedTask.approval_status);
       console.log(formData);
@@ -177,11 +179,13 @@ function ScholarTasks() {
 
     return (
       <>
-      <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
-      <p>This is the Scholar Tasks page</p>
+      <div style={{ float:'left', textAlign:'left'}}>
+        <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
+        <p>This is the Scholar Tasks page</p>
+      </div>
         <Button 
           onClick={handleShow} 
-          style={{float:'right'}}> Add New Task </Button>
+          style={{float:'right', marginTop:'1rem'}}> Add New Task </Button>
       {/* <table>
         <thead>
           <tr>
@@ -294,7 +298,7 @@ function ScholarTasks() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="table-container">
+      <div className="table-container" style={{ marginTop:'4.5rem'}}>
         <Table>
           <thead>
             <tr>

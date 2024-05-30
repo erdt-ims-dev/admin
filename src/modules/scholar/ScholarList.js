@@ -78,15 +78,19 @@ const useScholarList = () => {
         // Make the second API call to retrieve account details
         API.request('account_details/retrieveAll', {}, accountResponse => {
           if (accountResponse && accountResponse.data) {
-            // Merge the account details with the scholars data
+            // Manually match each scholar with their account details
             const updatedScholars = response.data.map(scholar => {
-              const account = accountResponse.data.find(acc => acc.user_id === scholar.user_id);
-              return { ...scholar, account_details: account };
+              // Find the matching account details by user_id
+              const account = accountResponse.data.find(acc => acc.id === scholar.id);
+              return {...scholar, account_details: account? account : null }; // Include account details if found, otherwise null
             });
-            setScholars(updatedScholars);
+  
+            setScholars(updatedScholars); // Update the state with scholars including their account details
+            console.log("updated scholar: ", updatedScholars); // Log the updated scholars data
           } else {
-            console.log('error on retrieving account details');
+            console.log('Error retrieving account details');
           }
+  
         }, error => {
           console.log(error);
         });
@@ -238,10 +242,10 @@ const useScholarList = () => {
             </tr>
           </thead>
           <tbody>
-            {scholars.map((scholar) => (
+            {scholars.map((scholar, index) => (
                 <tr key={scholar.id}>
+                  <td>{index+1}</td>
                   <td>{scholar.id}</td>
-                  <td>{scholar.user_id}</td>
                   <td>{scholar.account_details?.last_name}</td>
                   <td>{scholar.account_details?.first_name}</td>
                   <td>{scholar.account_details?.program}</td>
