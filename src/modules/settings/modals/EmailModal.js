@@ -91,7 +91,13 @@ class EmailModal extends Component {
             error: 'Fill in missing fields'
         });
         return;
-    }
+      }
+      if ((email === newEmail)) {
+        this.setState({
+            error: 'New email cannot be the same as current email'
+        });
+        return;
+      }
       let formData = new FormData();
       formData.append('user_id', user_id);
       formData.append('current_email', registeredEmail);
