@@ -124,8 +124,8 @@ const mapStateToProps = (state) => ({
  });
  const mapDispatchToProps = (dispatch) => {
   return {
-      setIsLoadingV2: (details) => {
-        dispatch({ type: 'SET_IS_LOADING_V2', payload: { details } });
+      setIsLoadingV2: (status) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
       }
   };
 };

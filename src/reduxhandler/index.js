@@ -61,12 +61,13 @@ const reducer = (state = initialState, action) => {
         loginTime: new Date().getTime(), // Store the current time
       };
     case 'SET_DETAILS':
-    console.log('SETTING DETAILS', action.payload.details);
+    // console.log('SETTING DETAILS', action.payload.details);
     return{
       ...state,
       details: action.payload.details,
     }
     case 'UPDATE_USER':
+    console.log('UPDATING USER', action.payload.user);
       return {
         ...state,
         user: action.payload.user
@@ -84,7 +85,7 @@ const reducer = (state = initialState, action) => {
         isLoadingV2: action.payload.status
       }
     case 'RESET_LOGIN_TIME':
-      console.log('RESETTING TIMER');
+      // console.log('RESETTING TIMER');
       return {
         ...state,
         loginTime: action.payload,

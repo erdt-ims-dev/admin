@@ -9,6 +9,17 @@ import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api';
 
+const defaultUserData = {
+  id: null,
+  uuid: null,
+  email: '',
+  email_verified_at: null,
+  status: '',
+  account_type: '',
+  created_at: '',
+  updated_at: '',
+  deleted_at: null,
+};
 
 function ScholarDetails() {
     const location = useLocation();
@@ -21,8 +32,13 @@ function ScholarDetails() {
       program: scholar.account_details.program,
       email: scholar.email,
    });
+<<<<<<< HEAD
     const [userData, setUserData] = useState({});
     console.log(scholar);
+=======
+   const [userData, setUserData] = useState(defaultUserData);
+    
+>>>>>>> 8211586616cebe18a488671d60cffb537381d2f9
     const files = [
     {
         title: "Transcript of Record",
@@ -75,14 +91,45 @@ function ScholarDetails() {
         ref: useRef(scholar.account_details.notice),
     },
   ]
+<<<<<<< HEAD
  
+=======
+  // console.log(files[0])
+>>>>>>> 8211586616cebe18a488671d60cffb537381d2f9
    //assign links from acc details to files array
    files.forEach(file => {
     if (file.alias in scholar.account_details) {
       file.link = scholar.account_details[file.alias];
     }
   });
+<<<<<<< HEAD
  
+=======
+   //just to set formData.email 
+   useEffect(() => {
+    if (JSON.stringify(userData) == JSON.stringify(defaultUserData)) {
+      setEmail();
+    }
+ }, [userData]); 
+
+ function setEmail() {
+  API.request('user/retrieveOne', {
+    col: 'id',
+    value: scholar.id,
+  }, response => {
+    if (response && response.data) {
+      // Make the second API call to retrieve account details
+      console.log("res: ", response.data);
+      setUserData(response.data);
+      console.log("userData: ", userData);
+    } else {
+      console.log('error on retrieve');
+    }
+  }, error => {
+    console.log(error);
+  });
+ }
+>>>>>>> 8211586616cebe18a488671d60cffb537381d2f9
  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -212,6 +259,7 @@ function ScholarDetails() {
               <InputField
                 id={'email'}
                 type={'email'}
+<<<<<<< HEAD
                 label={'email'}
                 placeholder= {formData.email}
                 locked={false}
@@ -220,6 +268,16 @@ function ScholarDetails() {
                 onFocus={activeField}
                 name="email"
                 value={formData.email}
+=======
+                label={'Email'}
+                placeholder= {'Email'}
+                locked={false}
+                active={setActiveField}
+                onChange={(event) => handleInputChange('email', event.target.value)}
+                onFocus={activeField}
+                name="email"
+                value={userData.email || ''}
+>>>>>>> 8211586616cebe18a488671d60cffb537381d2f9
               />
               </Col>
               <Col>
