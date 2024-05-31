@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api';
+import Stack from '../generic/spinnerV2';
 
 const defaultUserData = {
   id: null,
@@ -41,9 +42,10 @@ function ScholarDetails() {
       nbi: scholar.account_details.nbi_clearance,
       notice: scholar.account_details.admission_notice,
    });
-   console.log("formdata", formData);
+   //console.log("formdata", formData);
     const [userData, setUserData] = useState({});
-    console.log("scholar", scholar);
+    const [isLoading, setIsLoading] = useState(false);
+   // console.log("scholar", scholar);
     const files = [
     {
         title: "Transcript of Record",
@@ -118,6 +120,7 @@ function ScholarDetails() {
   const updateDetails = async (e) =>
   {
     e.preventDefault();
+    setIsLoading(true); 
     const formData1 = new FormData();
     formData1.append('user_id', formData.user_id);
     formData1.append('id', formData.id);
@@ -137,8 +140,10 @@ function ScholarDetails() {
       if (!response.data.error) {
         console.log(formData);
         console.log('Data updated successfully', response.data);
+        setIsLoading(false); 
       } else {
         console.log('error on update');
+        setIsLoading(false); 
       }
     }, error => {
       console.log(error)
@@ -153,6 +158,7 @@ function ScholarDetails() {
   
     return (
       <>
+      {isLoading && <Stack />}
         <Container>
           <Row className='sectionHeader'>
           <p>Account details of User: {scholar.account_details.user_id}</p>

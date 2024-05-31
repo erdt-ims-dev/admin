@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import API from 'services/Api'
 import { v4 as uuidv4 } from 'uuid';
+import Stack from '../generic/spinnerV2';
 
 const TABLE_HEADERS = ["#", "Leave Start", "Leave End", "Leave Letter", "Status", "Comment", "Action"];
 
@@ -31,6 +32,7 @@ function ScholarLeaveApplication() {
     comment: true,
     comment_id: true,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState([]);
   const [errorModal, setErrorModal] = useState(false);
   const errorClose = () => setErrorModal(false);
@@ -110,8 +112,6 @@ const validateField = (fieldName, value) => {
 
   const formValidation = () => {
     let formIsValid = true;
-    console.log(newLeaveRequest)
-    console.log("validation: ", validation)
       Object.entries(newLeaveRequest).forEach(([key, value]) => {
         if (!value) {
           setValidation(prevState => ({
@@ -128,6 +128,7 @@ const validateField = (fieldName, value) => {
   //create
   const createRequest = async (e) => {
     e.preventDefault();
+    setIsLoading(true); 
     let validated = formValidation();
     if (validated) {
       console.log(newLeaveRequest)
@@ -146,10 +147,12 @@ const validateField = (fieldName, value) => {
           setLeaveRequests(prevTasks => [...prevTasks, newTask]);
           fetchRequests();
           setShow(false);
+          setIsLoading(false); 
         } else {
           console.log(response.data.error);
           setError(response.data.error);
           errorShow();
+          setIsLoading(false); 
         }
       }, error => {
         console.log(error)
@@ -165,6 +168,7 @@ const validateField = (fieldName, value) => {
     //edit 
     const editRequest = async (e) => {
       e.preventDefault();
+      setIsLoading(true); 
       const formData = new FormData();
       console.log(selectedRequest);
       formData.append('user_id', newLeaveRequest.id);
@@ -178,8 +182,10 @@ const validateField = (fieldName, value) => {
         if (response && response.data) {
           console.log('Data updated successfully', response.data);
           fetchRequests();
+          setIsLoading(false); 
         } else {
           console.log('error on retrieve');
+          setIsLoading(false); 
         }
       }, error => {
         console.log(error)
@@ -190,13 +196,16 @@ const validateField = (fieldName, value) => {
     //delete
     const deleteRequest = async (e) => {
       e.preventDefault();
+      setIsLoading(true); 
       console.log(selectedRequest.id);
       API.request('leave_application/delete', {
         id: selectedRequest.id,
       }, response => {
         console.log('Data deleted successfully');
+        setIsLoading(false); 
       }, error => {
         console.log(error)
+        setIsLoading(false); 
       })
       //console.log(selectedPortfolio);
       //to see the changes in the table after and close the modal
@@ -210,6 +219,7 @@ const validateField = (fieldName, value) => {
 
   return (
     <>
+    {isLoading && <Stack />}
     <div style={{ float:'left', textAlign:'left'}}>
       <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
       <p>This is the Scholar Leave Request page</p>

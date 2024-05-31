@@ -3,7 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { v4 as uuidv4 } from 'uuid';
 import API from 'services/Api'
-
+import { toast, ToastContainer, Slide } from 'react-toastify';
+import Stack from '../generic/spinnerV2';
 const TABLE_HEADERS = ["#", "Midterm Assessment", "Final Assessment", "Status", "Action"];
 
 function ScholarTasks() {
@@ -58,15 +59,17 @@ function ScholarTasks() {
       ...prevState,
         [fieldName]: file,
       }));
+
+      if (selectedTask) {
+        setSelectedTask({...selectedTask, [fieldName]: file });
+      }
     };
-    
+    const [isLoading, setIsLoading] = useState(false);
     //fetch all
     const fetchTasks = async () => {
       API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: newTask.id }, response => {
         if (response && response.data) {
           setTasks(response.data)
-          console.log(tasks);
-          console.log(response.data)
         } else {
           console.log('error on retrieve');
         }
@@ -95,7 +98,7 @@ function ScholarTasks() {
     const createTask = async (e) => {
 
       e.preventDefault();
-
+      setIsLoading(true); 
       let validated = formValidation();
       if (validated) 
         {
@@ -110,11 +113,24 @@ function ScholarTasks() {
               console.log('Data created successfully', response.data);
               const newTask = {...response.data, tempId: uuidv4() };
               setTasks(prevTasks => [...prevTasks, newTask]);
+              // toast.success("Task Added!",  {
+              //   position: "top-center",
+              //   autoClose: 5000,
+              //   hideProgressBar: false,
+              //   closeOnClick: true,
+              //   pauseOnHover: true,
+              //   draggable: true,
+              //   progress: undefined,
+              //   theme: "light",
+              //   transition: Slide,
+              //   });
               fetchTasks();
               setShow(false);
+              setIsLoading(false);
             } else {
               console.log('error on retrieve');
               setShow(true);
+              setIsLoading(false);
             }
           }, error => {
             console.log(error)
@@ -130,11 +146,12 @@ function ScholarTasks() {
     //edit 
     const editTask = async (e) => {
       e.preventDefault();
+      setIsLoading(true); 
 
       const formData = new FormData();
       
-      formData.append('id', newTask.id);
-      formData.append('scholar_id', scholar.user_id);
+      formData.append('id', selectedTask.id);
+      formData.append('scholar_id', selectedTask.scholar_id);
       formData.append('midterm_assessment', selectedTask.midterm_assessment ? selectedTask.midterm_assessment : midtermInput.current.files[0]);
       //(midtermInput.current.files[0] !== null) ? formData.append('midterm_assessment', midtermInput.current.files[0]) : formData.append('midterm_assessment', '');
       formData.append('final_assessment', selectedTask.final_assessment ? selectedTask.final_assessment : finalInput.current.files[0]);
@@ -145,8 +162,10 @@ function ScholarTasks() {
         if (response && response.data) {
           console.log('Data updated successfully', response.data);
           fetchTasks();
+          setIsLoading(false); 
         } else {
           console.log('error on retrieve');
+          setIsLoading(false); 
         }
       }, error => {
         console.log(error)
@@ -157,13 +176,16 @@ function ScholarTasks() {
     //delete
     const deleteTask = async (e) => {
       e.preventDefault();
+      setIsLoading(true); 
       console.log(selectedTask.id)
       API.request('scholar_tasks/delete', {
         id: selectedTask.id,
       }, response => {
         console.log('Data deleted successfully');
+        setIsLoading(false); 
       }, error => {
         console.log(error)
+        setIsLoading(false); 
       })
       //console.log(selectedPortfolio);
       //to see the changes in the table after and close the modal
@@ -179,6 +201,19 @@ function ScholarTasks() {
 
     return (
       <>
+      {isLoading && <Stack />}
+      {/* <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        /> */}
       <div style={{ float:'left', textAlign:'left'}}>
         <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
         <p>This is the Scholar Tasks page</p>

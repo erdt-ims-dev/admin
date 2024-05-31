@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import API from 'services/Api'
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { v4 as uuidv4 } from 'uuid';
+import Stack from '../generic/spinnerV2';
 
 import "./style.scss";
 const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type",  "Action"];
@@ -26,6 +27,7 @@ function ScholarPortfolio() {
       study_category: true,
       publish_type: true,
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     // create refs for file elements
     const studyFile = useRef(null);
@@ -106,6 +108,7 @@ function ScholarPortfolio() {
     //set newPortfolios to API
     const createNewPortfolio = async (e) => {
       e.preventDefault();
+      setIsLoading(true); 
 
       let validated = formValidation();
       if (validated)
@@ -125,8 +128,10 @@ function ScholarPortfolio() {
               setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
               fetchPortfolio();
               setShow(false);
+              setIsLoading(false); 
             } else {
               console.log('error on retrieve');
+              setIsLoading(false); 
             }
           }, error => {
             console.log(error);
@@ -142,6 +147,7 @@ function ScholarPortfolio() {
     //edit specific portfolios
     const editPortfolio = async (e) => {
       e.preventDefault();
+      setIsLoading(true); 
       const formData = new FormData();
       console.log(selectedPortfolio);
       formData.append('id', selectedPortfolio.id);
@@ -156,8 +162,10 @@ function ScholarPortfolio() {
         if (!response.data.error) {
           console.log('Data updated successfully', response.data);
           fetchPortfolio();
+          setIsLoading(false); 
         } else {
           console.log('error on retrieve');
+          setIsLoading(false); 
         }
       }, error => {
         console.log(error)
@@ -169,13 +177,16 @@ function ScholarPortfolio() {
     //delete
     const deletePortfolio = async (e) => {
       e.preventDefault();
+      setIsLoading(true); 
       console.log(setSelectedPortfolio.id)
       API.request('scholar_portfolio/delete', {
         id: selectedPortfolio.id,
       }, response => {
         console.log('Data deleted successfully');
+        setIsLoading(false); 
       }, error => {
         console.log(error)
+        setIsLoading(false); 
       })
       //console.log(selectedPortfolio);
       //to see the changes in the table after and close the modal
@@ -192,6 +203,7 @@ function ScholarPortfolio() {
 
     return (
       <>
+      {isLoading && <Stack />}
       <div style={{ float:'left', textAlign:'left'}}>
         <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
         <p>This is the Scholar Portfolio page</p>
