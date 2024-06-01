@@ -10,27 +10,32 @@ import Breadcrumbs from "modules/generic/breadcrumb";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import  TableComponent  from 'modules/generic/tableV3/variation2';
-import ViewModal from 'modules/applications/viewModal/index'
-import RejectModal from 'modules/endorsements/rejectModal/index'
+import ViewModal from 'modules/application_status/modals/viewModal'
+import TrackModal from 'modules/application_status/modals/trackingModal'
 import ApproveModal from 'modules/endorsements/approveModal/index'
 import { connect } from 'react-redux';
 
 import API from 'services/Api'
 
-
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear().toString().slice(-2); // Get last two digits of year
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 class Status extends Component {
     constructor(props) {
       super(props);
       this.state = {
         applicant_list: [],
         showView: false,
-        showApprove: false,
-        showReject: false,
-        showEdit: false,
+        showTrack: false,
         columns: [
           {
             Header: 'Application Date',
             accessor: 'created_at',
+            Cell: ({ value }) => formatDate(value),
           },
           {
             Header: 'Status',
@@ -50,7 +55,7 @@ class Status extends Component {
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
               <div className='flex'>
-                <span className='link' onClick={() => this.handleReject(row.original)}>Track</span>
+                <span className='link' onClick={() => this.handleTrack(row.original)}>Track</span>
 
               </div>
             ),
@@ -80,34 +85,19 @@ class Status extends Component {
      })
     }
     //
-    handleApprove(rowData){
+    handleTrack(rowData){
       this.setState({
-        showApprove: !this.state.showApprove,
-        setData: rowData
+        showTrack: !this.state.showTrack,
       },() => {
      })
     }
-    closeApprove(){
+    closeTrack(){
       this.setState({
-        showApprove: !this.state.showApprove,
-        setData: null
+        showTrack: !this.state.showTrack,
       },() => {
      })
     }
-    handleReject(rowData){
-      this.setState({
-        showReject: !this.state.showReject,
-        setData: rowData
-      },() => {
-     })
-    }
-    closeReject(){
-      this.setState({
-        showReject: !this.state.showReject,
-        setData: null
-      },() => {
-     })
-    }
+    
     // State
     getList(callback){
       API.request('scholar_request/retrieveUserApplications', {
@@ -153,7 +143,7 @@ class Status extends Component {
   }
   
     render() {
-      const { columns, data, tableLoader, showView, showApprove, showReject, setData } = this.state;
+      const { columns, data, tableLoader, showView, showTrack,  } = this.state;
       return (
       <div className="container">
       <Box
@@ -171,21 +161,13 @@ class Status extends Component {
         
       </div>
       <ViewModal
-      setData={setData}
       show={showView}
       onHide={()=>{this.closeView()}}
       />
-      <ApproveModal
-      setData={setData}
-      show={showApprove}
+      <TrackModal
+      show={showTrack}
       refreshList={()=>{this.getList()}}
-      onHide={()=>{this.closeApprove()}}
-      />
-      <RejectModal
-      setData={setData}
-      show={showReject}
-      refreshList={()=>{this.getList()}}
-      onHide={()=>{this.closeReject()}}
+      onHide={()=>{this.closeTrack()}}
       />
     </div>
         )
