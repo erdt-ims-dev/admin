@@ -36,9 +36,9 @@ const item = [
     icon: faGripHorizontal,
   },
   {
-    name: "Manage Applications",
+    name: "View Application Status",
     icon: faList,
-    route: "/applications",
+    route: "/status",
   },
   {
     name: "Settings",
@@ -100,7 +100,9 @@ export class SidebarFrame extends Component {
                   );
                 }else{
                 return (
-                    <MenuItem onClick={()=>{history.push(item.route)}} icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
+                    <MenuItem style={{
+                        overflow: 'wrap'
+                    }} onClick={()=>{history.push(item.route)}} icon={<FontAwesomeIcon icon={item.icon} color="grey"/>} key={index}>{item.name}</MenuItem>
                 );
               }
               }

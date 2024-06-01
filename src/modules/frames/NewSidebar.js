@@ -22,6 +22,7 @@ import {
   faFileInvoice,
   faGear,
   faList,
+  faUser,
   faClipboardCheck
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -36,16 +37,21 @@ const item = [
     icon: faGripHorizontal,
   },
   {
-    name: "Manage Applications",
-    icon: faList,
-    route: "/applications",
+    name: "Setup Profile",
+    route: "/setup",
+    icon: faUser,
   },
+//   {
+//     name: "Manage Applications",
+//     icon: faList,
+//     route: "/applications",
+//   },
 
-  {
-    name: "Settings",
-    route: "/settings",
-    icon: faGear,
-  },
+//   {
+//     name: "Settings",
+//     route: "/settings",
+//     icon: faGear,
+//   },
   {
     name: "Logout",
     route: "/logout",

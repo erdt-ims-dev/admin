@@ -9,6 +9,7 @@ import ScholarDashboard  from "modules/scholardashboard/index.js";
 import Leaves from "modules/leaves/index.js";
 import Accounts from "modules/accounts/index.js";
 import Settings from "modules/settings/index.js";
+import Setup from "modules/setup/index.js";
 import Register from "modules/auth/register.js";
 
 import ApplicantList from "modules/applications/index.js";
@@ -34,7 +35,7 @@ export default function Routes() {
       {/* Protected Routes */}
       
           <Route path="/dashboard" exact component={AnnouncementDashboard} isPrivate/>
-
+          <Route path="/setup" exact component={Setup} isPrivate/>
           <Route path="/endorsements" exact component={EndorsementList} isPrivate/>
           <Route path="/applications" exact component={ApplicantList} isPrivate/>
           <Route path="/new_application" exact component={NewApplicant} isPrivate/>

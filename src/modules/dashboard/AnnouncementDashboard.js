@@ -16,19 +16,21 @@ class AnnouncementDashboard extends Component {
         super(props);
         this.state = {
           data: null,
-          messages: null
+          messages: null,
+          isLoading: true
         };
       }
     componentDidMount() {
       this.getAnnouncements()
     }
+
     getAnnouncements(){
       API.request('admin_system_message/retrieveViaDashboard', {
       }, response => {
         if (response && response.data) {
-            console.log(response.data)
          this.setState({
-            messages: response.data
+            messages: response.data,
+            isLoading: false
          })
         }else{
           
@@ -39,11 +41,38 @@ class AnnouncementDashboard extends Component {
     }
     
     render() {
-      const {messages} = this.state
+      const {messages, isLoading} = this.state
+      console.log('::', isLoading)
+      if(isLoading){
         return (
             <div className=''>
               <Breadcrumb
-              header={"Welcome to your Dashboard"}
+              header={"Dashboard"}
+              subheader={"Announcements are posted below"}/>
+              <Container>
+              <AnnouncementBubble
+                isLoading={isLoading}
+                />
+                <AnnouncementBubble
+                isLoading={isLoading}
+                />
+                <AnnouncementBubble
+                isLoading={isLoading}
+                />
+                            
+              </Container>
+             
+              
+            </div>
+
+        )
+      }
+
+
+        return (
+            <div className=''>
+              <Breadcrumb
+              header={"Dashboard"}
               subheader={"Announcements are posted below"}/>
               <Container>
               {
