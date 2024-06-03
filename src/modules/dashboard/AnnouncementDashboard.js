@@ -42,7 +42,6 @@ class AnnouncementDashboard extends Component {
     
     render() {
       const {messages, isLoading} = this.state
-      console.log('::', isLoading)
       if(isLoading){
         return (
             <div className=''>

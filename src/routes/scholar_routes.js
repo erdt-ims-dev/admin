@@ -35,12 +35,7 @@ export default function Routes() {
       
           <Route path="/dashboard" exact component={AnnouncementDashboard} isPrivate/>
 
-          <Route path="/applications" exact component={ApplicantList} isPrivate/>
-          <Route path="/new_application" exact component={NewApplicant} isPrivate/>
-
-
           <Route path="/scholar_dashboard" component={ScholarDashboard} isPrivate/>
-          <Route path="/announcements" component={SystemAnnouncements} isPrivate/> 
 
           <Route path="/leaves" exact component={Leaves} isPrivate/>
           <Route path="/accounts" exact component={Accounts} isPrivate/>
