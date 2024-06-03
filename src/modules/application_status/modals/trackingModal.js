@@ -65,7 +65,7 @@ class Tracker extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
-        View Uploaded Files
+        Track Application
         </Modal.Title>
       </Modal.Header>
       <Modal.Body style={{

@@ -34,18 +34,9 @@ export default function Routes() {
       {/* Protected Routes */}
       
           <Route path="/dashboard" exact component={AnnouncementDashboard} isPrivate/>
-
           <Route path="/status" exact component={Status} isPrivate/>
-
-          <Route path="/scholars" exact component={ScholarList} isPrivate/>
-
-
-          <Route path="/leaves" exact component={Leaves} isPrivate/>
           <Route path="/settings" exact component={Settings} isPrivate/>
           <Route path="/register" exact component={Register} isPrivate/>
-        
-
-
           {/* default */}
           <Route component={Login} />
 

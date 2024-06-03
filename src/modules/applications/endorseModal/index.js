@@ -60,11 +60,12 @@ class endorseModal extends Component {
 
     handleEndorse() {
       const {setData} = this.props
+      console.log('setData', setData)
       // Trigger loading state to true before the API call
       this.props.setIsLoadingV2(true);
   
       API.request('scholar_request/updateToEndorsed', {
-          id: setData.id,
+          id: setData.id, // !!! passes account details id instead of scholar req table id
       }, response => {
           // Trigger loading state to false after the API call is completed
           this.props.setIsLoadingV2(false);
