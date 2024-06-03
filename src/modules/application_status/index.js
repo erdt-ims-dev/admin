@@ -88,12 +88,14 @@ class Status extends Component {
     handleTrack(rowData){
       this.setState({
         showTrack: !this.state.showTrack,
+        setData: rowData
       },() => {
      })
     }
     closeTrack(){
       this.setState({
         showTrack: !this.state.showTrack,
+        setData: null
       },() => {
      })
     }
@@ -165,6 +167,7 @@ class Status extends Component {
       onHide={()=>{this.closeView()}}
       />
       <TrackModal
+      setData={this.state.setData}
       show={showTrack}
       refreshList={()=>{this.getList()}}
       onHide={()=>{this.closeTrack()}}
