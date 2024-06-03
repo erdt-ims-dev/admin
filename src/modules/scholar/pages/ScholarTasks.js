@@ -20,7 +20,7 @@ function ScholarTasks() {
 
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState({
-      id: scholar.id,
+      id: details.user_id,
       midterm_assessment: '',
       final_assessment: '',
       approval_status: 'pending',
@@ -74,7 +74,7 @@ function ScholarTasks() {
     const [isLoading, setIsLoading] = useState(false);
     //fetch all
     const fetchTasks = async () => {
-      API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: newTask.id }, response => {
+      API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: details.user_id }, response => {
         if (response && response.data) {
           setTasks(response.data)
         } else {
@@ -110,7 +110,7 @@ function ScholarTasks() {
       if (validated) 
         {
           const formData = new FormData();
-          formData.append('scholar_id', newTask.id);
+          formData.append('scholar_id', details.user_id);
           formData.append('midterm_assessment', midtermInput.current.files[0]);
           formData.append('final_assessment', finalInput.current.files[0]);
           //publish_type set to 'pending' by default;

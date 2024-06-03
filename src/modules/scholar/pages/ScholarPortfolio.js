@@ -16,10 +16,9 @@ function ScholarPortfolio() {
     const scholar = user;
     //to display table
     const [portfolios, setPortfolios] = useState([]);
-    console.log(scholar)
     //initialize for new portfolio
     const [newPortfolios, setNewPortfolios] = useState({
-      id: user.id,
+      id: details.user_id,
       study_name: '',
       study: '',
       study_category: '',
@@ -82,7 +81,7 @@ function ScholarPortfolio() {
 
     //fetch
     const fetchPortfolio = async () => {
-      API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: user.id }, response => {
+      API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: details.user_id }, response => {
         if (response && response.data) {
           setPortfolios(response.data)
         } else {
@@ -135,6 +134,7 @@ function ScholarPortfolio() {
               setIsLoading(false); 
             } else {
               console.log('error on retrieve');
+              setShow(true);
               setIsLoading(false); 
             }
           }, error => {
@@ -155,7 +155,7 @@ function ScholarPortfolio() {
       const formData = new FormData();
       console.log(selectedPortfolio);
       formData.append('id', selectedPortfolio.id);
-      formData.append('scholar_id', newPortfolios.id);
+      formData.append('scholar_id', details.user_id);
       formData.append('study_name', selectedPortfolio.study_name);
       formData.append('study', selectedPortfolio.study ? selectedPortfolio.study : studyFile.current.files[0]); 
       //formData.append('study', studyFile.current.files[0]); 

@@ -43,7 +43,7 @@ export default function Routes() {
           <Route path="/scholar_dashboard" component={ScholarDashboard} isPrivate/>
           {/* <Route path="/scholar_details" component={ScholarDetails} isPrivate/> */}
           <Route path="/scholar_tasks" component={ScholarTasks} isPrivate/>
-          {/* <Route path="/scholar_requests" component={ScholarRequests} isPrivate/> */}
+          {/* `<Route path="/scholar_requests" component={ScholarRequests} isPrivate/>` */}
           <Route path="/scholar_portfolio" component={ScholarPortfolio} isPrivate/>
           <Route path="/scholar_leave_applications" component={ScholarLeaveApplication} isPrivate/>
 

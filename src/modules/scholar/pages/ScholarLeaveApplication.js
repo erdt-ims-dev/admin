@@ -17,7 +17,7 @@ function ScholarLeaveApplication() {
 
   const [leaverequests, setLeaveRequests] = useState([]);
   const [newLeaveRequest, setNewLeaveRequest] = useState({
-    id: scholar.id,
+    id: details.user_id,
     leave_start: '',
     leave_end: '',
     leave_letter: '',
@@ -101,7 +101,7 @@ const validateField = (fieldName, value) => {
   }
 };
   const fetchRequests = async () => {
-    API.request('leave_application/retrieveMultipleByParameter', { col: 'user_id', value: newLeaveRequest.id }, response => {
+    API.request('leave_application/retrieveMultipleByParameter', { col: 'user_id', value: details.user_id }, response => {
       if (response && response.data) {
         // Make the second API call to retrieve account details
         setLeaveRequests(response.data)
@@ -154,8 +154,7 @@ const validateField = (fieldName, value) => {
           setIsLoading(false); 
         } else {
           console.log(response.data.error);
-          setError(response.data.error);
-          errorShow();
+          setShow(true);
           setIsLoading(false); 
         }
       }, error => {
@@ -166,7 +165,9 @@ const validateField = (fieldName, value) => {
     {
       console.log('not valid');
       setShow(true); // Ensure the modal stays open
+      setIsLoading(false); 
     }
+    setIsLoading(false); 
   };
 
     //edit 
@@ -175,7 +176,7 @@ const validateField = (fieldName, value) => {
       setIsLoading(true); 
       const formData = new FormData();
       console.log(selectedRequest);
-      formData.append('user_id', newLeaveRequest.id);
+      formData.append('user_id', details.user_id);
       formData.append('id', selectedRequest.id);
       formData.append('leave_letter', selectedRequest.leave_letter ? selectedRequest.leave_letter : letterFile.current.files[0]);
       formData.append('leave_start', selectedRequest.leave_start);
