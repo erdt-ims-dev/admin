@@ -56,7 +56,7 @@ export class Footer extends Component {
               </List>
               </div>
               <div className='disclaimer'>
-                <p>ERDT-IMS @ 2023-2024. All Rights Reserved</p>
+                <p>BINDR @ 2023-2024. All Rights Reserved</p>
               </div>
               </div>
               
