@@ -27,7 +27,7 @@ function ScholarRequests() {
             }
             return acc;
           }, {});
-          console.log(details);
+          // console.log(details);
           console.log(response.data);
           //setAccountDetails(details); // Update account details state
           //setRequests(response.data); // Update requests state

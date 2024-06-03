@@ -27,13 +27,11 @@ function TableComponent({ columns, data, isLoading }) {
     );
  };
  const handleView = (row) => {
-  console.log('View action clicked for:', row);
   // Implement your logic for viewing the item
   // For example, you might want to navigate to a different page or open a modal
 };
 
 const handleEdit = (row) => {
-  console.log('Edit action clicked for:', row);
   // Implement your logic for editing the item
   // Similar to handleView, you can navigate or open a modal
 };

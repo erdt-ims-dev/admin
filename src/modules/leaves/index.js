@@ -109,7 +109,7 @@ function ScholarLeaveApplication() {
     //console.log(formData);
     API.uploadFile('leave_application/updateOne', formData, response => {
       if (!response.data.error) {
-        console.log('Data updated successfully', response.data);
+        // console.log('Data updated successfully', response.data);
         fetchRequests();
       } else {
         console.log(response.data.error);
@@ -154,7 +154,7 @@ function ScholarLeaveApplication() {
       //console.log(formData);
       API.uploadFile('leave_application/create', formData, response => {
         if (!response.data.error) {
-          console.log('response: ', response);
+          // console.log('response: ', response);
           const newTask = {...response.data, tempId: uuidv4() };
           setLeaveRequests(prevTasks => [...prevTasks, newTask]);
           fetchRequests();
@@ -186,7 +186,7 @@ function ScholarLeaveApplication() {
       //console.log(selectedRequest.id);
       API.uploadFile('leave_application/updateOne', formData, response => {
         if (!response.data.error) {
-          console.log('Data updated successfully', response.data);
+          // console.log('Data updated successfully', response.data);
           fetchRequests();
         } else {
           setError(response.data.error);
@@ -211,7 +211,7 @@ function ScholarLeaveApplication() {
         status: "denied",
         comment_id: "",
       }, response => {
-        console.log('Data deleted successfully');
+        // console.log('Data deleted successfully');
         fetchRequests();
       }, error => {
         console.log(error)

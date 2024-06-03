@@ -295,7 +295,7 @@ class Setup extends Component {
         }, response => {
             // Trigger loading state to false after the API call is completed
             this.props.setIsLoadingV2(false);
-            console.log(response)
+            // console.log(response)
             if (response && response.data.user && response.data.details ) {
                 this.props.updateUser(response.data.user)
                 this.props.setDetails(response.data.details)
