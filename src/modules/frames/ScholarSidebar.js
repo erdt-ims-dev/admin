@@ -22,7 +22,10 @@ import {
   faFileInvoice,
   faGear,
   faList,
-  faClipboardCheck
+  faClipboardCheck,
+  faFolderBlank,
+  faLeaf,
+  faCubesStacked
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./style.css";
@@ -37,17 +40,17 @@ const item = [
   },
   {
     name: "Manage Portfolio",
-    icon: faList,
+    icon: faFolderBlank,
     route: "/scholar_portfolio",
   },
   {
     name: "Manage Tasks",
-    icon: faList,
+    icon: faCubesStacked,
     route: "/scholar_tasks",
   },
   {
     name: "Leave Applications",
-    icon: faList,
+    icon: faLeaf,
     route: "/scholar_leave_applications",
   },
   {
