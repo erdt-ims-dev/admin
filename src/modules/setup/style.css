@@ -1,0 +1,22 @@
+.form-container {
+    position: relative;
+    width: 100%;
+    height: 400px; /* Adjust based on your content */
+    overflow: hidden;
+}
+
+.form-step {
+    position: absolute;
+    width: 100%;
+    transition: transform 0.5s ease-out;
+}
+
+/* Initially hide all steps except the first one */
+.form-step:nth-child(n+2) {
+    transform: translateX(-100%);
+}
+
+/* Show the current step */
+.form-step.current {
+    transform: translateX(0);
+}

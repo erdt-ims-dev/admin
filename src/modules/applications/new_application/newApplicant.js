@@ -79,6 +79,7 @@ class newApplicant extends Component {
           },
 
           user: [],
+          details: null,
           errorMessage: null,
           overwriteModal: false,
           discardModal: false,
@@ -171,21 +172,21 @@ class newApplicant extends Component {
             this.props.setIsLoadingV2(true);
         
             if (email) {
-                API.request('user/retrieveOne', {
-                    col: 'email',
-                    value: email
+                API.request('user/retrieveEmailAccountDetails', {
+                    email: email
                 }, response => {
                     // Trigger loading state to false after the API call is completed
                     this.props.setIsLoadingV2(false);
         
-                    if (response && response.data) {
-                        if (response.data.account_type!== 'new') {
+                    if (response && response.user) {
+                        if (response.user.account_type!== 'new') {
                             this.setState({
                                 errorMessage: "This email already has an existing application or is not eligible"
                             });
                         } else {
                             this.setState({
-                                user: response.data,
+                                user: response.user,
+                                details: response.details,
                                 errorMessage: "",
                                 emailRetrieved: true // Set emailRetrieved to true
                             });
@@ -245,7 +246,7 @@ class newApplicant extends Component {
         }
                    
     render() {
-        const {errorMessage, selectedFiles} = this.state
+        const {errorMessage, selectedFiles, user, details} = this.state
         const hasFilesSelected = Object.values(selectedFiles).some(file => file !== null);
         return (
             <div>
@@ -268,10 +269,10 @@ class newApplicant extends Component {
 
                         <Row className='Row'>
                             <Col className='imageCircle'>
-                                <img className='circle' src={placeholder} alt='profile'></img>
+                                <img className='circle' src={ details ? details.profile_picture : placeholder} alt='profile'></img>
                             </Col>
                             <Col className='imageText'>
-                                <p className=''>This will be the profile picture displayed</p>
+                                <p className=''>{details ? (details.first_name + " " + details.middle_name + " " + details.last_name) : "Candidate details will be shown here"}</p>
                             </Col>
                         </Row>
                         
@@ -316,7 +317,7 @@ class newApplicant extends Component {
                         <>
                         <Row className='sectionHeader'>
                         <p>File Uploads</p>
-                    </Row>
+                        </Row>
                     {
                         files.map((item, index)=>{
                             return(

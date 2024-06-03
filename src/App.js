@@ -1,9 +1,19 @@
 import "./App.css";
-import RouterList from "./routes";
+import RouterList from "./routes/index";
+import CoordinatorRoutes from "./routes/coordinator_routes";
+import StaffRouter from "./routes/staff_routes";
+import ScholarRouter from "./routes/scholar_routes";
+import ApplicantRouter from "./routes/applicant_routes";
+import NewRouter from "./routes/new_routes";
 
 import Header from "./modules/frames/Header";
 import Footer from "./modules/frames/Footer";
 import Sidebar from "./modules/frames/Sidebar";
+import CoordinatorSidebar from "./modules/frames/CoordinatorSidebar";
+import StaffSidebar from "./modules/frames/StaffSidebar";
+import ScholarSidebar from "./modules/frames/ScholarSidebar";
+import ApplicantSidebar from "./modules/frames/ApplicantSidebar";
+import NewSidebar from "./modules/frames/NewSidebar";
 
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from "react-router-dom";
@@ -50,7 +60,23 @@ function App(props) {
   return (
     <div>
     {
-      (user && token && !isLoading)&&(
+        (user === null && token === null && !isLoading) && (
+          <div style={{
+            minHeight: '100vh',
+            overflowY: 'hidden',
+            backgroundImage: "none",
+            backgroundSize: '100% auto'
+          }}
+            className="login-body"
+          >
+            <RouterList />
+            <Footer/>
+          </div>
+          
+        )
+      }
+    {
+      (user && user.account_type === 'admin' && token && !isLoading)&&(
       <div className="App">
         <React.Fragment>
           
@@ -67,13 +93,122 @@ function App(props) {
               </div>
               <Footer />
             </span>
-          
-          
-          
         </React.Fragment>
       </div>
       )
     }
+    {
+      (user && user.account_type === 'coordinator' && token && !isLoading)&&(
+      <div className="App">
+        <React.Fragment>
+          
+            <span>
+              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
+              <div className="mainContainer">
+                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                  <CoordinatorSidebar show={openSidebar} {...props} navigate={navigate} />
+                </div>
+
+                <div className="pageContainer">
+                  <CoordinatorRoutes />
+                </div>
+              </div>
+              <Footer />
+            </span>
+        </React.Fragment>
+      </div>
+      )
+    }
+    {
+      (user && user.account_type === 'staff' && token && !isLoading)&&(
+      <div className="App">
+        <React.Fragment>
+          
+            <span>
+              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
+              <div className="mainContainer">
+                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                  <StaffSidebar show={openSidebar} {...props} navigate={navigate} />
+                </div>
+
+                <div className="pageContainer">
+                  <StaffRouter />
+                </div>
+              </div>
+              <Footer />
+            </span>
+        </React.Fragment>
+      </div>
+      )
+    }
+    {
+      (user && user.account_type === 'scholar' && token && !isLoading)&&(
+      <div className="App">
+        <React.Fragment>
+          
+            <span>
+              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
+              <div className="mainContainer">
+                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                  <ScholarSidebar show={openSidebar} {...props} navigate={navigate} />
+                </div>
+
+                <div className="pageContainer">
+                  <ScholarRouter />
+                </div>
+              </div>
+              <Footer />
+            </span>
+        </React.Fragment>
+      </div>
+      )
+    }
+    {
+      (user && user.account_type === 'applicant' && token && !isLoading)&&(
+      <div className="App">
+        <React.Fragment>
+          
+            <span>
+              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
+              <div className="mainContainer">
+                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                  <ApplicantSidebar show={openSidebar} {...props} navigate={navigate} />
+                </div>
+
+                <div className="pageContainer">
+                  <ApplicantRouter />
+                </div>
+              </div>
+              <Footer />
+            </span>
+        </React.Fragment>
+      </div>
+      )
+    }
+    {
+      (user && user.account_type === 'new' && token && !isLoading)&&(
+      <div className="App">
+        <React.Fragment>
+          
+            <span>
+              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
+              <div className="mainContainer">
+                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                  <NewSidebar show={openSidebar} {...props} navigate={navigate} />
+                </div>
+
+                <div className="pageContainer">
+                  <NewRouter />
+                </div>
+              </div>
+              <Footer />
+            </span>
+        </React.Fragment>
+      </div>
+      )
+    }
+
+    
     {
         isLoading && (
           <div style={{
@@ -100,22 +235,7 @@ function App(props) {
           </div>
         )
       }
-      {
-        (user === null && token === null && !isLoading) && (
-          <div style={{
-            minHeight: '100vh',
-            overflowY: 'hidden',
-            backgroundImage: "none",
-            backgroundSize: '100% auto'
-          }}
-            className="login-body"
-          >
-            <RouterList />
-            <Footer/>
-          </div>
-          
-        )
-      }
+      
     </div>
   );
 }

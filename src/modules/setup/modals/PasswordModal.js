@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faChevronDown, faChevronUp, faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputFieldV4 from 'modules/generic/inputV4';
+import InputFieldV3 from 'modules/generic/inputV3';
+import InputFieldV2 from 'modules/generic/inputV2';
 import InputField from 'modules/generic/input';
 import WarningModal from 'modules/generic/warningModalV2'
 import Container from 'react-bootstrap/Container';
@@ -14,48 +16,36 @@ import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
 import { connect } from 'react-redux'; // Import connect from react-redux
+import { ToastContainer, toast } from 'react-toastify';
 
-
-class EmailModal extends Component {
+class PasswordModal extends Component {
     constructor(props) {
         super(props);
-        this.updateEmail = this.updateEmail.bind(this);
-        this.fileInputs = {};
         this.state = {
-          registeredEmail: null,
-          errorEmail: null,
-          newEmail: null,
-          errorNewEmail: null,
-          isCollapsed: true,
-          error: null,
+            password: null,
+            errorPassword: null,
+            newPassword: null,
+            errorNewPassword: null,
+            isCollapsed: true,
 
-          id: null,
-          user_id: null,
-          first_name: null,
-          middle_name: null,
-          last_name: null,
-          email: null,
-          type: null,
-          status: null,
-          program: null,
-          status: null,
-          profile: null
+            user_id: null,
+            error: null,
+            user_id: null,
+            first_name: null,
+            middle_name: null,
+            last_name: null,
+            program: null,
         };
         
       }
       componentDidMount() {
         this.setState({
-          id: this.props.details.id,
           user_id: this.props.details.user_id,
           first_name: this.props.details.first_name,
           middle_name: this.props.details.middle_name,
           last_name: this.props.details.last_name,
-          email: this.props.user.email,
-          type: this.props.user.account_type,
-          status: this.props.user.status,
           program: this.props.details.program,
-          status: this.props.user.status,
-          profile: this.props.profile_picture
+          
       })
     }
     
@@ -63,75 +53,62 @@ class EmailModal extends Component {
         
         
     }
-    
-    resetValues(){
+    handleDiscard(){
         this.setState({
-          error: null,
-          registeredEmail: null,
-          errorEmail: null,
-          newEmail: null,
-          errorNewEmail: null,
+          password: null,
+          errorPassword: null,
+          newPassword: null,
+          errorNewPassword: null,
         });
     }
-    updateEmail = () => {
-      const { user_id, registeredEmail, newEmail, email } = this.state;
-      if(registeredEmail == null && newEmail == null){
+    updatePassword = () => {
+      const notify = () => toast("Password Updated");
+
+      const { user_id, password, newPassword } = this.state;
+      if(password == null && newPassword == null){
         this.setState({
           error: 'Fields cannot be blank'
         })
         return
-      }else if(email !== registeredEmail){
+      }
+      if(password == newPassword){
         this.setState({
-          error: 'Current email field does not match with registered email'
+          error: 'New password cannot be the same as old password'
         })
         return
       }
-      if ((!email ||!newEmail)) {
+      if ((!password ||!newPassword)) {
         this.setState({
             error: 'Fill in missing fields'
         });
         return;
-      }
-      if ((email === newEmail)) {
-        this.setState({
-            error: 'New email cannot be the same as current email'
-        });
-        return;
-      }
+    }
       let formData = new FormData();
       formData.append('user_id', user_id);
-      formData.append('current_email', registeredEmail);
-      formData.append('new_email', newEmail);
+      formData.append('current_password', password);
+      formData.append('new_password', newPassword);
     
-      API.uploadFile('user/updateEmail', formData, response => {
+      API.uploadFile('user/updatePassword', formData, response => {
         // Set loading to false after the API call is completed
         this.props.setIsLoadingV2(false);
     
         // Check if there was an error in the response
-        // if (response.error !== null || response.error === undefined) {
-        //   // Handle validation errors or any other errors returned by the server
-        //   this.setState({
-        //     emailError: response.error
-        //   });
-        //   console.log('here1')
-
-        //   return;
-        // }
-    
+        if (response.data.error!== null) {
+          // Handle validation errors or any other errors returned by the server
+          this.setState({
+            error: response.data.error
+          });
+          return;
+        }
+        console.log(response.data)
         // Check if the update was successful
-        console.log('here', response.data.user, response.data.details)
-        if (response.data.user && response.data.details) {
-          console.log('here2')
-          this.props.setDetails(response.data.details)
-          this.props.updateUser(response.data.user)
-          this.resetValues()
+        if (response.data ) {
+          notify()
+          this.handleDiscard()
           this.props.onHide()
-          window.location.reload();
         } else {
           // Handle unexpected errors
-          this.setState({
-                emailError: response.error
-              });
+          alert('Something went wrong. Try again.');
         }
       }, error => {
         // Set loading to false in case of an error
@@ -143,7 +120,7 @@ class EmailModal extends Component {
         
 
     render() {
-        const { error} = this.state
+      const {error} = this.state
     return (
         <div className=''>
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -158,7 +135,7 @@ class EmailModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
-        Update Email
+        Change Password
         </Modal.Title>
       </Modal.Header>
       <Modal.Body style={{
@@ -175,9 +152,8 @@ class EmailModal extends Component {
                 <img className='circle' src={this.props.details.profile_picture}></img>
             </Col>
             <Col className='imageText'>
-                <p style={{ fontWeight: 'bold'}} className=''>{this.props.details ?  `${this.state.first_name} ${this.props.details.middle_name} ${this.props.details.last_name}, ${this.props.details.program}` : ''}</p>
+                <p style={{ fontWeight: 'bold'}}>{this.props.details ?  `${this.state.first_name} ${this.props.details.middle_name} ${this.props.details.last_name}, ${this.props.details.program}` : ''}</p>
             </Col>
-            
         </Row>
 
           <Row className='Row'>
@@ -186,34 +162,33 @@ class EmailModal extends Component {
             }}>
                 <Col className=''>
                 <InputField
-                id={1}
-                type={'email'}
-                label={'Current Email'}
-                placeholder={'Enter Current Email'}
-                // inject={this.state.email}
+                id={3}
+                type={'password'}
+                label={'Current Password'}
+                placeholder={'Enter Current Password'}
                 locked={false}
                 active={false}
-                onChange={(registeredEmail, errorEmail) => {
+                onChange={(password, errorPassword) => {
                     this.setState({
-                      registeredEmail, errorEmail
+                      password, errorPassword
                     })
-                  }}
+                    }}
                 />
-                </Col>
+            </Col>
             </Col>
             <Col xs={6}>
             <InputField
-                id={2}
-                type={'email'}
-                label={'New Email'}
-                placeholder={'Enter New Email'}
+                id={4}
+                type={'password'}
+                label={'New Password'}
+                placeholder={'Input New Password'}
                 locked={false}
                 active={false}
-                onChange={(newEmail, errorNewEmail) => {
+                onChange={(newPassword, errorNewPassword) => {
                     this.setState({
-                        newEmail, errorNewEmail
+                        newPassword, errorNewPassword
                     })
-                  }}
+                    }}
                 />
             </Col>
             <p style={{
@@ -237,18 +212,30 @@ class EmailModal extends Component {
     }}
         onHide={() => {this.props.onHide()}}
     />
-
+      <ToastContainer
+      position="top-center"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+      transition={{ enter: 'animate__animated animate__fadeIn', exit: 'animate__animated animate__fadeOut' }}
+    />
     </Container>
         
       </Modal.Body>
       <Modal.Footer>
         <Button variant='secondary' onClick={()=>{
-            this.resetValues()
+            this.handleDiscard()
             this.setState({
                 discardModal: true
             })
             }}>Discard Changes</Button>
-        <Button variant='primary' onClick={this.updateEmail}>Save Changes</Button>
+        <Button variant='primary' onClick={()=>{this.updatePassword()}}>Save Changes</Button>
       </Modal.Footer>
     </Modal>
                     
@@ -268,14 +255,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setIsLoadingV2: (status) => {
         dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
-      },
-      setDetails: (details) => {
-        dispatch({ type: 'SET_DETAILS', payload: { details } });
-      },
-      updateUser: (user) => {
-        dispatch({ type: 'UPDATE_USER', payload: { user } });
-      },
+      }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailModal);
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordModal);

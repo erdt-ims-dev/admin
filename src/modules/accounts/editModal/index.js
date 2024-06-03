@@ -63,6 +63,7 @@ class EditModal extends Component {
                                 onChange={(e) => this.setState({ newType: e.target.value })}
                             >
                                 <option value="admin">admin</option>
+                                <option value="coordinator">coordinator</option>
                                 <option value="staff">staff</option>
                                 <option value="applicant">applicant</option>
                                 <option value="scholar">scholar</option>
