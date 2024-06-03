@@ -15,33 +15,61 @@ import { Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import API from 'services/Api'
 import 'modules/application_status/style.css'
-
-
+import { format } from 'date-fns';
+import 'modules/application_status/modals/tracking.css'
 
 
 class Tracker extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          data: null
+          data: null,
+          comments: '' 
         };
       }
       componentDidMount() {
-        this.setState({
-            details: this.props.details
-        })
-        
+        const { setData } = this.props;
+        if (setData && setData!== null) {
+            this.getComment();
+        }
     }
     
     componentDidUpdate(prevProps) {
-       
+        // Check if setData has changed and now contains non-null values
+        if (!prevProps.setData || prevProps.setData === null || this.props.setData!== prevProps.setData) {
+            this.getComment();
+        }
     }
     toggleFilesSectionVisibility() {
         this.setState(prevState => ({
             isCollapsed:!prevState.isCollapsed,
         }));
     };
+    getComment(){
+        const { setData } = this.props;
     
+        // Ensure setData is not null before proceeding
+        if (!setData) {
+            return; // Exit the function early if setData is null
+        }
+        this.props.setIsLoadingV2(true);
+        API.request('comments/retrieveWithAccountDetails', {
+            id: this.props.details.id,
+        }, response => {
+            // Trigger loading state to false after the API call is completed
+            this.props.setIsLoadingV2(false);
+            if (response && response.data) {
+                this.setState({
+                    comments: response.data.message
+                })
+            } else {
+                console.log('error on retrieve');
+            }
+        }, error => {
+            this.props.setIsLoadingV2(false);
+            console.log(error);
+        });
+    }
     handleHide(){
         this.setState({
             isCollapsed: true
@@ -49,48 +77,70 @@ class Tracker extends Component {
         this.props.onHide()
     }
     render() {
-        const {details} = this.state
-        console.log('set', details)
-    return (
-        <div >
-            {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
-    <Modal
-      show={this.props.show}
-      onHide={()=>{this.handleHide()}}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header style={{
-        backgroundColor: '#f1f5fb'
-      }}>
-        <Modal.Title id="contained-modal-title-vcenter">
-        Track Application
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body style={{
-        backgroundColor: '#f1f5fb',
-        maxHeight: '75vh',
-        overflowX: 'hidden',
-        overflowY: 'auto'
-      }}>
-      <Container>
-        
-    
-    </Container>
-        
-      </Modal.Body>
-      <Modal.Footer style={{
-        backgroundColor: '#f1f5fb'
-      }}>
-        <Button variant='secondary' onClick={()=>{this.handleHide()}}>Close</Button>
-      </Modal.Footer>
-    </Modal>
-                    
-                   
-                    
-                </div> 
-        )
+        const { details, data, comments  } = this.state;
+        const { setData } = this.props;
+
+        // Assuming `data` contains the application details including `status`
+        const formattedDate = setData? format(new Date(setData.created_at), 'yyyy-MM-dd') : '';
+
+        let staffStatusText = '';
+        let coordinatorStatusText = '';
+        if (setData && setData.status === 'endorsed') {
+            staffStatusText = <span style={{ color: 'green' }}>Endorsed</span>;
+            coordinatorStatusText = <span> Pending</span>; // Coordinator hasn't approved yet
+        } else if (setData && setData.status === 'approved') {
+            staffStatusText = <span>Endorsed</span>; // Staff has endorsed
+            coordinatorStatusText = <span style={{ color: 'green' }}>Approved</span>;
+        } else {
+            staffStatusText = <span> Pending</span>;
+            coordinatorStatusText = <span> Pending</span>;
+        }
+
+        return (
+            <div>
+                <Modal
+                    show={this.props.show}
+                    onHide={() => { this.handleHide(); }}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <Modal.Header style={{ backgroundColor: '#f1f5fb' }}>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            Track Application
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={{ backgroundColor: '#f1f5fb', maxHeight: '75vh', overflowX: 'hidden', overflowY: 'auto' }}>
+                        <Container>
+                        <Row className="Row">
+                            <Row className='Row'>
+                            <span>Date submitted: {formattedDate}</span>
+                            </Row>
+                            <Row className='Row'>
+                                <Col>
+                                <span>Staff: {staffStatusText}</span>
+                                
+                                </Col>
+                                <Col>
+                                <div className="comment-container">
+                                    <p>{`Remarks: ${comments}`}</p>
+                                </div>
+                                </Col>
+                            </Row>
+                            <Row className='Row'>
+                            <span>Coordinator: {coordinatorStatusText}</span>
+                                
+                            </Row>
+                                
+                            </Row>
+                        </Container>
+                    </Modal.Body>
+                    <Modal.Footer style={{ backgroundColor: '#f1f5fb' }}>
+                        <Button variant='secondary' onClick={() => { this.handleHide(); }}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
+        );
     }
 }
 
