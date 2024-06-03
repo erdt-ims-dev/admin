@@ -38,17 +38,17 @@ const item = [
   {
     name: "Manage Portfolio",
     icon: faList,
-    route: "/#",
+    route: "/scholar_portfolio",
   },
   {
     name: "Manage Tasks",
     icon: faList,
-    route: "/#",
+    route: "/scholar_tasks",
   },
   {
     name: "Leave Applications",
     icon: faList,
-    route: "/#",
+    route: "/scholar_leave_applications",
   },
   {
     name: "Settings",

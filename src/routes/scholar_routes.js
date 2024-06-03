@@ -4,12 +4,17 @@ import Route from "./route";
 import AnnouncementDashboard from "modules/dashboard/AnnouncementDashboard";
 import Login from "modules/auth/login";
 import AdminLeaveRequest from "modules/applications/index";
-import { ScholarList, ScholarDetails, ViewScholar, ScholarPortfolio, ScholarLeaveApplication, ScholarTasks, ScholarRequests } from "modules/scholar";
+//import { ScholarList, ScholarDetails, ViewScholar, ScholarPortfolio, ScholarLeaveApplication, ScholarTasks, ScholarRequests } from "modules/scholar/pages";
 import ScholarDashboard  from "modules/scholardashboard/index.js";
 import Leaves from "modules/leaves/index.js";
 import Accounts from "modules/accounts/index.js";
 import Settings from "modules/settings/index.js";
 import Register from "modules/auth/register.js";
+
+import ScholarTasks from "modules/scholar/pages/ScholarTasks.js";
+import ScholarPortfolio from "modules/scholar/pages/ScholarPortfolio.js";
+import ScholarLeaveApplication from "modules/scholar/pages/ScholarLeaveApplication.js";
+//import ScholarRequests from "modules/scholar/pages/ScholarRequests.js";
 
 import ApplicantList from "modules/applications/index.js";
 import EndorsementList from "modules/endorsements/index";
@@ -36,6 +41,11 @@ export default function Routes() {
           <Route path="/dashboard" exact component={AnnouncementDashboard} isPrivate/>
 
           <Route path="/scholar_dashboard" component={ScholarDashboard} isPrivate/>
+          {/* <Route path="/scholar_details" component={ScholarDetails} isPrivate/> */}
+          <Route path="/scholar_tasks" component={ScholarTasks} isPrivate/>
+          {/* <Route path="/scholar_requests" component={ScholarRequests} isPrivate/> */}
+          <Route path="/scholar_portfolio" component={ScholarPortfolio} isPrivate/>
+          <Route path="/scholar_leave_applications" component={ScholarLeaveApplication} isPrivate/>
 
           <Route path="/leaves" exact component={Leaves} isPrivate/>
           <Route path="/accounts" exact component={Accounts} isPrivate/>
