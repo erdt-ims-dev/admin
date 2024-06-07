@@ -142,15 +142,24 @@ class Login extends Component {
               </Button>
             </Row>
             <Row className="Row">
-                <p style={{
+            <p style={{
+              color: 'white',
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: 25
+            }}>
+              Don't have an account? Register {" "}
+              <a
+                style={{
                   color: 'white',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginBottom: 25
-                }}>
-                  Don't have an Account? you can register{" "}
-                  <a href="/register">here</a>
-                </p>
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+                onClick={() => { this.props.history.push("/register"); }}
+              >
+                here
+              </a>
+            </p>
               </Row>
             <Row>{/* Or */}</Row>
             {/* <Row className="Row mx-4">
