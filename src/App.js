@@ -5,6 +5,7 @@ import StaffRouter from "./routes/staff_routes";
 import ScholarRouter from "./routes/scholar_routes";
 import ApplicantRouter from "./routes/applicant_routes";
 import NewRouter from "./routes/new_routes";
+import AuthRouter from "./routes/auth_routes";
 
 import Header from "./modules/frames/Header";
 import Footer from "./modules/frames/Footer";
@@ -69,7 +70,7 @@ function App(props) {
           }}
             className="login-body"
           >
-            <RouterList />
+            <AuthRouter />
             <Footer/>
           </div>
           

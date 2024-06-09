@@ -25,7 +25,6 @@ class DeleteModal extends Component {
       const {setData} = this.props
       // Trigger loading state to true before the API call
       this.props.setIsLoadingV2(true);
-      console.log( setData)
       API.request('admin_system_message/delete', {
           id: setData.id
       }, response => {

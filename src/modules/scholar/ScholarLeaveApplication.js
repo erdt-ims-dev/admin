@@ -101,7 +101,7 @@ const validateField = (fieldName, value) => {
       if (response && response.data) {
         // Make the second API call to retrieve account details
         setLeaveRequests(response.data)
-        console.log(leaverequests)
+        // console.log(leaverequests)
       } else {
         console.log('error on retrieve');
       }
@@ -131,7 +131,7 @@ const validateField = (fieldName, value) => {
     setIsLoading(true); 
     let validated = formValidation();
     if (validated) {
-      console.log(newLeaveRequest)
+      // console.log(newLeaveRequest)
       const formData = new FormData();
       formData.append('user_id', newLeaveRequest.id);
       formData.append('leave_letter', letterFile.current.files[0]);
@@ -139,10 +139,10 @@ const validateField = (fieldName, value) => {
       formData.append('leave_end', newLeaveRequest.leave_end);
       formData.append('status', newLeaveRequest.status);
       formData.append('comment_id', newLeaveRequest.comment_id);
-      console.log(formData);
+      // console.log(formData);
       API.uploadFile('leave_application/create', formData, response => {
         if (!response.data.error) {
-          console.log('Data created successfully', response.data);
+          // console.log('Data created successfully', response.data);
           const newTask = {...response.data, tempId: uuidv4() };
           setLeaveRequests(prevTasks => [...prevTasks, newTask]);
           fetchRequests();
@@ -170,7 +170,7 @@ const validateField = (fieldName, value) => {
       e.preventDefault();
       setIsLoading(true); 
       const formData = new FormData();
-      console.log(selectedRequest);
+      // console.log(selectedRequest);
       formData.append('user_id', newLeaveRequest.id);
       formData.append('id', selectedRequest.id);
       formData.append('leave_letter', selectedRequest.leave_letter ? selectedRequest.leave_letter : letterFile.current.files[0]);
@@ -180,7 +180,7 @@ const validateField = (fieldName, value) => {
       //console.log(selectedRequest.id);
       API.uploadFile('leave_application/updateOne', formData, response => {
         if (response && response.data) {
-          console.log('Data updated successfully', response.data);
+          // console.log('Data updated successfully', response.data);
           fetchRequests();
           setIsLoading(false); 
         } else {
@@ -197,7 +197,7 @@ const validateField = (fieldName, value) => {
     const deleteRequest = async (e) => {
       e.preventDefault();
       setIsLoading(true); 
-      console.log(selectedRequest.id);
+      // console.log(selectedRequest.id);
       API.request('leave_application/delete', {
         id: selectedRequest.id,
       }, response => {

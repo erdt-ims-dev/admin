@@ -100,7 +100,7 @@ class PasswordModal extends Component {
           });
           return;
         }
-        console.log(response.data)
+        // console.log(response.data)
         // Check if the update was successful
         if (response.data ) {
           notify()

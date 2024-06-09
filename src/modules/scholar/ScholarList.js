@@ -86,7 +86,7 @@ const useScholarList = () => {
             });
   
             setScholars(updatedScholars); // Update the state with scholars including their account details
-            console.log("updated scholar: ", updatedScholars); // Log the updated scholars data
+            // console.log("updated scholar: ", updatedScholars); // Log the updated scholars data
           } else {
             console.log('Error retrieving account details');
           }

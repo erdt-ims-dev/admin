@@ -28,7 +28,7 @@ class Register extends Component {
   }
 
   validatePassword(password) {
-    const reg = /^(?=(?:.*[A-Z]){1,})(?=(?:.*[a-z]){1,})(?=(?:.*\d){1,})(?=(?:.*[@#$%^&*()\-_=+{};:,<.>]){1,})([A-Za-z0-9@#$%^&*()\-_=+{};:,<.>]{6,})$/;
+    const reg = /^(?=(?:.*[A-Z]){1,})(?=(?:.*[a-z]){1,})(?=(?:.*\d){1,})(?=(?:.*[@#$%^&*()\-_=+{};:,<.>]){1,})([A-Za-z0-9@#$%^&*()\-_=+{};:,<.>]{8,})$/;
     return reg.test(password);
   }
 
@@ -81,7 +81,7 @@ class Register extends Component {
         this.props.setIsLoading(false);
         if (response && response.data) {
           alert('Account Created');
-          this.props.history.push('/login');
+          this.props.history.push('/');
         } else {
           alert('Error on Submit');
         }
@@ -192,7 +192,11 @@ class Register extends Component {
                   color: 'white',
                   marginBottom: 25
                 }}>Already have an account? Sign in{" "}
-                  <a href="/login" style={{ color: "white" }}>here</a>
+                  <a style={{
+                    color: 'white',
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
+                  }} onClick={()=>{this.props.history.push("/");}}>here</a>
                 </p>
               </Row>
             </Container>

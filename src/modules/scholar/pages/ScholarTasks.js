@@ -16,7 +16,7 @@ function ScholarTasks() {
     const location = useLocation();
     const scholar = user;
 
-    console.log(scholar); 
+    // console.log(scholar); 
 
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState({
@@ -45,7 +45,7 @@ function ScholarTasks() {
     const [editTaskShow, setEditTaskShow] = useState(false);
 
     const handleEditTaskShow = (task) => {
-      console.log(task);
+      // console.log(task);
       setSelectedTask(task);
       setEditTaskShow(true);
     }
@@ -97,7 +97,7 @@ function ScholarTasks() {
           formIsValid = false;
         }
       });
-      console.log(validation);
+      // console.log(validation);
       return (formIsValid) ? true : false;
     }
 
@@ -117,7 +117,7 @@ function ScholarTasks() {
 
           API.uploadFile('scholar_tasks/create', formData, response => {
             if (!response.data.error) {
-              console.log('Data created successfully', response.data);
+              // console.log('Data created successfully', response.data);
               const newTask = {...response.data, tempId: uuidv4() };
               setTasks(prevTasks => [...prevTasks, newTask]);
               // toast.success("Task Added!",  {
@@ -164,10 +164,10 @@ function ScholarTasks() {
       formData.append('final_assessment', selectedTask.final_assessment ? selectedTask.final_assessment : finalInput.current.files[0]);
       //(finalInput.current.files[0] !== null) ? formData.append('final_assessment', finalInput.current.files[0]) : formData.append('final_assessment', '');
       formData.append('approval_status', selectedTask.approval_status);
-      console.log(formData);
+      // console.log(formData);
       API.uploadFile('scholar_tasks/updateOne', formData, response => {
         if (response && response.data) {
-          console.log('Data updated successfully', response.data);
+          // console.log('Data updated successfully', response.data);
           fetchTasks();
           setIsLoading(false); 
         } else {
@@ -184,7 +184,7 @@ function ScholarTasks() {
     const deleteTask = async (e) => {
       e.preventDefault();
       setIsLoading(true); 
-      console.log(selectedTask.id)
+      // console.log(selectedTask.id)
       API.request('scholar_tasks/delete', {
         id: selectedTask.id,
       }, response => {

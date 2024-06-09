@@ -98,7 +98,7 @@ function ScholarDetails() {
         ref: useRef(scholar.account_details.admission_notice),
     },
   ]
- console.log(files);
+//  console.log(files);
  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -138,8 +138,8 @@ function ScholarDetails() {
     formData1.append('admission_notice', formData.admission_notice ? formData.admission_notice : files[6].ref.current.files[0]);
     API.uploadFile('account_details/updateDataAndFiles', formData1, response => {
       if (!response.data.error) {
-        console.log(formData);
-        console.log('Data updated successfully', response.data);
+        // console.log(formData);
+        // console.log('Data updated successfully', response.data);
         setIsLoading(false); 
       } else {
         console.log('error on update');

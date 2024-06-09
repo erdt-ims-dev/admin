@@ -119,9 +119,9 @@ class EmailModal extends Component {
         // }
     
         // Check if the update was successful
-        console.log('here', response.data.user, response.data.details)
+        // console.log('here', response.data.user, response.data.details)
         if (response.data.user && response.data.details) {
-          console.log('here2')
+          // console.log('here2')
           this.props.setDetails(response.data.details)
           this.props.updateUser(response.data.user)
           this.resetValues()

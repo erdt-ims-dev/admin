@@ -51,7 +51,7 @@ const reducer = (state = initialState, action) => {
       localStorage.removeItem(`${Helper.APP_NAME}token`);
       return Object.assign({}, initialState);
     case 'LOGIN':
-      console.log('INITIALIZING LOGIN', action.payload.user);
+      // console.log('INITIALIZING LOGIN', action.payload.user);
       localStorage.setItem(`${Helper.APP_NAME}token`, action.payload.token,);
       return {
         ...state,
@@ -67,7 +67,7 @@ const reducer = (state = initialState, action) => {
       details: action.payload.details,
     }
     case 'UPDATE_USER':
-    console.log('UPDATING USER', action.payload.user);
+    // console.log('UPDATING USER', action.payload.user);
       return {
         ...state,
         user: action.payload.user

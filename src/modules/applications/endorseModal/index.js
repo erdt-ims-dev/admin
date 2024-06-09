@@ -60,7 +60,6 @@ class endorseModal extends Component {
 
     handleEndorse() {
       const {setData} = this.props
-      console.log('setData', setData)
       // Trigger loading state to true before the API call
       this.props.setIsLoadingV2(true);
   

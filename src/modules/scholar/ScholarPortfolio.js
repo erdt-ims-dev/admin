@@ -42,7 +42,7 @@ function ScholarPortfolio() {
 
     const handleEditShow = (portfolio) => {
       setSelectedPortfolio(portfolio);
-      console.log(portfolio);
+      // console.log(portfolio);
       setEditShow(true);
     }
     const handleEditClose = () => setEditShow(false);
@@ -123,7 +123,7 @@ function ScholarPortfolio() {
           //console.log(newPortfolios);
           API.uploadFile('scholar_portfolio/create', formData, response => {
             if (!response.data.error) {
-              console.log('Data created successfully', response.data);
+              // console.log('Data created successfully', response.data);
               const newPortfolio = {...response.data, tempId: uuidv4() };
               setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
               fetchPortfolio();
@@ -149,7 +149,7 @@ function ScholarPortfolio() {
       e.preventDefault();
       setIsLoading(true); 
       const formData = new FormData();
-      console.log(selectedPortfolio);
+      // console.log(selectedPortfolio);
       formData.append('id', selectedPortfolio.id);
       formData.append('scholar_id', newPortfolios.id);
       formData.append('study_name', selectedPortfolio.study_name);
@@ -157,10 +157,10 @@ function ScholarPortfolio() {
       //formData.append('study', studyFile.current.files[0]); 
       formData.append('study_category', selectedPortfolio.study_category);
       formData.append('publish_type', selectedPortfolio.publish_type);
-      console.log(studyFile.current.files[0]);
+      // console.log(studyFile.current.files[0]);
       API.uploadFile('scholar_portfolio/updateOne', formData, response => {
         if (!response.data.error) {
-          console.log('Data updated successfully', response.data);
+          // console.log('Data updated successfully', response.data);
           fetchPortfolio();
           setIsLoading(false); 
         } else {
@@ -170,7 +170,7 @@ function ScholarPortfolio() {
       }, error => {
         console.log(error)
       })
-      console.log(selectedPortfolio);
+      // console.log(selectedPortfolio);
       setEditShow(false);
     };
 
@@ -178,7 +178,7 @@ function ScholarPortfolio() {
     const deletePortfolio = async (e) => {
       e.preventDefault();
       setIsLoading(true); 
-      console.log(setSelectedPortfolio.id)
+      // console.log(setSelectedPortfolio.id)
       API.request('scholar_portfolio/delete', {
         id: selectedPortfolio.id,
       }, response => {
