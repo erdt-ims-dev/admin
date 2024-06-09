@@ -228,10 +228,12 @@ function ScholarLeaveApplication() {
 
   return (
     <>
-    <h2>This is the Scholar Leave Request page</h2>
+    <div style={{ float:'left', textAlign:'left'}}>
+      <h2>This is the Scholar Leave Request page</h2>
+    </div>
     <Button 
           onClick={handleShow} 
-          style={{float:'right'}}> Add New Request </Button>
+          style={{float:'right', marginTop:'0.3rem'}}> Add New Request </Button>
     
     {/* error modal */}
     <Modal show={errorModal} onHide={errorClose}>
@@ -386,7 +388,7 @@ function ScholarLeaveApplication() {
           </Button>
         </Modal.Footer>
       </Modal>
-    <div className="table-container">
+    <div className="table-container" style={{ marginTop:'4rem'}}>
         <Table>
           <thead>
             <tr>
