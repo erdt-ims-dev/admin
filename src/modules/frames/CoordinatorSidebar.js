@@ -22,11 +22,13 @@ import {
   faFileInvoice,
   faGear,
   faList,
-  faClipboardCheck
+  faClipboardCheck,
+  faScroll
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvira } from "@fortawesome/free-brands-svg-icons";
 
 // Modify 'item' as needed
 const item = [
@@ -42,7 +44,7 @@ const item = [
   },
   {
     name: "Manage Scholars",
-    icon: faList,
+    icon: faScroll,
     route: "/scholars",
   },
   {
@@ -53,7 +55,7 @@ const item = [
   {
     name: "Manage Leave Requests",
     route: "/leaves",
-    icon: faClipboardCheck,
+    icon: faEnvira,
   },
   {
     name: "Settings",
