@@ -41,8 +41,18 @@ const item = [
     route: "/applications",
   },
   {
+    name: "Manage Scholars",
+    icon: faList,
+    route: "/scholars",
+  },
+  {
     name: "Manage Endorsements",
     route: "/endorsements",
+    icon: faClipboardCheck,
+  },
+  {
+    name: "Manage Leave Requests",
+    route: "/leaves",
     icon: faClipboardCheck,
   },
   {

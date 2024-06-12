@@ -20,6 +20,7 @@ class Login extends Component {
     this.state = {
       data: null,
       email: null,
+      error: null,
       errorEmail: null,
       password: null,
       errorPassword: null,
@@ -74,6 +75,7 @@ class Login extends Component {
         this.setState({
           errorEmail: response.error
         })
+        alert(response.error)
       }
     }, error => {
       this.props.setIsLoading(false)
