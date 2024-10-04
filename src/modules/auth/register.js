@@ -8,33 +8,26 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { withRouter } from "react-router-dom";
 import API from '../../services/Api';
+import { toast } from 'react-toastify'; // Import toast from react-toastify
 
 class Register extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      errorFirstName: '',
-      errorLastName: '',
-      errorEmail: '',
-      errorPassword: '',
-      errorConfirmPassword: '',
-      errorMessage: ''
-    };
+  state = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    errorFirstName: '',
+    errorLastName: '',
+    errorEmail: ''
+  };
+
+  validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|ph|edu)$/;
+    return emailRegex.test(email);
   }
 
-  validatePassword(password) {
-    const reg = /^(?=(?:.*[A-Z]){1,})(?=(?:.*[a-z]){1,})(?=(?:.*\d){1,})(?=(?:.*[@#$%^&*()\-_=+{};:,<.>]){1,})([A-Za-z0-9@#$%^&*()\-_=+{};:,<.>]{8,})$/;
-    return reg.test(password);
-  }
-
-  submit() {
+  submit = () => {
+    const { firstName, lastName, email } = this.state;
     let isValid = true;
-    const { firstName, lastName, email, password, confirmPassword } = this.state;
 
     if (!firstName) {
       this.setState({ errorFirstName: 'Please fill in missing field' });
@@ -47,174 +40,102 @@ class Register extends Component {
     if (!email) {
       this.setState({ errorEmail: 'Please fill in missing field' });
       isValid = false;
-    }
-    if (!password) {
-      this.setState({ errorPassword: 'Please fill in missing field' });
-      isValid = false;
-    }
-    if (!confirmPassword) {
-      this.setState({ errorConfirmPassword: 'Please fill in missing field' });
-      isValid = false;
-    }
-    if (password!== confirmPassword) {
-      this.setState({ errorPassword: 'Passwords do not match', errorConfirmPassword: 'Passwords do not match' });
-      isValid = false;
-    }
-     // Validate email
-     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|ph|edu)$/;
-     if (!emailRegex.test(email)) {
-     this.setState({errorEmail: 'Please enter a valid email address with .com or a .usc.edu.ph domain'});
-     return false;
-     }
-    if (!this.validatePassword(password)) {
-      this.setState({ errorPassword: 'Passwords should be at least 8 characters. It must be alphanumeric characters. It should contain 1 number, 1 special character, and 1 capital letter.' });
+    } else if (!this.validateEmail(email)) {
+      this.setState({ errorEmail: 'Please enter a valid email address with .com or a .usc.edu.ph domain' });
       isValid = false;
     }
 
     if (isValid) {
       this.props.setIsLoading(true);
-      API.request('register', {
-        email, password,
-        first_name: firstName,
-        last_name: lastName,
-      }, response => {
+      API.request('register', { email, first_name: firstName, last_name: lastName }, 
+      response => {
         this.props.setIsLoading(false);
         if (response && response.data) {
-          alert('Account Created');
-          this.props.history.push('/');
+          toast.success('Account Created Successfully!'); // Success toast notification
+          this.props.history.push('/'); // Redirect to the home page
         } else {
-          alert('Error on Submit');
+          toast.error('Error on Submit'); // Error toast notification
         }
       }, error => {
         this.props.setIsLoading(false);
         console.log(error);
+        toast.error('An error occurred during registration.'); // Generic error toast notification
       });
     }
   }
 
   render() {
-    const { firstName, lastName, email, password, confirmPassword, errorFirstName, errorLastName, errorEmail, errorPassword, errorConfirmPassword } = this.state;
+    const { firstName, lastName, email, errorFirstName, errorLastName, errorEmail } = this.state;
+
     return (
-      <>
-        <div className="loginContainer">
-          <div className="loginForm">
-            <Container
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignContent: "center",
-                flexDirection: "column",
-              }}
-              className=""
-            >
-              <Row className="Row">
-                <h3 style={{
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}>Hi There</h3>
-              </Row>
-              <Row className="Row mx-4">
-                <Col className="Col-Gap-Left">
-                  <InputField
-                    id={1}
-                    type={"name"}
-                    label={"First Name"}
-                    locked={false}
-                    active={false}
-                    onChange={(firstName, errorFirstName) => {
-                      this.setState({ firstName, errorFirstName });
-                    }}
-                  />
-                  <p className='errorText'>{errorFirstName}</p>
-                </Col>
-                <Col className="Col-Gap-Right">
-                  <InputField
-                    id={2}
-                    type={"name"}
-                    label={"Last Name"}
-                    locked={false}
-                    active={false}
-                    onChange={(lastName, errorLastName) => {
-                      this.setState({ lastName, errorLastName });
-                    }}
-                  />
-                  <p className='errorText'>{errorLastName}</p>
-                </Col>
-              </Row>
-              <Row className="Row mx-4">
+      <div className="loginContainer">
+        <div className="loginForm">
+          <Container className="d-flex flex-column justify-content-center align-content-center">
+            <Row className="Row">
+              <h3 className="text-center">Hi There</h3>
+            </Row>
+            <Row className="Row mx-4">
+              <Col>
                 <InputField
-                  id={3}
-                  type={"email"}
-                  label={"Email"}
+                  id={1}
+                  type={"name"}
+                  label={"First Name"}
                   locked={false}
                   active={false}
-                  onChange={(email, errorEmail) => {
-                    this.setState({ email, errorEmail });
-                  }}
+                  onChange={(firstName) => this.setState({ firstName, errorFirstName: '' })}
                 />
-                <p className='errorText'>{errorEmail}</p>
-              </Row>
-              <Row className="Row mx-4">
+                <p className='errorText'>{errorFirstName}</p>
+              </Col>
+              <Col>
                 <InputField
-                  id={4}
-                  type={"password"}
-                  label={"Password"}
+                  id={2}
+                  type={"name"}
+                  label={"Last Name"}
                   locked={false}
                   active={false}
-                  onChange={(password, errorPassword) => {
-                    this.setState({ password, errorPassword });
-                  }}
+                  onChange={(lastName) => this.setState({ lastName, errorLastName: '' })}
                 />
-                <p className='errorText'>{errorPassword}</p>
-              </Row>
-              <Row className="Row mx-4">
-                <InputField
-                  id={5}
-                  type={"password"}
-                  label={"Confirm Password"}
-                  locked={false}
-                  active={false}
-                  onChange={(confirmPassword, errorConfirmPassword) => {
-                    this.setState({ confirmPassword, errorConfirmPassword });
-                  }}
-                />
-                <p className='errorText'>{errorConfirmPassword}</p>
-              </Row>
-              <Row className="Row mx-4">
-                <Button variant="primary" size="lg" onClick={() => this.submit()}>
-                  Register
-                </Button>
-              </Row>
-              <Row className="Row">
-                <p style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  color: 'white',
-                  marginBottom: 25
-                }}>Already have an account? Sign in{" "}
-                  <a style={{
-                    color: 'white',
-                    cursor: 'pointer',
-                    textDecoration: 'underline'
-                  }} onClick={()=>{this.props.history.push("/");}}>here</a>
-                </p>
-              </Row>
-            </Container>
-          </div>
+                <p className='errorText'>{errorLastName}</p>
+              </Col>
+            </Row>
+            <Row className="Row mx-4">
+              <InputField
+                id={3}
+                type={"email"}
+                label={"Email"}
+                locked={false}
+                active={false}
+                onChange={(email) => this.setState({ email, errorEmail: '' })}
+              />
+              <p className='errorText'>{errorEmail}</p>
+            </Row>
+            <Row className="Row mx-4">
+              <Button variant="primary" size="lg" onClick={this.submit}>
+                Register
+              </Button>
+            </Row>
+            <Row className="Row">
+              <p className="text-center text-white mb-4">
+                Already have an account? Sign in{" "}
+                <a
+                  className="underline-hover"
+                  onClick={() => this.props.history.push("/")}
+                >
+                  here
+                </a>
+              </p>
+            </Row>
+          </Container>
         </div>
-      </>
+      </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({ state: state });
+const mapStateToProps = (state) => ({ state });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setIsLoading: (status) => {
-      dispatch({ type: 'SET_IS_LOADING', payload: { status } });
-    }
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  setIsLoading: (status) => dispatch({ type: 'SET_IS_LOADING', payload: { status } })
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Register));

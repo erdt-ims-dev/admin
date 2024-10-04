@@ -6,7 +6,7 @@
   overflow-y: hidden;
   max-height: auto;
 }
-p{
+p {
   font-size: 14px;
 }
 .App-logo {
@@ -48,7 +48,7 @@ p{
 .App-link {
   color: #61dafb;
 }
-.hidden{
+.hidden {
   display: none;
 }
 

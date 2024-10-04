@@ -69,3 +69,17 @@
   text-align: left;
   font-size: 12px;
 }
+
+/* style.css */
+
+/* Standard hover underline for links */
+.underline-hover {
+  color: white;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.underline-hover:hover {
+  color: lightgray; /* Optional: change the color on hover */
+}

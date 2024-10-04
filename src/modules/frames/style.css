@@ -1,371 +1,60 @@
-.logo{
-    width: 20vh;
-    height: 15vh;
-    padding: 1%;
-}
-.uscLogo{
-
-}
-.name{
-  margin-left: 10px;
-  margin-top: 18px;
-  font-family: "Roboto";
-  /* color: ; */
-  
-}
-.headerContainer{
-    display: flex;
-    justify-content: start;
-  position: relative;
-
-    /* width: 100%; */
-    height: 9vh;
-    /* background-color: -webkit-linear-gradient(left,#5e17eb,#25006d); */
-    background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
-
-}
-.left-headerContainer{
-  display: flex;
-  justify-self: center;
-  align-items: center;
-  padding-left: 3%;
-}
-.right-headerContainer{
-  display: flex;
-  align-items: center;
-  justify-content: end;
-}
-.centerContainer{
-  width: 40%;
-}
-  /* #footer {
-    background-color: #2c5a96;
-    text-align: center;
-    width: 100%;
-    height: 100px;
-    bottom: 0;
-    position: fixed;
-    background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
-  } */
-  .footerContainer{
-    max-width: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
-  }
-  .footerContent{
-    display: flex;
-    /* margin-left: 25px;
-    margin-top: 25px; */
-  }
-  .details{
-    margin-top: 0px;
-  }
-  .disclaimer{
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    font-size: 10px;
-  }
-  /* Sidebard */
-  .sidebarContainer{
-    border-right: 1px lightgrey solid;
-    padding-top: 3%;
-    display: block;
-  }
-  .sidebarItem{
-    display: flex;
-    text-align: start;
-    padding: 20px;
-    width: 250px
-  }
-  .sidebarItem:hover{
-    font-weight: bold;
-    cursor: pointer;
-    background-color: lightgray;
-  }
-  .sidebarText{
-    margin-left: 10px!important;
-  }
-  .sidebarStyles{
-  }
-
-  /* Colors */
-  .primaryBlue{
-    color: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
-  }
-  /* Imported CSS - Sidebar */
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-
-* {
-  font-family: 'Montserrat', sans-serif;
-}
-
-._2a97v {
-  background-color: crimson;
-}
-
-._mra1C {
-  background-color: white;
-}
-
-._13dNw {
-  width: 250px;
-  height: 100vh;
-  background-color: deepskyblue;
-  color: white;
-  position: fixed;
-  left: 0;
-  top: 0;
-  text-align: center;
-  transition: all .3s ease-in-out;
-}
-
-._VrCvP {
-  width: 95%;
-  padding: 10px 0;
-  padding-left: 12px;
-  background-color: deepskyblue;
-  cursor: pointer;
-  text-align: left;
-}
-
-._VrCvP:hover {
-  background-color: #0377DA;
-  padding: 14px 0;
-  padding-left: 12px;
-  transition: all .3s ease-in-out;
-}
-
-._2Vept {
-  padding-right: 10px;
-  display: inline-block;
-  width: 20%;
-  font-size: 15px;
-}
-
-._26ojv {
-  background-color: #3960D0;
-  color: white;
-}
-
-._2nNpb:hover {
-  background-color: #609BEB;
-  color: white;
-}
-
-._36YqV {
-  background-color: #FFFEFF;
-  color: black;
-}
-
-._8tJF8:hover {
-  background-color: #F6F6F6;
-}
-
-._2Ll57 {
-  background-color: #1c1e2a;
-  color: white;
-}
-
-._3HbC6:hover {
-  background-color: #2C2F3E;
-  color: white;
-}
-
-._GubVm {
-  text-align: left;
-  cursor: pointer;
-}
-
-._3ow2- {
-  margin: 0 1em;
-}
-
-._2fnX0 {
-  display: none;
-}
-
-._-s3Rh {
-  display: block;
-  position: relative;
-}
-
-._3qnVN {
-  width: 100px;
-  margin-top: 1em;
-}
-
-._2_oI1 {
-  position: absolute;
-  right: 15px;
-  top: 15px;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-._2Q5t5 {
-  width: 85px;
-}
-
-input {
-  padding: 12px 20px;
-  margin: 15px 0;
-  box-sizing: border-box;
-}
-
-._17SmE {
-  left: 0;
-}
-
-._1NTmL {
-  right: 0;
-}
-
-._1vjRi {
-  background-color: #FD7E65;
-  color: white;
-}
-
-._2PHvo:hover {
-  background-color: #FD9768;
-}
-
-._1tllo {
-  background-color: #A771E4;
-  color: white;
-}
-
-._lbp0_:hover {
-  background-color: #E26FCF;
-}
-
-._2maJj {
-  background-color: #1DA4F4;
-  color: white;
-}
-
-._1NfpZ:hover {
-  background-color: #16BCDE;
-}
-._2TMpC {
-  float: right;
-}
-
-/* custom */
-
-.sidebarMargin{
-  margin: 10px !important;
-}
-.headerFont{
-  color: black;
-}
-.headerFont:hover{
-  color: white;
-  cursor: pointer;
-}
-
-.white{
-  color: white;
-}
-.white:hover{
-  color: lightgray;
-  cursor: pointer;
-}
-
-.sidebarImage{
-  height: auto!important;
-  width: 50%!important;
-}
-/* Footer */
-
-.redirectLink{
-  color: white;
-  text-decoration: none; /* Removes the default underline from links */
-  position: relative;
-  cursor: pointer;
-  font-family: "Roboto Slab", serif;
-}
-
-.redirectLink::after{
-  content: '';
-    position: absolute;
-    width: 0;
-    height: 2px; /* Thickness of the underline */
-    bottom: 0; /* Position at the bottom of the text */
-    left: 50%; /* Start from the center */
-    background-color: white; /* Color of the underline */
-    transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
-}
-.redirectLink:hover::after{
-  width: 100%; /* Full width of the underline */
-    left: 0; /* Align to the left */
-}
-/* Footer */
-.redirectLinkFooter{
-  color: white;
-  text-decoration: none; /* Removes the default underline from links */
-  position: relative;
-  cursor: pointer;
-  font-family: "Roboto Slab", serif;
-  margin-top: 10px;
-}
-
-.redirectLinkFooter::after{
-  content: '';
-    position: absolute;
-    width: 0;
-    height: 2px; /* Thickness of the underline */
-    bottom: 0; /* Position at the bottom of the text */
-    left: 50%; /* Start from the center */
-    background-color: white; /* Color of the underline */
-    transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
-}
-.redirectLinkFooter:hover::after{
-  width: 100%; /* Full width of the underline */
-    left: 0; /* Align to the left */
-}
-
-.logo-container {
-  display: flex;
-  justify-content: start; /* Center the logo horizontally */
-  align-items: center; /* Center the logo vertically */
-  height: 100px; /* Adjust based on your needs */
-}
-
-.logo {
-  width: 60%; /* Adjust the width as needed */
-  height: auto; /* Maintain the aspect ratio */
-}
-
-@font-face {
-  font-family: 'ChunkFive';
-  src: url('/public/fonts/chunkfive/Chunk.otf') format('opentype'),
-        url('/public/fonts/chunkfive/Chunk.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-.logo-container {
-  height: 25vh; /* Adjust this value based on your desired height */
-  display: flex;
-  align-items: center; /* This centers the logos vertically */
-}
-
-.logo-item {
-  height: 100%; /* This makes the logo take the full height of the container */
-}
-
-.profileImageCircle {
-  width: 30px; /* Adjust the size as needed */
-  height: 30px; /* Adjust the size as needed */
-  border-radius: 50%;
-  align-items: center;
-  overflow: hidden;
-}
-
-.profileImageCircle img {
+/* Footer Container */
+.footerContainer {
   width: 100%;
+  background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
+  padding: 20px 0;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Footer Content */
+.footerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  max-width: 1200px;
+}
+
+/* Logo styling */
+.logo-container {
+  flex: 1;
+}
+
+.footer-logo {
+  width: 250px;
   height: auto;
+}
+
+/* Links container */
+.details {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.footer-item {
+  background: none; /* Removes the background from ListGroup items */
+  border: none; /* Removes the border from ListGroup items */
+  padding: 0.5rem 0; /* Space between items */
+}
+
+.redirectLinkFooter {
+  color: white;
+  text-decoration: none;
+  font-family: "Roboto Slab", serif;
+  transition: color 0.3s ease;
+}
+
+.redirectLinkFooter:hover {
+  color: lightgray;
+}
+
+/* Disclaimer */
+.disclaimer {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 10px;
 }
