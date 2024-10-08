@@ -16,27 +16,24 @@ import ScholarSidebar from "./modules/frames/ScholarSidebar";
 import ApplicantSidebar from "./modules/frames/ApplicantSidebar";
 import NewSidebar from "./modules/frames/NewSidebar";
 
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import React, { useState } from "react";
-
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Colors from 'common/Colors'
 import Login from "./modules/auth/login"
 import Register from "./modules/auth/register"
-import Spinner from 'modules/generic/spinner'
-import SpinnerV2 from 'modules/generic/spinnerV2'
+import Spinner from 'modules/generic/spinner';
+import SpinnerV2 from 'modules/generic/spinnerV2';
+import { ToastContainer } from 'react-toastify';  // Import ToastContainer
+import 'react-toastify/dist/ReactToastify.css';  // Import Toastify CSS
+
 function App(props) {
   const history = useHistory();
-  const location = useLocation()
-
-
-
+  const location = useLocation();
   const [openSidebar, setOpenSidebar] = useState(false);
+
   const navigate = (route) => {
     if (route === '/logout') {
       const { logout } = props;
@@ -44,23 +41,39 @@ function App(props) {
     } else {
       history.push(route);
     }
- };
+  };
+
   const handleOpenSidebar = () => {
     setOpenSidebar(!openSidebar);
- };
+  };
 
   let renderComponent;
   if (location.pathname === '/register') {
     renderComponent = <Register navigate={navigate} />;
   } else if (location.pathname === '/login') {
     renderComponent = <Login navigate={navigate} />;
-  }else{
+  } else {
     renderComponent = <Login navigate={navigate} />;
   }
-  const {user, token, isLoading, isLoadingV2 } = props.state
+
+  const { user, token, isLoading, isLoadingV2 } = props.state;
+
   return (
     <div>
-    {
+      {/* Global ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      
+      {
         (user === null && token === null && !isLoading) && (
           <div style={{
             minHeight: '100vh',
@@ -71,146 +84,144 @@ function App(props) {
             className="login-body"
           >
             <AuthRouter />
-            <Footer/>
+            <Footer />
           </div>
-          
         )
       }
-    {
-      (user && user.account_type === 'admin' && token && !isLoading)&&(
-      <div className="App">
-        <React.Fragment>
-          
-            <span>
-              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
-              <div className="mainContainer">
-                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
-                  <Sidebar show={openSidebar} {...props} navigate={navigate} />
-                </div>
 
-                <div className="pageContainer">
-                  <RouterList />
-                </div>
-              </div>
-              <Footer />
-            </span>
-        </React.Fragment>
-      </div>
-      )
-    }
-    {
-      (user && user.account_type === 'coordinator' && token && !isLoading)&&(
-      <div className="App">
-        <React.Fragment>
-          
-            <span>
-              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
-              <div className="mainContainer">
-                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
-                  <CoordinatorSidebar show={openSidebar} {...props} navigate={navigate} />
-                </div>
+      {
+        (user && user.account_type === 'admin' && token && !isLoading) && (
+          <div className="App">
+            <React.Fragment>
+              <span>
+                <Header handleOpenSidebar={handleOpenSidebar} {...props} />
+                <div className="mainContainer">
+                  <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                    <Sidebar show={openSidebar} {...props} navigate={navigate} />
+                  </div>
 
-                <div className="pageContainer">
-                  <CoordinatorRoutes />
+                  <div className="pageContainer">
+                    <RouterList />
+                  </div>
                 </div>
-              </div>
-              <Footer />
-            </span>
-        </React.Fragment>
-      </div>
-      )
-    }
-    {
-      (user && user.account_type === 'staff' && token && !isLoading)&&(
-      <div className="App">
-        <React.Fragment>
-          
-            <span>
-              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
-              <div className="mainContainer">
-                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
-                  <StaffSidebar show={openSidebar} {...props} navigate={navigate} />
-                </div>
+                <Footer />
+              </span>
+            </React.Fragment>
+          </div>
+        )
+      }
 
-                <div className="pageContainer">
-                  <StaffRouter />
-                </div>
-              </div>
-              <Footer />
-            </span>
-        </React.Fragment>
-      </div>
-      )
-    }
-    {
-      (user && user.account_type === 'scholar' && token && !isLoading)&&(
-      <div className="App">
-        <React.Fragment>
-          
-            <span>
-              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
-              <div className="mainContainer">
-                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
-                  <ScholarSidebar show={openSidebar} {...props} navigate={navigate} />
-                </div>
+      {
+        (user && user.account_type === 'coordinator' && token && !isLoading) && (
+          <div className="App">
+            <React.Fragment>
+              <span>
+                <Header handleOpenSidebar={handleOpenSidebar} {...props} />
+                <div className="mainContainer">
+                  <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                    <CoordinatorSidebar show={openSidebar} {...props} navigate={navigate} />
+                  </div>
 
-                <div className="pageContainer">
-                  <ScholarRouter />
+                  <div className="pageContainer">
+                    <CoordinatorRoutes />
+                  </div>
                 </div>
-              </div>
-              <Footer />
-            </span>
-        </React.Fragment>
-      </div>
-      )
-    }
-    {
-      (user && user.account_type === 'applicant' && token && !isLoading)&&(
-      <div className="App">
-        <React.Fragment>
-          
-            <span>
-              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
-              <div className="mainContainer">
-                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
-                  <ApplicantSidebar show={openSidebar} {...props} navigate={navigate} />
-                </div>
+                <Footer />
+              </span>
+            </React.Fragment>
+          </div>
+        )
+      }
 
-                <div className="pageContainer">
-                  <ApplicantRouter />
-                </div>
-              </div>
-              <Footer />
-            </span>
-        </React.Fragment>
-      </div>
-      )
-    }
-    {
-      (user && user.account_type === 'new' && token && !isLoading)&&(
-      <div className="App">
-        <React.Fragment>
-          
-            <span>
-              <Header handleOpenSidebar={handleOpenSidebar}  {...props} />
-              <div className="mainContainer">
-                <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
-                  <NewSidebar show={openSidebar} {...props} navigate={navigate} />
-                </div>
+      {
+        (user && user.account_type === 'staff' && token && !isLoading) && (
+          <div className="App">
+            <React.Fragment>
+              <span>
+                <Header handleOpenSidebar={handleOpenSidebar} {...props} />
+                <div className="mainContainer">
+                  <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                    <StaffSidebar show={openSidebar} {...props} navigate={navigate} />
+                  </div>
 
-                <div className="pageContainer">
-                  <NewRouter />
+                  <div className="pageContainer">
+                    <StaffRouter />
+                  </div>
                 </div>
-              </div>
-              <Footer />
-            </span>
-        </React.Fragment>
-      </div>
-      )
-    }
+                <Footer />
+              </span>
+            </React.Fragment>
+          </div>
+        )
+      }
 
-    
-    {
+      {
+        (user && user.account_type === 'scholar' && token && !isLoading) && (
+          <div className="App">
+            <React.Fragment>
+              <span>
+                <Header handleOpenSidebar={handleOpenSidebar} {...props} />
+                <div className="mainContainer">
+                  <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                    <ScholarSidebar show={openSidebar} {...props} navigate={navigate} />
+                  </div>
+
+                  <div className="pageContainer">
+                    <ScholarRouter />
+                  </div>
+                </div>
+                <Footer />
+              </span>
+            </React.Fragment>
+          </div>
+        )
+      }
+
+      {
+        (user && user.account_type === 'applicant' && token && !isLoading) && (
+          <div className="App">
+            <React.Fragment>
+              <span>
+                <Header handleOpenSidebar={handleOpenSidebar} {...props} />
+                <div className="mainContainer">
+                  <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                    <ApplicantSidebar show={openSidebar} {...props} navigate={navigate} />
+                  </div>
+
+                  <div className="pageContainer">
+                    <ApplicantRouter />
+                  </div>
+                </div>
+                <Footer />
+              </span>
+            </React.Fragment>
+          </div>
+        )
+      }
+
+      {
+        (user && user.account_type === 'new' && token && !isLoading) && (
+          <div className="App">
+            <React.Fragment>
+              <span>
+                <Header handleOpenSidebar={handleOpenSidebar} {...props} />
+                <div className="mainContainer">
+                  <div className={"sidebarContainer" + (openSidebar ? "" : " hidden")}>
+                    <NewSidebar show={openSidebar} {...props} navigate={navigate} />
+                  </div>
+
+                  <div className="pageContainer">
+                    <NewRouter />
+                  </div>
+                </div>
+                <Footer />
+              </span>
+            </React.Fragment>
+          </div>
+        )
+      }
+
+      {
         isLoading && (
           <div style={{
             minHeight: '100vh',
@@ -226,11 +237,9 @@ function App(props) {
       {
         isLoadingV2 && (
           <div style={{
-            // minHeight: '100vh',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            // backgroundColor: Colors.white
           }}>
             <SpinnerV2 />
           </div>

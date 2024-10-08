@@ -2,13 +2,15 @@ import React, { Component } from "react";
 import { connect } from 'react-redux';
 import "./style.css";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
 import InputField from "modules/generic/inputV2";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import { withRouter } from "react-router-dom";
 import Helper from 'common/Helper';
 import API from 'services/Api';
-import { toast } from 'react-toastify'; // Import toast from react-toastify
+import { toast } from 'react-toastify';
 
 class Login extends Component {
   state = {
@@ -16,6 +18,9 @@ class Login extends Component {
     password: '',
     errorEmail: '',
     errorPassword: '',
+    showForgotPasswordModal: false,
+    forgotPasswordEmail: '',
+    errorforgotPasswordEmail: ''
   };
 
   startLogin = () => {
@@ -31,7 +36,7 @@ class Login extends Component {
       return;
     }
 
-    this.setState({ errorPassword: '' });
+    this.setState({ errorPassword: '', errorEmail: '' });
     this.props.setIsLoading(true);
 
     API.request('login', { email, password }, response => {
@@ -41,20 +46,19 @@ class Login extends Component {
         localStorage.setItem(`${Helper.APP_NAME}token`, token);
         this.props.login(response.data, token);
         this.setDetails(email);
-        
-        // Show success toast
-        toast.success("Login successful! Welcome back."); // Add toast notification here
+
+        toast.success("Login successful! Welcome back.");
       } else if (response && response.error) {
         this.props.setIsLoading(false);
         this.setState({ errorEmail: response.error });
-        toast.error(response.error); // Add toast notification for error
+        toast.error(response.error);
       }
     }, error => {
       this.props.setIsLoading(false);
-      console.log(error);
-      toast.error("An error occurred during login."); // Add generic error toast
+      console.error(error);
+      toast.error("An error occurred during login.");
     });
-  }
+  };
 
   setDetails = (email) => {
     API.request('user/retrieveWithAccountDetails', { email }, response => {
@@ -63,12 +67,37 @@ class Login extends Component {
         this.props.history.push("/dashboard");
       }
     }, error => {
-      console.log(error);
+      console.error(error);
     });
-  }
+  };
+
+  toggleForgotPasswordModal = () => {
+    this.setState({ showForgotPasswordModal: !this.state.showForgotPasswordModal });
+  };
+
+  handleForgotPasswordSubmit = () => {
+    const { forgotPasswordEmail } = this.state;
+
+    if (!forgotPasswordEmail) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
+    API.request('forgot_password', { email: forgotPasswordEmail }, response => {
+      if (response && response.success) {
+        toast.success("Password reset instructions sent to your email.");
+        this.toggleForgotPasswordModal();
+      } else {
+        toast.error("Failed to send reset instructions.");
+      }
+    }, error => {
+      console.error(error);
+      toast.error("An error occurred.");
+    });
+  };
 
   render() {
-    const { errorEmail, errorPassword } = this.state;
+    const { errorEmail, errorPassword, showForgotPasswordModal, forgotPasswordEmail } = this.state;
 
     return (
       <div className="loginContainer">
@@ -107,7 +136,7 @@ class Login extends Component {
             <Row className="Row">
               <p
                 className="text-center text-white underline-hover"
-                onClick={() => this.props.history.push("/forgot-password")}
+                onClick={this.toggleForgotPasswordModal}
               >
                 Forgot Password?
               </p>
@@ -125,6 +154,41 @@ class Login extends Component {
             </Row>
           </Container>
         </div>
+
+        {/* Forgot Password Modal with theme */}
+        <Modal
+          show={showForgotPasswordModal}
+          onHide={this.toggleForgotPasswordModal}
+          centered // Center the modal on the screen
+          className="custom-modal" // Custom class for theme styling
+        >
+          <Modal.Header closeButton className="custom-modal-header">
+            <Modal.Title className="custom-modal-title">Forgot Password</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="custom-modal-body">
+            <Form>
+              <Form.Group controlId="forgotPasswordEmail">
+                <Form.Label>Enter Verified Email address</Form.Label>
+                <InputField
+                id={4}
+                type="email"
+                label="Verified Email"
+                locked={false}
+                active={false}
+                onChange={(forgotPasswordEmail) => this.setState({ forgotPasswordEmail, errorforgotPasswordEmail: '' })}
+              />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer className="custom-modal-footer">
+            {/* <Button variant="secondary" onClick={this.toggleForgotPasswordModal} className="custom-button">
+              Close
+            </Button> */}
+            <Button variant="primary" onClick={this.handleForgotPasswordSubmit} className="custom-button-primary">
+              Send Reset Link
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

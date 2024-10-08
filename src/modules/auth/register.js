@@ -54,7 +54,7 @@ class Register extends Component {
           toast.success('Account Created Successfully!'); // Success toast notification
           this.props.history.push('/'); // Redirect to the home page
         } else {
-          toast.error('Error on Submit'); // Error toast notification
+          toast.error(response.error); // Error toast notification
         }
       }, error => {
         this.props.setIsLoading(false);

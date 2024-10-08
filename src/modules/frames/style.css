@@ -1,60 +1,225 @@
-/* Footer Container */
-.footerContainer {
-  width: 100%;
+/* General Styles */
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Logo Styles */
+.logo {
+  width: 20vh;
+  height: 15vh;
+  padding: 1%;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: start; /* Center the logo horizontally */
+  align-items: center; /* Center the logo vertically */
+  height: 25vh; /* Adjust this value based on your desired height */
+  flex: 1; /* Added flex property for consistency */
+}
+
+.logo-item {
+  height: 100%; /* This makes the logo take the full height of the container */
+}
+
+/* Header Styles */
+.headerContainer {
+  display: flex;
+  justify-content: start;
+  position: relative;
+  height: 9vh;
   background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
-  padding: 20px 0;
-  color: white;
+}
+
+.left-headerContainer {
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  padding-left: 3%;
+}
+
+.right-headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.centerContainer {
+  width: 40%;
+}
+
+/* Footer Styles */
+.footerContainer {
+  width: 100%; /* Added width property for consistency */
+  max-width: 100%; /* Keeps max-width for other properties */
+  margin: 0;
+  padding: 20px 0; /* Added padding */
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
 }
 
-/* Footer Content */
 .footerContent {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Updated to space elements between */
   align-items: center;
-  width: 80%;
-  max-width: 1200px;
-}
-
-/* Logo styling */
-.logo-container {
-  flex: 1;
+  width: 80%; /* Set consistent width */
+  max-width: 1200px; /* Set maximum width */
 }
 
 .footer-logo {
-  width: 250px;
-  height: auto;
+  width: 250px; /* Adjusted for consistency */
+  height: auto; /* Maintain aspect ratio */
 }
 
-/* Links container */
 .details {
-  flex: 1;
-  display: flex;
+  flex: 1; /* Adjusted to flex for layout consistency */
+  margin-top: 0; /* Consistent with previous styles */
   justify-content: flex-end;
 }
 
-.footer-item {
-  background: none; /* Removes the background from ListGroup items */
-  border: none; /* Removes the border from ListGroup items */
-  padding: 0.5rem 0; /* Space between items */
+.disclaimer {
+  color: white;
+  text-align: center; /* Added for center alignment */
+  font-size: 12px; /* Increased font size */
+  margin-top: 10px; /* Consistent margin */
+}
+
+/* Link Styles */
+.redirectLink {
+  color: white;
+  text-decoration: none; /* Removes the default underline from links */
+  position: relative;
+  cursor: pointer;
+  font-family: "Roboto Slab", serif;
+}
+
+.redirectLink::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px; /* Thickness of the underline */
+  bottom: 0; /* Position at the bottom of the text */
+  left: 50%; /* Start from the center */
+  background-color: white; /* Color of the underline */
+  transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+}
+
+.redirectLink:hover::after {
+  width: 100%; /* Full width of the underline */
+  left: 0; /* Align to the left */
 }
 
 .redirectLinkFooter {
   color: white;
-  text-decoration: none;
+  text-decoration: none; /* Removes the default underline from links */
+  position: relative;
+  cursor: pointer;
   font-family: "Roboto Slab", serif;
-  transition: color 0.3s ease;
+  margin-top: 10px;
 }
 
 .redirectLinkFooter:hover {
-  color: lightgray;
+  color: lightgray; /* Added hover state */
 }
 
-/* Disclaimer */
-.disclaimer {
-  text-align: center;
-  font-size: 12px;
-  margin-top: 10px;
+.redirectLinkFooter::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px; /* Thickness of the underline */
+  bottom: 0; /* Position at the bottom of the text */
+  left: 50%; /* Start from the center */
+  background-color: white; /* Color of the underline */
+  transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
 }
+
+.redirectLinkFooter:hover::after {
+  width: 100%; /* Full width of the underline */
+  left: 0; /* Align to the left */
+}
+
+/* Sidebar Styles */
+.sidebarContainer {
+  border-right: 1px lightgrey solid;
+  padding-top: 3%;
+  display: block;
+}
+
+.sidebarItem {
+  display: flex;
+  text-align: start;
+  padding: 20px;
+  width: 250px;
+}
+
+.sidebarItem:hover {
+  font-weight: bold;
+  cursor: pointer;
+  background-color: lightgray;
+}
+
+.sidebarText {
+  margin-left: 10px!important;
+}
+
+/* Profile Image Styles */
+.profileImageCircle {
+  width: 30px; /* Adjust the size as needed */
+  height: 30px; /* Adjust the size as needed */
+  border-radius: 50%;
+  align-items: center;
+  overflow: hidden;
+}
+
+.profileImageCircle img {
+  width: 100%;
+  height: auto;
+}
+
+/* Colors */
+.primaryBlue {
+  color: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
+}
+
+/* Font Face */
+@font-face {
+  font-family: 'ChunkFive';
+  src: url('/public/fonts/chunkfive/Chunk.otf') format('opentype'),
+       url('/public/fonts/chunkfive/Chunk.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Custom Margins */
+.sidebarMargin {
+  margin: 10px !important;
+}
+
+/* Header Font */
+.headerFont {
+  color: black;
+}
+
+.headerFont:hover {
+  color: white;
+  cursor: pointer;
+}
+
+/* White Text */
+.white {
+  color: white;
+}
+
+.white:hover {
+  color: lightgray;
+  cursor: pointer;
+}
+
+/* Sidebar Image */
+.sidebarImage {
+  height: auto!important;
+  width: 50%!important;
+}
+
