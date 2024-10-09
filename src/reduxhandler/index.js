@@ -1,5 +1,5 @@
 import Helper from 'common/Helper';
-import {createStore, applyMiddleware} from 'redux'
+import { createStore, applyMiddleware } from 'redux';
 import sessionTimeoutMiddleware from 'middleware/index'; // Adjust the path as necessary
 
 const types = {
@@ -9,20 +9,26 @@ const types = {
   UPDATE_USER: 'UPDATE_USER',
   SET_IS_LOADING: 'SET_IS_LOADING',
   SET_IS_LOADING_V2: 'SET_IS_LOADING_V2',
+  UPDATE_USER_STATUS: 'UPDATE_USER_STATUS' // Added new type
 };
 
 export const actions = {
   login: (user, token) => {
-    return {type: types.LOGIN, user, token};
+    return { type: types.LOGIN, user, token };
   },
   setDetails: (details) => {
-    return {type: types.SET_DETAILS, details};
+    return { type: types.SET_DETAILS, details };
   },
   logout() {
-    return {type: types.LOGOUT};
+    return { type: types.LOGOUT };
   },
   updateUser(user) {
-    return {type: types.UPDATE_USER, user};
+    return { type: types.UPDATE_USER, user };
+  },
+  updateUserStatus(status) {
+    return {
+      type: types.UPDATE_USER_STATUS, payload: status // Updating just status string
+    };
   },
   setIsLoading(isLoading) {
     return { type: types.SET_IS_LOADING, isLoading };
@@ -30,7 +36,6 @@ export const actions = {
   setIsLoadingC2(isLoadingV2) {
     return { type: types.SET_IS_LOADING, isLoadingV2 };
   },
-
 };
 
 const initialState = {
@@ -46,54 +51,57 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   const { user, token, isLoading } = action;
   switch (action.type) {
-    case 'LOGOUT':
-      // console.log('INITIALIZING LOGOUT');
+    case types.LOGOUT:
       localStorage.removeItem(`${Helper.APP_NAME}token`);
       return Object.assign({}, initialState);
-    case 'LOGIN':
-      // console.log('INITIALIZING LOGIN', action.payload.user);
-      localStorage.setItem(`${Helper.APP_NAME}token`, action.payload.token,);
+      
+    case types.LOGIN:
+      localStorage.setItem(`${Helper.APP_NAME}token`, action.payload.token);
       return {
         ...state,
         user: action.payload.user,
         token: action.payload.token,
         isLoggedIn: true,
-        loginTime: new Date().getTime(), // Store the current time
+        loginTime: new Date().getTime(),
       };
-    case 'SET_DETAILS':
-    // console.log('SETTING DETAILS', action.payload.details);
-    return{
-      ...state,
-      details: action.payload.details,
-    }
-    case 'UPDATE_USER':
-    // console.log('UPDATING USER', action.payload.user);
+      
+    case types.SET_DETAILS:
+      return {
+        ...state,
+        details: action.payload.details,
+      };
+
+    case types.UPDATE_USER:
       return {
         ...state,
         user: action.payload.user
       };
-    case 'SET_IS_LOADING':
-      // console.log('IS LOADING');
+
+    case types.UPDATE_USER_STATUS:
       return {
         ...state,
-        isLoading: action.payload.status
-      }
-      case 'SET_IS_LOADING_V2':
-      // console.log('IS LOADINGV2');
+        user: {
+          ...state.user,
+          status: action.payload // Update status string directly
+        }
+      };
+
+    case types.SET_IS_LOADING:
       return {
         ...state,
-        isLoadingV2: action.payload.status
-      }
-    case 'RESET_LOGIN_TIME':
-      // console.log('RESETTING TIMER');
+        isLoading: action.payload.isLoading,
+      };
+
+    case types.SET_IS_LOADING_V2:
       return {
         ...state,
-        loginTime: action.payload,
-     };
+        isLoadingV2: action.payload.isLoadingV2
+      };
+
     default:
       return state;
   }
 };
 
-// const store = createStore(reducer, applyMiddleware(sessionTimeoutMiddleware));
+// export default createStore(reducer, applyMiddleware(sessionTimeoutMiddleware));
 export default reducer;
