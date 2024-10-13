@@ -166,6 +166,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   logout: () => dispatch({ type: 'LOGOUT' }),
+  userActivity: () => dispatch({ type: 'USER_ACTIVITY' }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementDashboard);

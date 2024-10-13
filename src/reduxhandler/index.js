@@ -1,6 +1,6 @@
 import Helper from 'common/Helper';
 import { createStore, applyMiddleware } from 'redux';
-import sessionTimeoutMiddleware from 'middleware/index'; // Adjust the path as necessary
+import sessionTimeoutMiddleware from 'middleware/index'; 
 
 const types = {
   LOGOUT: 'LOGOUT',
@@ -9,7 +9,8 @@ const types = {
   UPDATE_USER: 'UPDATE_USER',
   SET_IS_LOADING: 'SET_IS_LOADING',
   SET_IS_LOADING_V2: 'SET_IS_LOADING_V2',
-  UPDATE_USER_STATUS: 'UPDATE_USER_STATUS' // Added new type
+  UPDATE_USER_STATUS: 'UPDATE_USER_STATUS', // Added new type
+  RESET_LOGIN_TIME: 'RESET_LOGIN_TIME' // Add RESET_LOGIN_TIME type
 };
 
 export const actions = {
@@ -36,6 +37,9 @@ export const actions = {
   setIsLoadingC2(isLoadingV2) {
     return { type: types.SET_IS_LOADING, isLoadingV2 };
   },
+  resetLoginTime(currentTime) {
+    return { type: types.RESET_LOGIN_TIME, payload: currentTime }; // Define RESET_LOGIN_TIME action
+  }
 };
 
 const initialState = {
@@ -63,6 +67,12 @@ const reducer = (state = initialState, action) => {
         token: action.payload.token,
         isLoggedIn: true,
         loginTime: new Date().getTime(),
+      };
+
+    case types.RESET_LOGIN_TIME:
+      return {
+        ...state,
+        loginTime: action.payload, // Update loginTime with the new timestamp
       };
       
     case types.SET_DETAILS:

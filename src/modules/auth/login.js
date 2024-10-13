@@ -199,7 +199,8 @@ const mapStateToProps = (state) => ({ state });
 const mapDispatchToProps = (dispatch) => ({
   login: (user, token) => dispatch({ type: 'LOGIN', payload: { user, token } }),
   setDetails: (details) => dispatch({ type: 'SET_DETAILS', payload: { details } }),
-  setIsLoading: (status) => dispatch({ type: 'SET_IS_LOADING', payload: { status } })
+  setIsLoading: (status) => dispatch({ type: 'SET_IS_LOADING', payload: { status } }),
+  userActivity: () => dispatch({ type: 'USER_ACTIVITY' }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

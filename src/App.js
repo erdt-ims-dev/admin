@@ -26,8 +26,8 @@ import Login from "./modules/auth/login"
 import Register from "./modules/auth/register"
 import Spinner from 'modules/generic/spinner';
 import SpinnerV2 from 'modules/generic/spinnerV2';
-import { ToastContainer } from 'react-toastify';  // Import ToastContainer
-import 'react-toastify/dist/ReactToastify.css';  // Import Toastify CSS
+import { ToastContainer } from 'react-toastify';  
+import 'react-toastify/dist/ReactToastify.css';  
 
 function App(props) {
   const history = useHistory();
@@ -255,6 +255,7 @@ const mapStateToProps = (state) => ({ state: state });
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch({ type: 'LOGOUT' }),
+    userActivity: () => dispatch({ type: 'USER_ACTIVITY' }),
   };
 };
 
