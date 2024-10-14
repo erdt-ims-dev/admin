@@ -41,7 +41,9 @@ let persistor = persistStore(store);
 function WrappedApp() {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate 
+      loading={null} 
+      persistor={persistor}>
         <BrowserRouter>
           <App />
         </BrowserRouter>

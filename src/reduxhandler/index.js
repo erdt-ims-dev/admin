@@ -31,11 +31,11 @@ export const actions = {
       type: types.UPDATE_USER_STATUS, payload: status // Updating just status string
     };
   },
-  setIsLoading(isLoading) {
-    return { type: types.SET_IS_LOADING, isLoading };
+  setIsLoading(status) {
+    return { type: types.SET_IS_LOADING, status };
   },
-  setIsLoadingC2(isLoadingV2) {
-    return { type: types.SET_IS_LOADING, isLoadingV2 };
+  setIsLoadingC2(status) {
+    return { type: types.SET_IS_LOADING, status };
   },
   resetLoginTime(currentTime) {
     return { type: types.RESET_LOGIN_TIME, payload: currentTime }; // Define RESET_LOGIN_TIME action
@@ -97,15 +97,17 @@ const reducer = (state = initialState, action) => {
       };
 
     case types.SET_IS_LOADING:
+      console.log("isLoading")
       return {
         ...state,
-        isLoading: action.payload.isLoading,
+        isLoading: action.payload.status,
       };
 
     case types.SET_IS_LOADING_V2:
+      console.log("isLoadingV2", )
       return {
         ...state,
-        isLoadingV2: action.payload.isLoadingV2
+        isLoadingV2: action.payload.status
       };
 
     default:
