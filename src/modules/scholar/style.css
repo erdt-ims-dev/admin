@@ -4,21 +4,22 @@
   align-items: flex-end;
   margin-bottom: 24px;
 }
+
 .btn {
   margin-right: 20px;
 }
 
-// .table-container {
-//   margin: 20px;
-//   padding-block: 20px;
-//   border-radius: 20px;
-//   box-shadow: 0 4px 4px rgb(0 0 0 / 24%);
-//   margin-top: 50px;
-//   th,
-//   td {
-//     background-color: #d9e8f6;
-//   }
-// }
+.table-container {
+  margin: 20px;
+  padding-block: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
+  margin-top: 50px;
+}
+.table-container th,
+.table-container td {
+  background-color: #d9e8f6;
+}
 
 .icon {
   color: #66a5e2;
@@ -26,12 +27,10 @@
   cursor: pointer;
 }
 
-// view scholar
 .view-scholar {
   margin-top: 24px;
 }
 
-.link 
-{
+.link {
   margin-right: 10px;
-}
+}/*# sourceMappingURL=style.css.map */

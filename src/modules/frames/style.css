@@ -1,225 +1,339 @@
-/* General Styles */
-* {
-  font-family: 'Montserrat', sans-serif;
-}
-
-/* Logo Styles */
-.logo {
+.logo{
   width: 20vh;
   height: 15vh;
   padding: 1%;
 }
+.uscLogo{
 
-.logo-container {
-  display: flex;
-  justify-content: start; /* Center the logo horizontally */
-  align-items: center; /* Center the logo vertically */
-  height: 25vh; /* Adjust this value based on your desired height */
-  flex: 1; /* Added flex property for consistency */
 }
+.name{
+margin-left: 10px;
+margin-top: 18px;
+font-family: "Roboto";
+/* color: ; */
 
-.logo-item {
-  height: 100%; /* This makes the logo take the full height of the container */
 }
-
-/* Header Styles */
-.headerContainer {
+.headerContainer{
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   position: relative;
-  height: 9vh;
-  background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
-}
 
-.left-headerContainer {
-  display: flex;
-  justify-self: center;
-  align-items: center;
-  padding-left: 3%;
+  /* width: 100%; */
+  height: 7vh;
+  /* background-color: -webkit-linear-gradient(left,#5e17eb,#25006d); */
+  /* background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%); */
+  outline: 1px solid #dfdfdf;
+  color: #1c1e2a;
 }
-
-.right-headerContainer {
-  display: flex;
-  align-items: center;
-  justify-content: end;
+.col{
+  height: fit-content;
 }
-
-.centerContainer {
-  width: 40%;
-}
-
-/* Footer Styles */
-.footerContainer {
-  width: 100%; /* Added width property for consistency */
-  max-width: 100%; /* Keeps max-width for other properties */
-  margin: 0;
-  padding: 20px 0; /* Added padding */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
+.left-headerContainer{
+display: flex;
+/* flex-direction: column; */
+align-items: center;
+/* background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%); */
 }
 
 .footerContent {
+display: flex;
+justify-content: space-between; /* Updated to space elements between */
+align-items: center;
+justify-content: end;
+}
+.centerContainer{
+width: 40%;
+}
+/* #footer {
+  background-color: #2c5a96;
+  text-align: center;
+  width: 100%;
+  height: 100px;
+  bottom: 0;
+  position: fixed;
+  background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
+} */
+.footerContainer{
+  max-width: 100%;
+  margin: 0;
   display: flex;
-  justify-content: space-between; /* Updated to space elements between */
+  justify-content: center;
+  /* background: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%); */
+  outline: 1px solid #dfdfdf;
+  color: #1c1e2a;
+  height: 4.5rem;
   align-items: center;
-  width: 80%; /* Set consistent width */
-  max-width: 1200px; /* Set maximum width */
 }
-
-.footer-logo {
-  width: 250px; /* Adjusted for consistency */
-  height: auto; /* Maintain aspect ratio */
+.footerContent{
+  display: flex;
+  padding: none;
+  height: fit-content;
+  /* margin-left: 25px;
+  margin-top: 25px; */
 }
-
-.details {
-  flex: 1; /* Adjusted to flex for layout consistency */
-  margin-top: 0; /* Consistent with previous styles */
-  justify-content: flex-end;
+.footerLinks{
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  padding: none;
+  margin: 0;
 }
-
-.disclaimer {
-  color: white;
-  text-align: center; /* Added for center alignment */
-  font-size: 12px; /* Increased font size */
-  margin-top: 10px; /* Consistent margin */
-}
-
-/* Link Styles */
-.redirectLink {
-  color: white;
-  text-decoration: none; /* Removes the default underline from links */
-  position: relative;
-  cursor: pointer;
-  font-family: "Roboto Slab", serif;
-}
-
-.redirectLink::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px; /* Thickness of the underline */
-  bottom: 0; /* Position at the bottom of the text */
-  left: 50%; /* Start from the center */
-  background-color: white; /* Color of the underline */
-  transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
-}
-
-.redirectLink:hover::after {
-  width: 100%; /* Full width of the underline */
-  left: 0; /* Align to the left */
-}
-
-.redirectLinkFooter {
-  color: white;
-  text-decoration: none; /* Removes the default underline from links */
-  position: relative;
-  cursor: pointer;
-  font-family: "Roboto Slab", serif;
+.details{
   margin-top: 10px;
+  color: #1c1e2a;
+  height: fit-content;
 }
-
-.redirectLinkFooter:hover {
-  color: lightgray; /* Added hover state */
+.details a{
+  color: #1c1e2a;
 }
-
-.redirectLinkFooter::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px; /* Thickness of the underline */
-  bottom: 0; /* Position at the bottom of the text */
-  left: 50%; /* Start from the center */
-  background-color: white; /* Color of the underline */
-  transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+.disclaimer{
+  color: #1c1e2a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  width: fit-content;
+  font-weight: 500;
 }
-
-.redirectLinkFooter:hover::after {
-  width: 100%; /* Full width of the underline */
-  left: 0; /* Align to the left */
-}
-
-/* Sidebar Styles */
-.sidebarContainer {
+/* Sidebard */
+.sidebarContainer{
   border-right: 1px lightgrey solid;
   padding-top: 3%;
   display: block;
+  width: 17rem;
 }
-
-.sidebarItem {
+.sidebarItem{
   display: flex;
   text-align: start;
   padding: 20px;
-  width: 250px;
+  width: 250px
 }
-
-.sidebarItem:hover {
+.sidebarItem:hover{
   font-weight: bold;
   cursor: pointer;
   background-color: lightgray;
 }
+.sidebarText{
+  margin-left: 10px!important;
+}
+.sidebarStyles{
+}
+
+/* Colors */
+.primaryBlue{
+  color: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
+}
+/* Imported CSS - Sidebar */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+
+._2a97v {
+background-color: crimson;
+}
+
+._mra1C {
+background-color: white;
+}
+
+._13dNw {
+width: 250px;
+height: auto;
+}
+
+.details {
+flex: 1; /* Adjusted to flex for layout consistency */
+margin-top: 0; /* Consistent with previous styles */
+justify-content: flex-end;
+}
+
+/* Link Styles */
+.redirectLink {
+color: white;
+text-decoration: none; /* Removes the default underline from links */
+position: relative;
+cursor: pointer;
+font-family: "Roboto Slab", serif;
+}
+
+.redirectLink::after {
+content: '';
+position: absolute;
+width: 0;
+height: 2px; /* Thickness of the underline */
+bottom: 0; /* Position at the bottom of the text */
+left: 50%; /* Start from the center */
+background-color: white; /* Color of the underline */
+transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+}
+
+.redirectLink:hover::after {
+width: 100%; /* Full width of the underline */
+left: 0; /* Align to the left */
+}
+
+.redirectLinkFooter {
+color: white;
+text-decoration: none; /* Removes the default underline from links */
+position: relative;
+cursor: pointer;
+font-family: "Roboto Slab", serif;
+margin-top: 10px;
+}
+
+.redirectLinkFooter:hover {
+color: lightgray; /* Added hover state */
+}
+
+.redirectLinkFooter::after {
+content: '';
+position: absolute;
+width: 0;
+height: 2px; /* Thickness of the underline */
+bottom: 0; /* Position at the bottom of the text */
+left: 50%; /* Start from the center */
+background-color: white; /* Color of the underline */
+transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+}
+
+.redirectLinkFooter:hover::after {
+width: 100%; /* Full width of the underline */
+left: 0; /* Align to the left */
+}
+
+/* Sidebar Styles */
+/* .sidebarContainer {
+border-right: 1px lightgrey solid;
+padding-top: 3%;
+display: block;
+} */
+
+.sidebarItem {
+display: flex;
+text-align: start;
+padding: 20px;
+width: 250px;
+}
+
+.sidebarItem:hover {
+font-weight: bold;
+cursor: pointer;
+background-color: lightgray;
+}
 
 .sidebarText {
-  margin-left: 10px!important;
+margin-left: 10px!important;
 }
 
 /* Profile Image Styles */
 .profileImageCircle {
-  width: 30px; /* Adjust the size as needed */
-  height: 30px; /* Adjust the size as needed */
-  border-radius: 50%;
-  align-items: center;
-  overflow: hidden;
+width: 30px; /* Adjust the size as needed */
+height: 30px; /* Adjust the size as needed */
+border-radius: 50%;
+align-items: center;
+overflow: hidden;
 }
 
 .profileImageCircle img {
-  width: 100%;
-  height: auto;
+width: 100%;
+height: auto;
 }
 
 /* Colors */
 .primaryBlue {
-  color: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
+color: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);
 }
 
 /* Font Face */
 @font-face {
-  font-family: 'ChunkFive';
-  src: url('/public/fonts/chunkfive/Chunk.otf') format('opentype'),
-       url('/public/fonts/chunkfive/Chunk.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+font-family: 'ChunkFive';
+src: url('/public/fonts/chunkfive/Chunk.otf') format('opentype'),
+     url('/public/fonts/chunkfive/Chunk.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
 }
 
 /* Custom Margins */
 .sidebarMargin {
-  margin: 10px !important;
+margin: 10px !important;
 }
 
 /* Header Font */
 .headerFont {
-  color: black;
+color: black;
 }
 
 .headerFont:hover {
-  color: white;
-  cursor: pointer;
+color: white;
+cursor: pointer;
 }
 
 /* White Text */
 .white {
-  color: white;
+color: white;
 }
 
 .white:hover {
-  color: lightgray;
-  cursor: pointer;
+color: lightgray;
+cursor: pointer;
 }
 
-/* Sidebar Image */
-.sidebarImage {
-  height: auto!important;
-  width: 50%!important;
+
+
+.redirectLinkFooter::after{
+content: '';
+  position: absolute;
+  width: 0;
+  height: 2px; /* Thickness of the underline */
+  bottom: 0; /* Position at the bottom of the text */
+  left: 50%; /* Start from the center */
+  background-color: white; /* Color of the underline */
+  transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+}
+.redirectLinkFooter:hover::after{
+width: 100%; /* Full width of the underline */
+  left: 0; /* Align to the left */
 }
 
+.logo-container {
+display: flex;
+justify-content: start; /* Center the logo horizontally */
+align-items: center; /* Center the logo vertically */
+height: 100px; /* Adjust based on your needs */
+}
+
+.logo {
+width: 60%; /* Adjust the width as needed */
+height: auto; /* Maintain the aspect ratio */
+}
+
+@font-face {
+font-family: 'ChunkFive';
+src: url('/public/fonts/chunkfive/Chunk.otf') format('opentype'),
+      url('/public/fonts/chunkfive/Chunk.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+}
+.logo-container {
+height: fit-content; /* Adjust this value based on your desired height */
+display: flex;
+align-items: center; /* This centers the logos vertically */
+}
+
+.logo-item {
+height: fit-content; /* This makes the logo take the full height of the container */
+width: fit-content;
+}
+
+.profileImageCircle {
+width: 30px; /* Adjust the size as needed */
+height: 30px; /* Adjust the size as needed */
+border-radius: 50%;
+align-items: center;
+overflow: hidden;
+}
+
+.profileImageCircle img {
+width: 100%;
+height: auto;
+}

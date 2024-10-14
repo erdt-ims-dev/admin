@@ -1,4 +1,5 @@
 import "./App.css";
+import "./newStyles.scss";
 import RouterList from "./routes/index";
 import CoordinatorRoutes from "./routes/coordinator_routes";
 import StaffRouter from "./routes/staff_routes";
@@ -210,18 +211,19 @@ function App(props) {
                     <NewSidebar show={openSidebar} {...props} navigate={navigate} />
                   </div>
 
-                  <div className="pageContainer">
-                    <NewRouter />
-                  </div>
+                <div className="pageContainer">
+                  <NewRouter />
                 </div>
-                <Footer />
-              </span>
-            </React.Fragment>
-          </div>
-        )
-      }
+              </div>
+              <Footer />
+            </span>
+        </React.Fragment>
+      </div>
+      )
+    }
 
-      {
+    
+    {
         isLoading && (
           <div style={{
             minHeight: '100vh',

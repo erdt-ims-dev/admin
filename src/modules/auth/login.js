@@ -106,22 +106,30 @@ class Login extends Component {
     return (
       <div className="loginContainer">
         <div className="loginForm">
-          <Container className="LeftFlex">
-            <Row className="Row">
-              <h3 className="text-center">Welcome</h3>
+          <Container className="">
+            <Row className="">
+              <h3 className="">Welcome</h3>
+              <p>Sign in to access your account effortlessly. Enter your credentials below to continue.</p>
             </Row>
-            <Row className="Row mx-4">
+            <br/>
+            <Row className="">
+              <label><b>Email:</b></label>
               <InputField
                 id={1}
                 type="email"
-                label="Email"
+                label="Enter email here"
                 locked={false}
                 active={false}
                 onChange={(email) => this.setState({ email, errorEmail: '' })}
               />
+              {/* <input
+                onChange={(email) => this.setState({ email, errorEmail: '' })}
+                placeholder="Enter email here"
+                type="email"
+              /> */}
               <p className="errorText">{errorEmail}</p>
             </Row>
-            <Row className="Row mx-4">
+            <Row className="">
               <InputField
                 id={2}
                 type="password"
@@ -130,30 +138,43 @@ class Login extends Component {
                 active={false}
                 onChange={(password) => this.setState({ password, errorPassword: '' })}
               />
+              <label><b>Password:</b></label>
+              {/* <input
+                onChange={(password) => this.setState({ password, errorPassword: '' })}
+                placeholder="Enter password here"
+                type="password"
+              /> */}
               <p className="errorText">{errorPassword}</p>
             </Row>
-            <Row className="Row mx-4">
-              <Button variant="primary" size="lg" onClick={this.startLogin}>
+            <div className="input-item">
+              <div className="input-item-checkbox">
+                <input type="checkbox" />
+                  <p>Keep me signed in</p>
+              </div>
+              <b onClick={this.toggleForgotPasswordModal}>Forgot password?</b>
+            </div>
+              <Button className="input-item-button"  onClick={this.startLogin}/>
+              {/* <button className="input-item-button" onClick={this.startLogin}>
                 Sign In
-              </Button>
+              </button> */}
+            <Row className="">
+              <p className="">
+                Don't have an account? &nbsp;
+                <a
+                  className=""
+                  onClick={() => this.props.history.push("/register")}
+                >  
+                 Register{" "}
+                  here
+                </a>
+              </p>
             </Row>
-            <Row className="Row">
+            <Row className="">
               <p
                 className="text-center text-white underline-hover"
                 onClick={this.toggleForgotPasswordModal}
               >
                 Forgot Password?
-              </p>
-            </Row>
-            <Row className="Row">
-              <p className="text-white text-center mb-4">
-                Don't have an account? Register{" "}
-                <a
-                  className="underline-hover"
-                  onClick={() => this.props.history.push("/register")}
-                >
-                  here
-                </a>
               </p>
             </Row>
           </Container>

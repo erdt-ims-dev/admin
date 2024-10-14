@@ -22,7 +22,7 @@ export class Header extends Component {
             <div className='headerContainer'>
               <Container className='left-headerContainer'>
               <FontAwesomeIcon icon={faBars} 
-              className='white fa-lg' 
+              className=' fa-lg' 
               style={{
                 padding: 10
               }}
@@ -38,7 +38,6 @@ export class Header extends Component {
                     justifyContent: "end",
                     margin: "1%",
                     gap: "5%",
-                    padding: "3%",
                     alignItems: 'center'
                   }}>
                   {/* <FontAwesomeIcon icon={faBell} className='white fa-lg' style={{
@@ -50,12 +49,12 @@ export class Header extends Component {
 
                   {
                     details && (
-                      <span style={{ padding: 10, color: "white" }}>
+                      <span style={{ padding: 10}}>
                         Hi {details.first_name || "User"}!
                       </span>
                     )
                   }
-                  <FontAwesomeIcon icon={faEllipsisV} className='white fa-lg' style={{
+                  <FontAwesomeIcon icon={faEllipsisV} className=' fa-lg' style={{
                     padding: 10
                   }}/>
                   </Col>

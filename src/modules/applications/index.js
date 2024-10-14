@@ -192,8 +192,8 @@ class Applications extends Component {
       const { columns, data, showEdit, showEndorse, showReject, showView, showRemarks, setData, tableLoader } = this.state;
       const {history} = this.props;
       return (
-      <div className="container">
-      <Box
+      <div className="">
+      {/* <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -206,7 +206,16 @@ class Applications extends Component {
         }} onClick={()=>{ history.push('/new_application')}}>
           Add New Applicant
         </Button>
-      </Box>
+      </Box> */}
+      <div class="contentHeader">
+        <div class="contentLabel">
+          <h4>Applications</h4>
+          <p>All Application Requests Are Listed Here</p>
+        </div>
+        <div class="contentButton">
+          <button onClick={()=>{ history.push('/new_application')}}>+ Add New Applicant</button>
+        </div>
+      </div>
 
       <div className="table-container">
         <TableComponent columns={columns} data={data} isLoading={tableLoader}/>

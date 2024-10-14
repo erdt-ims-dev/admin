@@ -162,8 +162,8 @@ class Endorsements extends Component {
     render() {
       const { columns, data, tableLoader, showView, showApprove, showReject, setData } = this.state;
       return (
-      <div className="container">
-      <Box
+      <div className="">
+      {/* <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -171,7 +171,18 @@ class Endorsements extends Component {
         }}
       >
         <Breadcrumbs header="Endorsements" subheader="Here Are All The Endorsed Applicants"/>
-      </Box>
+      </Box> */}
+     
+      <div class="contentHeader">
+        <div class="contentLabel">
+          <h4>Endorsements</h4>
+          <p>Here Are All The Endorsed Applicants</p>
+        </div>
+        {/* <div class="contentButton">
+          <button>+ Add New</button>
+        </div> */}
+      </div>
+
 
       <div className="table-container">
         <TableComponent columns={columns} data={data} isLoading={tableLoader}/>
