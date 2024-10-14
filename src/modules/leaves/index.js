@@ -407,7 +407,7 @@ function ScholarLeaveApplication() {
                   <td> <a href={request.leave_letter} target="_blank" rel="noreferrer noopener">View File</a></td>
                   <td>{request.status}</td>
                   <td>{request.comment_id}</td>
-                  <td>
+                  <td style={{ textAlign: "center" }}>
                     <span className='link' 
                           onClick={() => approveRequest(request)} 
                           >Approve</span>

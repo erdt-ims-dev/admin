@@ -2,23 +2,96 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
   width: 100%;
-  min-height: 80vh;
+  height: 92.5vh;
   /* background-image: url('../../assets/img/usc-login.jpeg'); */
-  background-repeat: no-repeat;
+  /* background-repeat: no-repeat;
   background-size: 100% 100%;
-  background-image: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);;
+  background-image: linear-gradient(180deg, #0D57A0 0%, rgba(0, 128, 255, 0.64) 100%);; */
 }
 .loginForm{
   display: flex;
   justify-content: center;
-  background: linear-gradient(180deg, #fff 0%, rgba(0, 128, 255, 0.64) 100%);
-  margin-top: 5%;
-  margin-bottom: 5%;
-  width: 80vh;
-  height: auto;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px 1px #000000;
+  padding: 56px 40px;
+  gap: 1rem;
+  /* background: linear-gradient(180deg, #fff 0%, rgba(0, 128, 255, 0.64) 100%); */
+  width: 552px;
+    /* height: 576px; */
+  height: fit-content;
+  border-radius: 8px;
+  border: 1px solid #ececec;
+  color: #050505;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  /* box  -shadow: 0px 0px 10px 1px #000000; */
+}
+
+.loginForm .container{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+}
+.loginForm input{
+  outline: 1px solid #ececec;
+  margin-bottom: 4px;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  padding: 8px 15px;
+  width: 95%;
+  font-size: 14px;
+  height: 48px;
+  margin-left: 12px;
+}
+.loginForm label{
+  margin-bottom: 4px;
+}
+.loginForm .input-item{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.loginForm .input-item-checkbox{
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+.loginForm .input-item-checkbox input{
+  height: 20px;
+  width: 20px;
+  margin: 0;
+}.loginForm a {
+  cursor: pointer;
+}
+.input-item b:hover{
+  cursor: pointer;
+  text-decoration: underline;
+}
+.input-item-button{
+  outline: 1px solid #ececec;
+  margin: 20px 0px 4px 4px;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  padding: 8px 15px;
+  width: 99%;
+  height: 48px;
+  background: linear-gradient(0deg, #131313, #131313 70%, #626262);
+  background-position: 0 0;
+  background-size: 200% 100%;color: #fff;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  opacity: 1;
+}
+.input-item-button:hover{
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.3s;
 }
 /* .mb-3{
   width: 100%;

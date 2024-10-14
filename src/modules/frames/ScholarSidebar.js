@@ -29,6 +29,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./style.css";
+import "../../newStyles.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Modify 'item' as needed

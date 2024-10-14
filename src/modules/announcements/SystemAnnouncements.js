@@ -83,8 +83,8 @@ const SystemAnnouncements = () => {
   return (
     <div className="system-announcements">
       <Box sx={{ display: "flex" }}>
-        <Breadcrumbs header="System Announcements" />
-        <Button>Create new announcement</Button>
+        <Breadcrumbs header="System Announcements1" />
+        <button className="btn">+ New</button>
       </Box>
 
       {!!announcements ? (

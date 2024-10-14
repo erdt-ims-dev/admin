@@ -160,8 +160,14 @@ const useScholarList = () => {
  
   return (
     <>
-      <div className="header-container">
+      {/* <div className="header-container">
         <Breadcrumbs header="List of Scholars" subheader="1st sem 2023" />
+      </div> */}
+      <div class="contentHeader">
+        <div class="contentLabel">
+          <h4>List of Scholars</h4>
+          <p>1st sem 2023</p>
+        </div>
       </div>
       <Modal show={showConfirm} onHide={handleDeleteCancel}>
         <Modal.Header closeButton>
@@ -232,6 +238,7 @@ const useScholarList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <div className="table-container">
         <Table>
           <thead>
@@ -249,7 +256,7 @@ const useScholarList = () => {
                   <td>{scholar.account_details?.last_name}</td>
                   <td>{scholar.account_details?.first_name}</td>
                   <td>{scholar.account_details?.program}</td>
-                  <td>
+                  <td style={{ textAlign: "center" }}>
                     <span className='link' onClick={() => handleShow(scholar)}><a href="#">View</a></span>
                     <span className='link' onClick={() => handleDeleteShow(scholar.id)}><a href="#">  Delete</a></span>
                   </td>
