@@ -82,18 +82,22 @@ class Login extends Component {
       toast.error("Please enter your email address.");
       return;
     }
-
+    this.props.setIsLoadingV2(true);
     API.request('forgot_password', { email: forgotPasswordEmail }, response => {
-      if (response && response.success) {
-        toast.success("Password reset instructions sent to your email.");
-        this.toggleForgotPasswordModal();
+      if (response && response.data) {
+        this.props.setIsLoadingV2(false);
+        toast.success("Password reset instructions have been sent to your email.");
+        this.toggleForgotPasswordModal();  // Assuming this function closes the modal
       } else {
-        toast.error("Failed to send reset instructions.");
+        this.props.setIsLoadingV2(false);
+        toast.error(response.error || "Failed to send reset instructions.");
       }
     }, error => {
+      this.props.setIsLoadingV2(false);
       console.error(error);
-      toast.error("An error occurred.");
+      toast.error("An error occurred while sending the reset instructions.");
     });
+    
   };
 
   render() {
@@ -200,6 +204,7 @@ const mapDispatchToProps = (dispatch) => ({
   login: (user, token) => dispatch({ type: 'LOGIN', payload: { user, token } }),
   setDetails: (details) => dispatch({ type: 'SET_DETAILS', payload: { details } }),
   setIsLoading: (status) => dispatch({ type: 'SET_IS_LOADING', payload: { status } }),
+  setIsLoadingV2: (status) => dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } }),
   userActivity: () => dispatch({ type: 'USER_ACTIVITY' }),
 });
 
