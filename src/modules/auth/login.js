@@ -114,36 +114,36 @@ class Login extends Component {
             <br/>
             <Row className="">
               <label><b>Email:</b></label>
-              <InputField
+              {/* <InputField
                 id={1}
                 type="email"
                 label="Enter email here"
                 locked={false}
                 active={false}
                 onChange={(email) => this.setState({ email, errorEmail: '' })}
-              />
-              {/* <input
-                onChange={(email) => this.setState({ email, errorEmail: '' })}
+              /> */}
+              <input
+                onChange={(e) => this.setState({ email: e.target.value, errorEmail: '' })}
                 placeholder="Enter email here"
                 type="email"
-              /> */}
+              />
               <p className="errorText">{errorEmail}</p>
             </Row>
             <Row className="">
-              <InputField
+              {/* <InputField
                 id={2}
                 type="password"
                 label="Password"
                 locked={false}
                 active={false}
                 onChange={(password) => this.setState({ password, errorPassword: '' })}
-              />
+              /> */}
               <label><b>Password:</b></label>
-              {/* <input
-                onChange={(password) => this.setState({ password, errorPassword: '' })}
+              <input
+                onChange={(e) => this.setState({ password: e.target.value, errorPassword: '' })}
                 placeholder="Enter password here"
                 type="password"
-              /> */}
+              />
               <p className="errorText">{errorPassword}</p>
             </Row>
             <div className="input-item">
@@ -153,10 +153,10 @@ class Login extends Component {
               </div>
               <b onClick={this.toggleForgotPasswordModal}>Forgot password?</b>
             </div>
-              <Button className="input-item-button"  onClick={this.startLogin}/>
-              {/* <button className="input-item-button" onClick={this.startLogin}>
+              {/* <Button className="input-item-button"  onClick={this.startLogin}>Sign In</Button> */}
+              <button className="input-item-button" onClick={this.startLogin}>
                 Sign In
-              </button> */}
+              </button>
             <Row className="">
               <p className="">
                 Don't have an account? &nbsp;
