@@ -150,6 +150,7 @@ tr, th, td {
   color: #f5f5f5!important;
   border-top-right-radius: 8px!important;
   text-align: center!important;
+  width: 250px;
 }
 
 .table-container table tbody tr:last-child td:first-child {
@@ -170,4 +171,35 @@ aside{
   to {
     transform: rotate(360deg);
   }
+}
+td span{
+  margin-right: 8px;
+}
+.link{
+  position: relative;
+}
+.link-label {
+  /* outline: 1px solid blue; */
+  background-color: #202020;
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: #f5f5f5;
+  padding: 4px 8px;
+  font-size: 12px;
+  outline: none;
+  border: none;
+  position: absolute;
+  top: -25px;
+  left: 2px;
+  opacity: 0;
+}
+.link:hover .link-label{
+  opacity: 1;
+  left: 10px;
+  transition: 0.3s all;
+}
+.link:not(:hover) .link-label {
+  opacity: 0;
+  left: 2px;
+  transition: 0.3s all;
 }

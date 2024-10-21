@@ -220,13 +220,22 @@ const validateField = (fieldName, value) => {
   return (
     <>
     {isLoading && <Stack />}
-    <div style={{ float:'left', textAlign:'left'}}>
+    {/* <div style={{ float:'left', textAlign:'left'}}>
       <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
       <p>This is the Scholar Leave Request page</p>
     </div>
     <Button 
             onClick={handleShow} 
-            style={{float:'right', marginTop:'1rem'}}> Add New Request </Button>
+            style={{float:'right', marginTop:'1rem'}}> Add New Request </Button> */}
+    <div class="contentHeader">
+      <div class="contentLabel">
+        <h4>Scholar Leave Request</h4>
+        <p>This is the Scholar Leave Request page</p>
+      </div>
+      <div class="contentButton">
+        <button onClick={handleShow}>+ Add New Applicant</button>
+      </div>
+    </div>
     {/* error modal */}
     <Modal show={errorModal} onHide={errorClose}>
         <Modal.Header closeButton>
