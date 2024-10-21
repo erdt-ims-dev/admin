@@ -4,7 +4,7 @@ import { Table, Button, Modal, Form } from "react-bootstrap";
 import API from 'services/Api'
 import { v4 as uuidv4 } from 'uuid';
 
-const TABLE_HEADERS = ["#", "Scholar ID", "Leave Start", "Leave End", "Leave Letter", "Status", "Comments", "Action"];
+const TABLE_HEADERS = ["#", "Scholar ID", "Leave Start", "Leave End", "Leave Letter", "Status", "Comments", ""];
 
 function ScholarLeaveApplication() {
   const location = useLocation();
@@ -228,12 +228,15 @@ function ScholarLeaveApplication() {
 
   return (
     <>
-    <div style={{ float:'left', textAlign:'left'}}>
-      <h2>This is the Scholar Leave Request page</h2>
+    <div class="contentHeader">
+      <div class="contentLabel">
+        <h4>Scholar Leave Request</h4>
+        <p>This is the Scholar Leave Request page</p>
+      </div>
+      <div class="contentButton">
+        <button onClick={handleShow}>+ Add New</button>
+      </div>
     </div>
-    <Button 
-          onClick={handleShow} 
-          style={{float:'right', marginTop:'0.3rem'}}> Add New Request </Button>
     
     {/* error modal */}
     <Modal show={errorModal} onHide={errorClose}>
@@ -388,7 +391,7 @@ function ScholarLeaveApplication() {
           </Button>
         </Modal.Footer>
       </Modal>
-    <div className="table-container" style={{ marginTop:'4rem'}}>
+    <div className="table-container" style={{ marginTop:'1rem'}}>
         <Table>
           <thead>
             <tr>
@@ -410,13 +413,28 @@ function ScholarLeaveApplication() {
                   <td style={{ textAlign: "center" }}>
                     <span className='link' 
                           onClick={() => approveRequest(request)} 
-                          >Approve</span>
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.5068 6.85481L9.45265 14.6991L6.49327 11.8168C6.34979 11.6771 6.11715 11.6771 5.97363 11.8168L5.10761 12.6603C4.96413 12.8 4.96413 13.0266 5.10761 13.1664L9.19281 17.1452C9.33629 17.2849 9.56894 17.2849 9.71245 17.1452L18.8924 8.20437C19.0359 8.06463 19.0359 7.83805 18.8924 7.69827L18.0264 6.85481C17.8829 6.71506 17.6502 6.71506 17.5068 6.85481Z" fill="#10b798"/>
+                    </svg>
+                    <label class="link-label">Approve</label>
+                    </span>
                     <span className='link' 
                           onClick={() => handleEditRequestShow(request)} 
-                          >Edit</span>
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.5721 14.7789L16.5722 13.779C16.7284 13.6228 17.0003 13.7322 17.0003 13.9571V18.5002C17.0003 19.3282 16.3284 20 15.5003 20H4.50003C3.67189 20 3 19.3282 3 18.5002V7.50183C3 6.67383 3.67189 6.00205 4.50003 6.00205H13.0471C13.269 6.00205 13.3815 6.27076 13.2252 6.43011L12.2252 7.42997C12.1783 7.47683 12.1158 7.50183 12.0471 7.50183H4.50003V18.5002H15.5003V14.9539C15.5003 14.8882 15.5253 14.8258 15.5721 14.7789ZM20.466 8.47356L12.2596 16.6786L9.43451 16.9911C8.61575 17.0817 7.91886 16.3912 8.00948 15.5663L8.32199 12.7417L16.5284 4.53664C17.2441 3.82112 18.4003 3.82112 19.1128 4.53664L20.4629 5.88644C21.1785 6.60196 21.1785 7.76117 20.466 8.47356ZM17.3784 9.43905L15.5628 7.62369L9.7564 13.4322L9.52827 15.4725L11.5689 15.2444L17.3784 9.43905ZM19.4035 6.94879L18.0535 5.59898C17.9253 5.47088 17.7159 5.47088 17.5909 5.59898L16.6253 6.56447L18.441 8.37983L19.4066 7.41434C19.5316 7.28311 19.5316 7.07689 19.4035 6.94879Z" fill="#404041"/>
+                      </svg>
+                    <label class="link-label">Edit</label>
+                    </span>
                     <span className='link' 
                           onClick={() => handleDeleteRequestShow(request)}
-                          >Deny</span>
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.4874 11.9998L16.8537 8.63358C17.0484 8.4389 17.0484 8.12296 16.8537 7.92796L16.0715 7.14577C15.8768 6.95108 15.5608 6.95108 15.3658 7.14577L11.9998 10.5123L8.63354 7.14608C8.43885 6.9514 8.12291 6.9514 7.92791 7.14608L7.14602 7.92796C6.95133 8.12265 6.95133 8.43858 7.14602 8.63358L10.5123 11.9998L7.14602 15.3661C6.95133 15.5608 6.95133 15.8767 7.14602 16.0717L7.92822 16.8539C8.12291 17.0486 8.43885 17.0486 8.63385 16.8539L11.9998 13.4873L15.3661 16.8536C15.5608 17.0483 15.8768 17.0483 16.0718 16.8536L16.854 16.0714C17.0487 15.8767 17.0487 15.5608 16.854 15.3658L13.4874 11.9998Z" fill="red"/>
+                      </svg>
+                    <label class="link-label">Delete</label>
+                    </span>
                   </td>
                 </tr>
               ))}
