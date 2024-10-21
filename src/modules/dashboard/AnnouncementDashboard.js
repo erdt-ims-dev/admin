@@ -17,7 +17,7 @@ class AnnouncementDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: null,
+      messages: [], // Initialize as an empty array
       isLoading: true,
       showModal: false, // For password change modal
       newPassword: '', // New password state
@@ -39,16 +39,23 @@ class AnnouncementDashboard extends Component {
 
   getAnnouncements() {
     API.request('admin_system_message/retrieveViaDashboard', {}, response => {
-      if (response && response.data) {
+      if (response && response.data && Array.isArray(response.data)) {
         this.setState({
           messages: response.data,
           isLoading: false,
         });
       } else {
-        // Handle case where no data is returned
+        // Handle case where no data is returned or response is not an array
+        this.setState({
+          messages: [],
+          isLoading: false,
+        });
       }
     }, error => {
       console.log(error);
+      this.setState({
+        isLoading: false, // Ensure loading is set to false in case of error
+      });
     });
   }
 
@@ -103,7 +110,12 @@ class AnnouncementDashboard extends Component {
       <div className=''>
         <Breadcrumb header={"Dashboard"} subheader={"Announcements are posted below"} />
         <Container>
-          {messages &&
+          {/* Fallback message when there are no announcements */}
+          {messages.length === 0 ? (
+            <div>
+              <span>Oops! Looks like there aren't any messages for now</span>
+            </div>
+          ) : (
             messages.map((item) => (
               <AnnouncementBubble
                 key={item.message.id}
@@ -112,7 +124,8 @@ class AnnouncementDashboard extends Component {
                 message={item.message.message_body}
                 time={new Date(item.message.created_at).toLocaleString()} // Convert createdAt to readable format
               />
-            ))}
+            ))
+          )}
         </Container>
 
         {/* Password Change Modal */}

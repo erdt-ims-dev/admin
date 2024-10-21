@@ -51,7 +51,7 @@ class Register extends Component {
       response => {
         this.props.setIsLoading(false);
         if (response && response.data) {
-          toast.success('Account Created Successfully!'); // Success toast notification
+          toast.success('Account Created Successfully! Please check your Email'); // Success toast notification
           this.props.history.push('/'); // Redirect to the home page
         } else {
           toast.error(response.error); // Error toast notification
