@@ -28,7 +28,7 @@ class DeleteModal extends Component {
       API.request('admin_system_message/delete', {
           id: setData.id
       }, response => {
-        this.props.setIsLoadingV2(true);
+        this.props.setIsLoadingV2(false);
         if (response && response.data) {
           this.props.onHide()
           this.props.refreshList()
@@ -37,7 +37,7 @@ class DeleteModal extends Component {
           console.log('error on retrieve')
         }
       }, error => {
-        this.props.setIsLoadingV2(true);
+        this.props.setIsLoadingV2(false);
         console.log(error)
       })
     }
