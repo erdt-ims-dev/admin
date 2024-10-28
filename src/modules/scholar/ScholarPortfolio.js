@@ -173,11 +173,17 @@ function ScholarPortfolio() {
 
     const onDrop = (acceptedFiles) => {
       if (acceptedFiles && acceptedFiles.length > 0) {
-        setSelectedFile(acceptedFiles[0]);
+        const file = acceptedFiles[0];
+        if (file.type !== 'application/pdf') {
+          toast.error('Only PDF files are allowed!');
+          setSelectedFile(null); // Reset the selected file if it's invalid
+        } else {
+          setSelectedFile(file);
+        }
       }
     };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: '.pdf,.doc,.docx' });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: '.pdf' });
 
     return (
       <>
