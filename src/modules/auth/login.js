@@ -108,7 +108,7 @@ class Login extends Component {
         <div className="loginForm">
           <Container className="">
             <Row className="">
-              <h3 className="">Welcome</h3>
+              <h3 className="">Login</h3>
               <p>Sign in to access your account effortlessly. Enter your credentials below to continue.</p>
             </Row>
             <br/>
