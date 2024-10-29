@@ -215,8 +215,8 @@ function ScholarTasks() {
         theme="light"
         /> */}
       <div style={{ float:'left', textAlign:'left'}}>
-        <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
-        <p>This is the Scholar Tasks page</p>
+        <h3>{scholar.account_details.last_name} {scholar.account_details.first_name}'s Tasks</h3>
+        <p>Below are the submitted tasks</p>
       </div>
         <Button 
           onClick={handleShow} 
