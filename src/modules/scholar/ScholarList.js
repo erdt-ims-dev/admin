@@ -1,28 +1,52 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Modal } from "react-bootstrap";
-import { Link } from 'react-router-dom';
+import { Table, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Skeleton from 'react-loading-skeleton';
+import Dropdown from "react-dropdown-select";
 import Breadcrumbs from "../generic/breadcrumb";
 import "./style.scss";
 import API from 'services/Api';
-import ViewModal from '../accounts/editModal/index';
-import Skeleton from 'react-loading-skeleton'; // Import Skeleton
 
 const TABLE_HEADERS = ["#", "Scholar ID", "Last Name", "First Name", "Program", "Actions"];
 
-const useScholarList = () => {
+const SEMESTER_OPTIONS = [
+  { label: "1st semester", value: "1st semester" },
+  { label: "2nd semester", value: "2nd semester" },
+  { label: "Summer semester", value: "Summer semester" },
+];
+
+const YEAR_OPTIONS = [
+  { label: "2023", value: "2023" },
+  { label: "2024", value: "2024" },
+  { label: "2025", value: "2025" },
+];
+
+const ScholarList = () => {
+  const getDefaultSemesterAndYear = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // Months are 0-based
+    const currentYear = currentDate.getFullYear();
+    
+    let semester;
+    if (currentMonth >= 1 && currentMonth <= 4) semester = "1st semester";
+    else if (currentMonth >= 5 && currentMonth <= 7) semester = "Summer semester";
+    else semester = "2nd semester";
+
+    return { semester, year: currentYear.toString() };
+  };
+
+  const { semester: defaultSemester, year: defaultYear } = getDefaultSemesterAndYear();
   const [scholars, setScholars] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
-  const [selectedScholarId, setSelectedScholarId] = useState(null);
-  const [selectedScholar, setSelectedScholar] = useState(null);
-  const [show, setShow] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
- 
-  const fetchScholars = async () => {
-    setLoading(true); // Set loading to true when fetching data
+  const [filteredScholars, setFilteredScholars] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedSemester, setSelectedSemester] = useState(defaultSemester);
+  const [selectedYear, setSelectedYear] = useState(defaultYear);
+
+  const fetchScholars = async (semester, year) => {
+    setLoading(true);
     try {
-      API.request('scholar/retrieveAll', {}, response => {
+      API.request('scholar/filter', { semester, year }, response => {
         if (response && response.data) {
           API.request('account_details/retrieveAll', {}, accountResponse => {
             if (accountResponse && accountResponse.data) {
@@ -31,143 +55,62 @@ const useScholarList = () => {
                 return { ...scholar, account_details: account ? account : null };
               });
               setScholars(updatedScholars);
-            } else {
-              console.log('Error retrieving account details');
+              setFilteredScholars(updatedScholars);
             }
-            setLoading(false); // Set loading to false after account details fetch
-          }, error => {
-            console.log('Error retrieving account details:', error);
-            setLoading(false); // Set loading to false if there's an error
+            setLoading(false);
           });
         } else {
-          console.log('Error on scholar retrieve');
-          setLoading(false); // Set loading to false if there's an error
+          console.log('Error retrieving scholars');
+          setLoading(false);
         }
-      }, error => {
-        console.log('Error on scholar retrieve:', error);
-        setLoading(false); // Set loading to false if there's an error
       });
     } catch (error) {
       console.log(error);
-      setLoading(false); // Ensure loading is set to false on catch
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchScholars();
-  }, []);
- 
-  const handleShow = (scholar) => {
-    setSelectedScholar(scholar);
-    setShow(true);
-  };
- 
-  const handleClose = () => setShow(false);
- 
-  const handleDeleteShow = (id) => {
-    setSelectedScholarId(id);
-    setShowConfirm(true);
-  };
- 
-  const handleDeleteConfirm = async () => {
-    API.request('scholar/delete', {
-      id: selectedScholarId,
-    }, error => {
-      console.log('Error deleting scholar:', error);
-    });
-    setScholars(scholars.filter(scholar => scholar.id !== selectedScholarId));
-    setShowConfirm(false);
-  };
-  
-  const handleDeleteCancel = () => { setShowConfirm(false); }
+    fetchScholars(selectedSemester, selectedYear);
+  }, [selectedSemester, selectedYear]);
 
-  return {
-    scholars,
-    loading, // Return loading state
-    show,
-    selectedScholar,
-    showConfirm,
-    selectedScholarId,
-    handleShow,
-    handleClose,
-    handleDeleteShow,
-    handleDeleteConfirm,
-    handleDeleteCancel,
+  const handleSemesterChange = (selected) => {
+    const semester = selected[0]?.value || "1st semester";
+    setSelectedSemester(semester);
   };
-};
- 
-const ScholarList = () => {
-  const {
-    scholars,
-    loading, // Destructure loading state
-    show,
-    selectedScholar,
-    showConfirm,
-    selectedScholarId,
-    handleShow,
-    handleClose,
-    handleDeleteShow,
-    handleDeleteConfirm,
-    handleDeleteCancel,
-  } = useScholarList();
- 
+
+  const handleYearChange = (selected) => {
+    const year = selected[0]?.value || "2023";
+    setSelectedYear(year);
+  };
+
   return (
     <>
       <div className="contentHeader">
         <div className="contentLabel">
           <h4>List of Scholars</h4>
-          <p>1st sem 2023</p>
-        </div>
+          <p>Choose semester and year to filter</p>
+        </div>        
       </div>
-      <Modal show={showConfirm} onHide={handleDeleteCancel}>
-        <Modal.Header closeButton>
-          <Modal.Title>Are you sure?</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteCancel}>
-            No
-          </Button>
-          <Button variant="primary" onClick={handleDeleteConfirm}>
-            Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Scholar Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedScholar && (
-            <>
-              <p>ID: {selectedScholar.id}</p>
-              <p>User ID: {selectedScholar.user_id}</p>
-              <p>Last Name: {selectedScholar.account_details?.last_name}</p>
-              <p>First Name: {selectedScholar.account_details?.first_name}</p>
-              <p>Program: {selectedScholar.account_details?.program}</p>
-            </>
-          )}
-          
-          <Link to={{ pathname: `scholars/${selectedScholar?.user_id}/scholar_portfolio`, state: { scholar: selectedScholar } }}>
-            <Button variant="primary">Scholar Portfolio</Button>
-          </Link>
-          <Link to={{ pathname: `scholars/${selectedScholar?.user_id}/scholar_tasks`, state: { scholar: selectedScholar } }}>
-            <Button variant="primary">Scholar Tasks</Button>
-          </Link>
-          <Link to={{ pathname: `scholars/${selectedScholar?.user_id}/scholar_leave_applications`, state: { scholar: selectedScholar } }}>
-            <Button variant="primary">Leave Application</Button>
-          </Link>
-          <Link to={{ pathname: `scholars/${selectedScholar?.user_id}/scholar_details`, state: { scholar: selectedScholar } }}>
-            <Button variant="primary">Scholar Details</Button>
-          </Link>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      
+      <Row className="w-100 mb-4" style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ flex: "1", marginRight: "10px" }}>
+          <Dropdown
+            options={SEMESTER_OPTIONS}
+            values={[{ label: selectedSemester, value: selectedSemester }]}
+            onChange={handleSemesterChange}
+            placeholder="Select Semester"
+          />
+        </div>
+        <div style={{ flex: "1" }}>
+          <Dropdown
+            options={YEAR_OPTIONS}
+            values={[{ label: selectedYear, value: selectedYear }]}
+            onChange={handleYearChange}
+            placeholder="Select Year"
+          />
+        </div>
+      </Row>
 
       <div className="table-container">
         <Table>
@@ -180,7 +123,6 @@ const ScholarList = () => {
           </thead>
           <tbody>
             {loading ? (
-              // Render skeletons while loading
               [...Array(4)].map((_, index) => (
                 <tr key={index}>
                   <td><Skeleton width={30} /></td>
@@ -192,7 +134,7 @@ const ScholarList = () => {
                 </tr>
               ))
             ) : (
-              scholars.map((scholar, index) => (
+              filteredScholars.map((scholar, index) => (
                 <tr key={scholar.id}>
                   <td>{index + 1}</td>
                   <td>{scholar.id}</td>
@@ -200,11 +142,11 @@ const ScholarList = () => {
                   <td>{scholar.account_details?.first_name}</td>
                   <td>{scholar.account_details?.program}</td>
                   <td style={{ textAlign: "center" }}>
-                    <span className='link' onClick={() => handleShow(scholar)}>
+                    <span className='link'>
                       <FontAwesomeIcon icon={faEye} />
                       <label className="link-label">View</label>
                     </span>
-                    <span className='link' onClick={() => handleDeleteShow(scholar.id)}>
+                    <span className='link'>
                       <FontAwesomeIcon icon={faTrash} />
                       <label className="link-label">Delete</label>
                     </span>
