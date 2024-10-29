@@ -9,7 +9,7 @@ import "./style.scss";
 import API from 'services/Api';
 import { Link } from 'react-router-dom';
 
-const TABLE_HEADERS = ["#", "Scholar ID", "Last Name", "First Name", "Program", "Actions"];
+const TABLE_HEADERS = ["Scholar ID", "Last Name", "First Name", "Program", "Actions"];
 
 const SEMESTER_OPTIONS = [
   { label: "1st semester", value: "1st semester" },
@@ -154,7 +154,6 @@ const ScholarList = () => {
             {loading? (
               [...Array(4)].map((_, index) => (
                 <tr key={index}>
-                  <td><Skeleton width={30} /></td>
                   <td><Skeleton width={100} /></td>
                   <td><Skeleton width={100} /></td>
                   <td><Skeleton width={100} /></td>
@@ -165,7 +164,6 @@ const ScholarList = () => {
             ) : (
               filteredScholars.map((scholar, index) => (
                 <tr key={scholar.id}>
-                  <td>{index + 1}</td>
                   <td>{scholar.id}</td>
                   <td>{scholar.account_details?.last_name}</td>
                   <td>{scholar.account_details?.first_name}</td>

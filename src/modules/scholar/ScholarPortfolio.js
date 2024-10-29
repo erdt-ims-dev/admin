@@ -153,7 +153,11 @@ function ScholarPortfolio() {
             <p>Below are all the files submitted</p>
         </div>
         <div style={{float:'right', marginTop:'1rem'}}>
-            <Button onClick={handleShow}> Add New Study </Button>
+            {/* <Button onClick={handleShow}> Add New Study </Button> */}
+            <div class="contentButton">
+              <button onClick={handleShow}>+ Add New Study</button>
+            </div>
+
         </div>
 
         <Modal show={show} onHide={handleClose}>
