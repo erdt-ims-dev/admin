@@ -9,7 +9,7 @@ import { Box } from "@mui/material";
 import Breadcrumbs from "modules/generic/breadcrumb";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import  TableComponent  from 'modules/generic/tableV3/variation1';
+import  TableComponent  from 'modules/generic/tableV3/variation2';
 import ViewModal from 'modules/applications/viewModal/index'
 import RejectModal from 'modules/endorsements/rejectModal/index'
 import ApproveModal from 'modules/endorsements/approveModal/index'
