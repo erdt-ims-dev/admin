@@ -172,7 +172,29 @@ function ScholarPortfolio() {
           }
       );
   };
-  
+  const deletePortfolio = async () => {
+    setIsLoading(true); 
+
+    // Call API to delete the selected portfolio
+    API.request(
+        'scholar_portfolio/delete',
+        { id: selectedPortfolio.id },
+        (response) => {
+            console.log('Data deleted successfully');
+            // Filter out the deleted portfolio from the local state
+            setPortfolios(portfolios.filter(portfolio => portfolio.id !== selectedPortfolio.id));
+            setIsLoading(false); 
+        },
+        (error) => {
+            console.error(error);
+            setIsLoading(false); 
+        }
+    );
+
+    // Close the delete modal
+    setDeleteShow(false);
+};
+
   
     useEffect(() => {
         fetchPortfolio();
@@ -334,7 +356,17 @@ function ScholarPortfolio() {
                 <Button variant="primary" onClick={() => editPortfolio(selectedPortfolio)}>Submit</Button>
             </Modal.Footer>
         </Modal>
-
+        {/* Delete */}
+        <Modal show={deleteShow} onHide={handleDeleteClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Are you sure?</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleDeleteClose}>No</Button>
+                <Button variant="primary" onClick={deletePortfolio}>Yes</Button>
+            </Modal.Footer>
+        </Modal>
         <div className="table-container" style={{ marginTop: '4.5rem' }}>
             <Table striped bordered hover>
                 <thead>
