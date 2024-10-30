@@ -6,7 +6,8 @@ import API from 'services/Api';
 import { v4 as uuidv4 } from 'uuid';
 import Stack from '../generic/spinnerV2';
 import 'react-toastify/dist/ReactToastify.css';
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 const TABLE_HEADERS = ["#", "Leave Start", "Leave End", "Leave Letter", "Status", "Comment", "Action"];
 
 function ScholarLeaveApplication() {
@@ -253,7 +254,7 @@ const validateField = (fieldName, value) => {
 
   return (
     <>
-    {isLoading && <Stack />}
+    
     {/* <div style={{ float:'left', textAlign:'left'}}>
       <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
       <p>This is the Scholar Leave Request page</p>
@@ -270,6 +271,7 @@ const validateField = (fieldName, value) => {
         <button onClick={handleShow}>+ Add New Leave Request</button>
       </div>
     </div>
+    
     {/* error modal */}
     <Modal show={errorModal} onHide={errorClose}>
         <Modal.Header closeButton>
@@ -443,7 +445,21 @@ const validateField = (fieldName, value) => {
             </tr>
           </thead>
           <tbody>
-            {leaverequests.map((request, index) => (
+            {isLoading && (
+              <tr>
+                <td colSpan={TABLE_HEADERS.length}>
+                  <Skeleton count={5} height={30} />
+                </td>
+              </tr>
+            )}
+            {!isLoading && leaverequests.length === 0 && (
+              <tr>
+                <td colSpan={TABLE_HEADERS.length} style={{textAlign: 'center'}}>
+                  Oops, looks like there are no leave requests to show.
+                </td>
+              </tr>
+            )}
+            {!isLoading && leaverequests.map((request, index) => (
                 <tr key={request.id || request.tempId}>
                   <td>{index + 1}</td>
                   <td>{request.leave_start}</td>
