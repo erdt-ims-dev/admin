@@ -14,7 +14,9 @@ import ViewModal from './viewModal/index'
 import EditModal from './editModal/index'
 import DeleteModal from './deleteModal/index'
 import API from 'services/Api'
-
+import ReactPaginate from 'react-paginate';
+import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
 
 class Accounts extends Component {
     constructor(props) {
@@ -66,7 +68,10 @@ class Accounts extends Component {
           ],
           data: [],
           setData: null,
-          tableLoader: true
+          tableLoader: true,
+          currentPage: 0, // Track current page
+          pageCount: 0, // Track total number of pages
+          itemsPerPage: 10, // Items per page
           };
       };
       // Modal Handling
@@ -130,11 +135,18 @@ class Accounts extends Component {
     }
     // State
     getList(callback){
-      API.request('user/retrieveAll', {
+      this.props.setIsLoadingV2(true);
+      const { currentPage, itemsPerPage } = this.state; // Get current page and items per page
+      const offset = currentPage * itemsPerPage; // Calculate offset
+      API.request('user/paginate', {
+        offset, 
+        limit: itemsPerPage,
       }, response => {
+        this.props.setIsLoadingV2(false);
           if (response && response.data) {
               this.setState({
-                  account_list: response.data
+                  account_list: response.data.accounts,
+                  pageCount: Math.ceil(response.data.total / itemsPerPage),
               }, () => {
                   // Call the callback function after setting the state
                   if (typeof callback === 'function') {
@@ -150,13 +162,19 @@ class Accounts extends Component {
           }
       }, error => {
           console.log(error);
+          this.props.setIsLoadingV2(false);
           // Optionally, call the callback function with an error or a specific value
           if (typeof callback === 'function') {
               callback(false);
           }
       });
   }
-  
+  handlePageClick = (data) => {
+    const selectedPage = data.selected; // Get the selected page index
+    this.setState({ currentPage: selectedPage, tableLoader: true }, () => {
+        this.getList(); // Fetch data for the selected page
+    });
+}
   componentDidMount(){
       this.getList(() => {
           // This function will be called after getList successfully retrieves data
@@ -167,7 +185,7 @@ class Accounts extends Component {
   }
     
     render() {
-      const { columns, account_list, showEdit, showDelete, showView, setData, tableLoader } = this.state;
+      const { columns, account_list, showEdit, showDelete, showView, setData, tableLoader, pageCount } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -185,8 +203,20 @@ class Accounts extends Component {
       </Box>
           {/* with scroll */}
           <div className="table-container" style={{ overflowY: 'auto', maxHeight: '600px' }}> 
-        <TableComponent columns={columns} data={account_list} isLoading={tableLoader}/>
-      </div>
+            <TableComponent columns={columns} data={account_list} isLoading={tableLoader}/>
+            <ReactPaginate
+                previousLabel={'Previous'}
+                nextLabel={'Next'}
+                breakLabel={'...'}
+                breakClassName={'break-me'}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={this.handlePageClick}
+                containerClassName={'pagination'}
+                activeClassName={'active'}
+            />
+          </div>
       <ViewModal
       setData={setData}
       show={showView}
@@ -209,4 +239,12 @@ class Accounts extends Component {
     }
 }
 
-export default Accounts
+const mapStateToProps = (state) => ({ state });
+
+const mapDispatchToProps = (dispatch) => ({
+  setIsLoading: (status) => dispatch({ type: 'SET_IS_LOADING', payload: { status } }),
+  setIsLoadingV2: (status) => dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } }),
+  userActivity: () => dispatch({ type: 'USER_ACTIVITY' }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Accounts));
