@@ -139,34 +139,40 @@ function ScholarPortfolio() {
             setIsLoading(false);
         }
     };
-    const editPortfolio = async (portfolio) => {
+    const editPortfolio = async (e) => {
+      // e.preventDefault();
       setIsLoading(true);
+      
       const formData = new FormData();
-      formData.append('id', portfolio.id);
-      formData.append('study_name', portfolio.study_name);
-      formData.append('study_category', portfolio.study_category);
-      formData.append('publish_type', portfolio.publish_type);
+      formData.append('id', selectedPortfolio.id);
+      formData.append('scholar_id', newPortfolios.id);
+      formData.append('study_name', selectedPortfolio.study_name);
   
-      // Check if a new file is selected for updating
-      if (portfolio.study instanceof File) {
-          formData.append('study', portfolio.study);
-      }
+      // Handle file update: use `selectedPortfolio.study` or `studyFile` if a new file is uploaded
+      formData.append('study', selectedPortfolio.study ? selectedPortfolio.study : studyFile.current.files[0]);
   
-      try {
-          const response = await API.uploadFile('scholar_portfolio/update', formData);
-          if (!response.data.error) {
-              toast.success('Portfolio updated successfully');
-              fetchPortfolio(); // Refresh list
-              setEditShow(false);
-          } else {
+      formData.append('study_category', selectedPortfolio.study_category);
+      formData.append('publish_type', selectedPortfolio.publish_type);
+  
+      API.uploadFile('scholar_portfolio/updateOne', formData, 
+          (response) => {
+              if (!response.data.error) {
+                  toast.success('Portfolio updated successfully');
+                  fetchPortfolio(); // Refresh portfolio list
+              } else {
+                  toast.error('Error updating portfolio');
+              }
+              setIsLoading(false); // End loading
+              setEditShow(false);  // Close edit modal
+          }, 
+          (error) => {
+              console.log(error);
               toast.error('Error updating portfolio');
+              setIsLoading(false);
           }
-      } catch (error) {
-          toast.error('Error updating portfolio');
-      } finally {
-          setIsLoading(false);
-      }
+      );
   };
+  
   
     useEffect(() => {
         fetchPortfolio();
