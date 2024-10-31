@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import API from 'services/Api'
 import { v4 as uuidv4 } from 'uuid';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const TABLE_HEADERS = ["#", "Scholar ID", "Leave Start", "Leave End", "Leave Letter", "Status", "Comments", ""];
 
@@ -19,7 +21,7 @@ function ScholarLeaveApplication() {
     comment: '',
   });
   const letterFile = useRef(null);
-
+  const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -78,6 +80,7 @@ function ScholarLeaveApplication() {
   };
 
   const fetchRequests = async () => {
+    setLoading(true);
     API.request('leave_application/retrieveAll', {}, response => {
       if (response && response.data) {
         setLeaveRequests(response.data)
@@ -85,6 +88,7 @@ function ScholarLeaveApplication() {
       } else {
         console.log('error on retrieve');
       }
+      setLoading(false);
     }, error => {
       console.log(error);
     });
@@ -401,7 +405,32 @@ function ScholarLeaveApplication() {
             </tr>
           </thead>
           <tbody>
-            {leaverequests.map((request, index) => (
+            {
+            loading && (
+              // Display Skeletons while loading
+              Array.from({ length: 5 }).map((_, index) => (
+                <tr key={index}>
+                  <td><Skeleton /></td>
+                  <td><Skeleton /></td>
+                  <td><Skeleton /></td>
+                  <td><Skeleton /></td>
+                  <td><Skeleton /></td>
+                  <td><Skeleton /></td>
+                  <td><Skeleton /></td>
+                  <td><Skeleton width={80} height={25} /></td>
+                </tr>
+              ))
+              )
+              }
+              {!loading && leaverequests.length === 0 && (
+              <tr>
+                <td colSpan={TABLE_HEADERS.length} style={{textAlign: 'center'}}>
+                  Oops, looks like there are no leave requests to show.
+                </td>
+              </tr>
+              )}
+              {
+                !loading && leaverequests.map((request, index) => (
                 <tr key={request.id || request.tempId}>
                   <td>{index + 1}</td>
                   <td>{request.user_id}</td>
@@ -437,7 +466,8 @@ function ScholarLeaveApplication() {
                     </span>
                   </td>
                 </tr>
-              ))}
+              ))
+            }
           </tbody>
         </Table>
       </div>
