@@ -19,7 +19,7 @@ class endorseModal extends Component {
       const {setData} = this.props
       // Trigger loading state to true before the API call
       this.props.setIsLoadingV2(true);
-  
+      toast.success("Applicant Rejected")
       API.request('scholar_request/reject', {
           id: setData.id,
       }, response => {
@@ -27,11 +27,15 @@ class endorseModal extends Component {
           this.props.setIsLoadingV2(false);
   
           if (response && response.data) {
+            toast.success("Applicant Rejected")
+
               this.props.onHide();
               this.props.refreshList();
           } else {
               console.log('error on retrieve');
           }
+          this.props.setIsLoadingV2(true);
+
       }, error => {
           // Trigger loading state to false in case of an error
           this.props.setIsLoadingV2(false);

@@ -8,6 +8,7 @@ import Breadcrumbs from "../generic/breadcrumb";
 import "./style.scss";
 import API from 'services/Api';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 const TABLE_HEADERS = ["Scholar ID", "Last Name", "First Name", "Program", "Actions"];
 
@@ -47,7 +48,13 @@ const ScholarList = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedScholar, setSelectedScholar] = useState(null);
   const [selectedScholarId, setSelectedScholarId] = useState(null);
-
+  
+  // Redux dispatchers
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const setIsLoadingV2 = (status) => {
+    dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
+  };
   const fetchScholars = async (semester, year) => {
     setLoading(true);
     try {

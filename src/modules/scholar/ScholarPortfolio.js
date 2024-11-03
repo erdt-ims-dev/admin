@@ -9,6 +9,8 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
 import "./style.scss";
+import { useDispatch, useSelector } from 'react-redux';
+
 const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type", "Action"];
 
 function ScholarPortfolio() {
@@ -37,7 +39,12 @@ function ScholarPortfolio() {
     const [editShow, setEditShow] = useState(false); // State for edit modal
     const [deleteShow, setDeleteShow] = useState(false); // State for delete modal
     const studyFile = useRef(null); // Reference for file input in edit modal
-
+    // Redux dispatchers
+    const state = useSelector((state) => state);
+    const dispatch = useDispatch();
+    const setIsLoadingV2 = (status) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
+    };
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -112,6 +119,7 @@ function ScholarPortfolio() {
     const createNewPortfolio = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setIsLoadingV2(true);
         if (formValidation()) {
             const formData = new FormData();
             formData.append('scholar_id', newPortfolios.id);
@@ -130,19 +138,26 @@ function ScholarPortfolio() {
                     toast.error('Error creating portfolio');
                 }
                 setIsLoading(false);
+                setIsLoadingV2(false);
+
             }, error => {
                 toast.error('Error creating portfolio');
                 setIsLoading(false);
+                setIsLoadingV2(false);
+
             });
         } else {
             toast.warning('Please fill in all required fields');
             setIsLoading(false);
+            setIsLoadingV2(false);
+
         }
     };
     const editPortfolio = async (e) => {
       // e.preventDefault();
       setIsLoading(true);
-      
+      setIsLoadingV2(true);
+
       const formData = new FormData();
       formData.append('id', selectedPortfolio.id);
       formData.append('scholar_id', newPortfolios.id);
@@ -163,31 +178,42 @@ function ScholarPortfolio() {
                   toast.error('Error updating portfolio');
               }
               setIsLoading(false); // End loading
+              setIsLoadingV2(false);
+
               setEditShow(false);  // Close edit modal
           }, 
           (error) => {
               console.log(error);
               toast.error('Error updating portfolio');
+              setIsLoadingV2(false);
+
               setIsLoading(false);
           }
       );
   };
   const deletePortfolio = async () => {
     setIsLoading(true); 
+    setIsLoadingV2(true);
 
     // Call API to delete the selected portfolio
     API.request(
         'scholar_portfolio/delete',
         { id: selectedPortfolio.id },
         (response) => {
-            console.log('Data deleted successfully');
+            toast.success('Entry deleted successfully');
             // Filter out the deleted portfolio from the local state
             setPortfolios(portfolios.filter(portfolio => portfolio.id !== selectedPortfolio.id));
             setIsLoading(false); 
+            setIsLoadingV2(false);
+
         },
         (error) => {
+            toast.error('There was an error in deleting the entry');
+
             console.error(error);
             setIsLoading(false); 
+            setIsLoadingV2(false);
+
         }
     );
 

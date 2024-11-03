@@ -7,6 +7,7 @@ import { toast, ToastContainer, Slide } from 'react-toastify';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
 
 const TABLE_HEADERS = ["#", "Midterm Assessment", "Final Assessment", "Status", "Action"];
 
@@ -28,6 +29,12 @@ function ScholarTasks() {
 
     const midtermInput = useRef(null);
     const finalInput = useRef(null);
+    // Redux dispatchers
+    const state = useSelector((state) => state);
+    const dispatch = useDispatch();
+    const setIsLoadingV2 = (status) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
+    };
 
     const handleModalShow = (type, task = null) => {
         setSelectedTask(task);
@@ -39,6 +46,7 @@ function ScholarTasks() {
 
     const fetchTasks = async () => {
         setIsLoading(true);
+        setIsLoadingV2(true)
         API.request(
             'scholar_tasks/retrieveMultipleByParameter',
             { col: 'scholar_id', value: scholar.id },
@@ -46,14 +54,18 @@ function ScholarTasks() {
                 if (response && response.data) {
                     setTasks(response.data);
                 } else {
-                    toast.error('Error fetching tasks');
+                    toast.error('An error occurred. Please try again');
                 }
                 setIsLoading(false);
+                setIsLoadingV2(false)
+
             },
             error => {
                 console.error(error);
                 toast.error('Error fetching tasks');
                 setIsLoading(false);
+                setIsLoadingV2(false)
+
             }
         );
     };
@@ -79,6 +91,8 @@ function ScholarTasks() {
     }
     if (!formValidation()) return;
       setIsLoading(true);
+      setIsLoadingV2(true)
+
       const formData = new FormData();
       formData.append('scholar_id', newTask.id);
       formData.append('midterm_assessment', midtermInput.current.files[0]);
@@ -96,13 +110,17 @@ function ScholarTasks() {
               toast.success('Task created successfully');
               setShowModal({ ...showModal, add: false });
           } else {
-              toast.error('Error creating task');
+              toast.error('An error occurred. Please try again');
           }
           setIsLoading(false);
+          setIsLoadingV2(false)
+
       }, error => {
           console.error(error);
           toast.error('Error creating task');
           setIsLoading(false);
+          setIsLoadingV2(false)
+
       });
   };
   
@@ -110,6 +128,7 @@ function ScholarTasks() {
     const editTask = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setIsLoadingV2(true)
 
         const formData = new FormData();
         formData.append('id', selectedTask.id);
@@ -126,27 +145,37 @@ function ScholarTasks() {
                 toast.error('Error updating task');
             }
             setIsLoading(false);
+            setIsLoadingV2(false)
+
             setShowModal({ ...showModal, edit: false });
         }, error => {
             console.error(error);
             toast.error('Error updating task');
             setIsLoading(false);
+            setIsLoadingV2(false)
+
         });
     };
 
     const deleteTask = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setIsLoadingV2(true)
+
         console.log('Deleting Task:', selectedTask);
         API.request('scholar_tasks/delete', { id: selectedTask.id }, () => {
             setTasks(tasks.filter(task => task.id !== selectedTask.id));
             toast.success('Task deleted successfully');
             setIsLoading(false);
+            setIsLoadingV2(false)
+
             setShowModal({ ...showModal, delete: false });
         }, error => {
             console.error(error);
             toast.error('Error deleting task');
             setIsLoading(false);
+            setIsLoadingV2(false)
+
         });
     };
 

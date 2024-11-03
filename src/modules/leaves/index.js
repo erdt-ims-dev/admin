@@ -5,7 +5,8 @@ import API from 'services/Api'
 import { v4 as uuidv4 } from 'uuid';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // Toast notification
 const TABLE_HEADERS = ["#", "Scholar ID", "Leave Start", "Leave End", "Leave Letter", "Status", "Comments", ""];
 
 function ScholarLeaveApplication() {
@@ -23,7 +24,19 @@ function ScholarLeaveApplication() {
   const letterFile = useRef(null);
   const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setError([]);
+    setValidation({
+      id: '',
+      leave_start: '',
+      leave_end: '',
+      leave_letter: '',
+      status: 'pending',
+      comment: '',
+      comment: ''
+    });
+    setShow(false);
+  };
   const handleShow = () => setShow(true);
 
   //error modal
@@ -91,13 +104,17 @@ function ScholarLeaveApplication() {
       setLoading(false);
     }, error => {
       console.log(error);
+      setLoading(false);
+
     });
   }
 
   const approveRequest = (request) => {
     //set the selected request 
+    setLoading(true);
+
     request.status = "approved";
-    
+
     //console.log(request);
     setSelectedRequest(request);
     //change status to pending  
@@ -114,13 +131,19 @@ function ScholarLeaveApplication() {
     API.uploadFile('leave_application/updateOne', formData, response => {
       if (!response.data.error) {
         // console.log('Data updated successfully', response.data);
+        toast.success("Data updated successfully")
         fetchRequests();
       } else {
-        console.log(response.data.error);
+        // console.log(response.data.error);
+        toast.error("An error has occurred while updating the data")
         setError(response.data.error);
         errorShow();
       }
+      setLoading(false);
+
     }, error => {
+      setLoading(false);
+      toast.error("Something went wrong. Please try again")
       console.log(error)
     })
   }
@@ -146,6 +169,8 @@ function ScholarLeaveApplication() {
   //create
   const createRequest = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     let validated = formValidation();
     if (validated) {
       const formData = new FormData();
@@ -159,20 +184,32 @@ function ScholarLeaveApplication() {
       API.uploadFile('leave_application/create', formData, response => {
         if (!response.data.error) {
           // console.log('response: ', response);
+          
           const newTask = {...response.data, tempId: uuidv4() };
           setLeaveRequests(prevTasks => [...prevTasks, newTask]);
           fetchRequests();
           setShow(false);
+          toast.success("Request created successfully")
         } else {
-          console.log(response.data.error);
+          // console.log(response.data.error);
+          toast.error("Something went wrong. Please try again")
+
           setError(response.data.error);
           handleShow();
         }
+        setLoading(false);
+
       }, error => {
-        console.log(error)
+        // console.log(error)
+        toast.error("Something went wrong, please try again")
+
+        setLoading(false);
+
       });
     } else {
       console.log('not valid');
+      toast.info("All fields must be filled")
+
       setShow(true); // Ensure the modal stays open
     }
   };
@@ -180,6 +217,8 @@ function ScholarLeaveApplication() {
     //edit 
     const editRequest = async (e) => {
       e.preventDefault();
+      setLoading(true);
+
       const formData = new FormData();
       formData.append('user_id', selectedRequest.user_id);
       formData.append('id', selectedRequest.id);
@@ -191,13 +230,22 @@ function ScholarLeaveApplication() {
       API.uploadFile('leave_application/updateOne', formData, response => {
         if (!response.data.error) {
           // console.log('Data updated successfully', response.data);
+          toast.success("Information updated successfully")
+
           fetchRequests();
         } else {
+          toast.error("Something went wrong. Please try again")
           setError(response.data.error);
           errorShow();
         }
+        setLoading(false);
+
       }, error => {
+        toast.error("Something went wrong. Please try again")
+
         console.log(error)
+        setLoading(false);
+
       })
       //console.log(selectedPortfolio);
       setEditRequestShow(false);
@@ -206,6 +254,8 @@ function ScholarLeaveApplication() {
     //delete
     const deleteRequest = async (e) => {
       e.preventDefault();
+      setLoading(true);
+
       //console.log(selectedRequest.id);
       API.request('leave_application/updateOne', {
         id: selectedRequest.id,
@@ -216,9 +266,16 @@ function ScholarLeaveApplication() {
         comment_id: "",
       }, response => {
         // console.log('Data deleted successfully');
+        toast.successful("Deleted successfully")
+
+        setLoading(false);
+
         fetchRequests();
       }, error => {
-        console.log(error)
+        setLoading(false);
+        toast.error("Something went wrong. Please try again")
+
+        // console.log(error)
       })
       //console.log(selectedPortfolio);
       //to see the changes in the table after and close the modal
@@ -262,7 +319,7 @@ function ScholarLeaveApplication() {
         </Modal.Header>
         <Modal.Body>
         <Form onSubmit={createRequest}>
-          <p style={{marginLeft:'1rem', marginBottom:'1rem', fontStyle:'italic'}}>please fill all the fields below</p>
+          {/* <p style={{marginLeft:'1rem', marginBottom:'1rem', fontStyle:'italic'}}>please fill all the fields below</p> */}
           <Form.Group controlId="formStudyName">
               <Form.Label>Scholar ID:</Form.Label>
               <Form.Control type="text" placeholder="Enter ID" onChange={(event) => { handleInputChange('id', event)}}/>

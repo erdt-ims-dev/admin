@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
+import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify'; // Toast notification
 import API from 'services/Api';
 import { v4 as uuidv4 } from 'uuid';
 import Stack from '../generic/spinnerV2';
-import 'react-toastify/dist/ReactToastify.css';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useDispatch, useSelector } from 'react-redux';
 const TABLE_HEADERS = ["#", "Leave Start", "Leave End", "Leave Letter", "Status", "Comment", "Action"];
 
 function ScholarLeaveApplication() {
@@ -24,7 +25,12 @@ function ScholarLeaveApplication() {
     comment_id: 'no comment',
   });
   const letterFile = useRef(null);
-
+  // Redux dispatchers
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const setIsLoadingV2 = (status) => {
+    dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
+  };
   //error modal
   const [validation, setValidation] = useState({ 
     id: true,
@@ -150,7 +156,7 @@ const validateField = (fieldName, value) => {
   //create
   const createRequest = async (e) => {
     e.preventDefault();
-    setIsLoading(true); 
+    setIsLoadingV2(true);
     // let validated = formValidation();
     // if (validated) {
       // console.log(newLeaveRequest)
@@ -177,8 +183,10 @@ const validateField = (fieldName, value) => {
           setError(response.data.error);
           errorShow();
         }
-        setIsLoading(false); 
+        setIsLoadingV2(false); 
       }, error => {
+        toast.error("Something went wrong. Please try again");
+        setIsLoadingV2(false);
         console.log(error)
       });
     }
@@ -187,6 +195,7 @@ const validateField = (fieldName, value) => {
       // console.log('not valid');
       toast.error("All fields must be filled");
       setShow(true); // Ensure the modal stays open
+      setIsLoadingV2(false);
       setIsLoading(false);
     }
   };
@@ -195,6 +204,8 @@ const validateField = (fieldName, value) => {
     const editRequest = async (e) => {
       e.preventDefault();
       setIsLoading(true); 
+      setIsLoadingV2(true);
+
       const formData = new FormData();
       // console.log(selectedRequest);
       formData.append('user_id', newLeaveRequest.id);
@@ -213,11 +224,13 @@ const validateField = (fieldName, value) => {
           toast.error("Failed to update leave request");
         }
         setIsLoading(false);
+        setIsLoadingV2(false);
 
       }, error => {
         console.log(error)
         toast.error("Error occurred while updating leave request");
         setIsLoading(false);
+        setIsLoadingV2(false);
 
       })
       setEditRequestShow(false);
@@ -227,6 +240,8 @@ const validateField = (fieldName, value) => {
     const deleteRequest = async (e) => {
       e.preventDefault();
       setIsLoading(true); 
+      setIsLoadingV2(true);
+
       // console.log(selectedRequest.id);
       API.request('leave_application/delete', {
         id: selectedRequest.id,
@@ -238,10 +253,14 @@ const validateField = (fieldName, value) => {
           toast.error("Failed to delete leave request");
         }
         setIsLoading(false);
+        setIsLoadingV2(false);
+
       }, error => {
         console.log(error)
         toast.error("Error occurred while deleting leave request");
         setIsLoading(false);
+        setIsLoadingV2(false);
+
       })
       //console.log(selectedPortfolio);
       //to see the changes in the table after and close the modal
@@ -443,6 +462,7 @@ const validateField = (fieldName, value) => {
                 <th key={header}>{header}</th>
               ))}
             </tr>
+            
           </thead>
           <tbody>
             {isLoading && (
@@ -451,6 +471,8 @@ const validateField = (fieldName, value) => {
                   <Skeleton count={5} height={30} />
                 </td>
               </tr>
+              
+
             )}
             {!isLoading && leaverequests.length === 0 && (
               <tr>
