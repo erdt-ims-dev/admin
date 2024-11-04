@@ -240,8 +240,8 @@ class Accounts extends Component {
       </InputGroup>
       </Box>
           {/* with scroll */}
-          {/* <div className="table-container" style={{ overflowY: 'auto', maxHeight: '600px' }}>
-          */}
+          {/* <div className="table-container" style={{ overflowY: 'auto', maxHeight: '600px' }}> */}
+         
           <div className="table-container" style={{}}> 
 
             <TableComponent columns={columns} data={account_list} isLoading={tableLoader}/>

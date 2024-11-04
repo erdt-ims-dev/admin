@@ -141,10 +141,11 @@ class Announcements extends Component {
      
     // State
     getList(callback){
-      const { currentPage, itemsPerPage } = this.state; // Get current page and items per page
+      const { currentPage, itemsPerPage, } = this.state; // Get current page and items per page
       const offset = currentPage * itemsPerPage; // Calculate offset
       API.request('admin_system_message/paginate', { offset, 
-        limit: itemsPerPage, 
+        offset, 
+        limit: itemsPerPage,
       }, response => {
           if (response && response.data) {
               this.setState({
@@ -173,9 +174,11 @@ class Announcements extends Component {
           }
       });
   }
-  handlePageClick = (selectedPage) => {
-      this.getList(selectedPage.selected); // Fetch data for the selected page
-  };
+  handlePageClick = (data) => {
+    const selectedPage = data.selected; // Get the selected page index
+    this.setState({ currentPage: selectedPage, tableLoader: true }, () => {
+        this.getList(); // Fetch data for the selected page
+    });  };
   componentDidMount(){
       this.getList(() => {
           // This function will be called after getList successfully retrieves data
