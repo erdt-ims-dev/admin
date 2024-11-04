@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import '../style.css';
 import API from 'services/Api'
+import 'react-toastify/dist/ReactToastify.css';
+import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+
+import { toast } from 'react-toastify'; // Toast notification
 class EditModal extends Component {
     constructor(props) {
         super(props);
@@ -21,19 +26,27 @@ class EditModal extends Component {
     handleSubmit(){
         const {setData} = this.props
         const {newType} = this.state
+        this.props.setIsLoadingV2(true)
         API.request('user/update', {
             id: setData.id,
             col: 'account_type',
             value: newType
         }, response => {
           if (response && response.data) {
+            toast.success("Account Updated")
             this.props.onHide()
             this.props.refresh()
           }else{
-            console.log('error on retrieve')
+            toast.error('An error occurred. Please try again')
           }
+          this.props.setIsLoadingV2(false)
+
         }, error => {
-          console.log(error)
+        //   console.log(error)
+        toast.error('An error occurred. Please try again')
+
+          this.props.setIsLoadingV2(false)
+
         })
     }
     render() {
@@ -87,5 +100,13 @@ class EditModal extends Component {
         );
     }
 }
+const mapStateToProps = (state) => ({ state });
 
-export default EditModal
+const mapDispatchToProps = (dispatch) => ({
+  setIsLoading: (status) => dispatch({ type: 'SET_IS_LOADING', payload: { status } }),
+  setIsLoadingV2: (status) => dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } }),
+  userActivity: () => dispatch({ type: 'USER_ACTIVITY' }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditModal));
+// export default EditModal

@@ -14,14 +14,19 @@ import EditModal from './editModal/index';
 import DeleteModal from './deleteModal/index';
 import API from 'services/Api';
 import CreateModal from './createModal/index';
-
-
+import ReactPaginate from 'react-paginate';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // Toast notification
 
 class Announcements extends Component {
     constructor(props) {
       super(props);
       this.state = {
         announcement_list: [],
+        currentPage: 0, // Track current page
+        pageCount: 0, // Track total number of pages
+        itemsPerPage: 10, // Items per page
+        totalEntries: 0,
         showView: false,
         showDelete: false,
         showEdit: false,
@@ -136,11 +141,17 @@ class Announcements extends Component {
      
     // State
     getList(callback){
-      API.request('admin_system_message/retrieveAll', {
+      const { currentPage, itemsPerPage } = this.state; // Get current page and items per page
+      const offset = currentPage * itemsPerPage; // Calculate offset
+      API.request('admin_system_message/paginate', { offset, 
+        limit: itemsPerPage, 
       }, response => {
           if (response && response.data) {
               this.setState({
-                  announcement_list: response.data
+                  announcement_list: response.data.items,
+                  pageCount: Math.ceil(response.data.total / itemsPerPage),
+                  tableLoader: false,
+                  totalEntries: response.data.total, // Set total entries
               }, () => {
                   // Call the callback function after setting the state
                   if (typeof callback === 'function') {
@@ -162,7 +173,9 @@ class Announcements extends Component {
           }
       });
   }
-  
+  handlePageClick = (selectedPage) => {
+      this.getList(selectedPage.selected); // Fetch data for the selected page
+  };
   componentDidMount(){
       this.getList(() => {
           // This function will be called after getList successfully retrieves data
@@ -173,7 +186,7 @@ class Announcements extends Component {
   }
     
     render() {
-      const { columns, announcement_list, showEdit, showDelete, showView, setData, showCreate, tableLoader } = this.state;
+      const { pageCount, totalEntries, itemsPerPage,columns, announcement_list, showEdit, showDelete, showView, setData, showCreate, tableLoader, totalPages, currentPage } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -197,7 +210,20 @@ class Announcements extends Component {
 
       <div className="table-container">
         <TableComponent columns={columns} data={announcement_list} isLoading={tableLoader}/>
-        
+        {totalEntries > itemsPerPage && ( // Conditionally render pagination
+                        <ReactPaginate
+                            previousLabel={'Previous'}
+                            nextLabel={'Next'}
+                            breakLabel={'...'}
+                            breakClassName={'break-me'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                        />
+                    )}
       </div>
       <ViewModal
       setData={setData}
