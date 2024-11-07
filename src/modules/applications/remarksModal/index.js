@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import API from 'services/Api'
+import { toast } from 'react-toastify'; // Import toast from react-toastify
+
 class RemarksModal extends Component {
  constructor(props) {
     super(props);
@@ -30,16 +32,20 @@ class RemarksModal extends Component {
     // Trigger loading state to false after the API call is completed
     this.props.setIsLoadingV2(false);
     if (response && response.comments) {
+      toast.error('Comment Successfully Added.')
       this.props.onHide()
       this.props.refreshList()
       this.setState({
         message: ''
       })
     }else{
+      toast.error('Something went wrong. Please try again.')
       console.log('error on retrieve')
     }
   }, error => {
     this.props.setIsLoadingV2(false);
+    toast.error('Something went wrong. Check your connection and try again.')
+
     console.log(error);
   })
 }

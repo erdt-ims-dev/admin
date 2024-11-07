@@ -10,6 +10,8 @@
 .files-container.expanded {
     opacity: 1;
     transform: scaleY(1);
+    margin-bottom: 25px;
+
 }
 .imageCircle{
     display: flex;

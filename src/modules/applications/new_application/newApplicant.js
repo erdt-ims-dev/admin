@@ -14,6 +14,8 @@ import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg';
 import { Button } from 'react-bootstrap';
 import API from 'services/Api';
+import { faUpload, faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const files = [
   {
@@ -99,6 +101,10 @@ class newApplicant extends Component {
       let fileURL = null;
   
       if (file) {
+        if (file.type !== "application/pdf") {
+          toast.error("Only PDF files are allowed"); // Display an error message
+          return;
+        }
         fileURL = URL.createObjectURL(file);
         this.setState(
           (prevState) => ({
@@ -196,6 +202,15 @@ class newApplicant extends Component {
     
       uploadFile() {
         const { selectedFiles, user } = this.state;
+        // Check if all required files are uploaded
+        const missingFiles = files.filter(item => !selectedFiles[item.alias] || !selectedFiles[item.alias].file);
+
+        if (missingFiles.length > 0) {
+            // Show an error toast notification for missing files
+            const missingFileTitles = missingFiles.map(file => file.title).join(', ');
+            toast.error(`Please upload the following files: ${missingFileTitles}`);
+            return;
+        }
         let formData = new FormData();
         this.props.setIsLoadingV2(true); // Start loading
     
@@ -233,11 +248,11 @@ class newApplicant extends Component {
             <div className="containerBlue" style={{ marginTop: "1%", marginBottom: "1%" }}>
               <Container>
                 <Row className="sectionHeader">
-                  <p>General Information</p>
+                  <p style={{fontWeight: "bold"}}>General Information</p>
                 </Row>
                 <hr className="break" />
     
-                <Row className="Row">
+                <Row className="Row" style={{alignItems: "center"}}>
                   <Col className="imageCircle">
                     <img className="circle" src={details ? details.profile_picture : placeholder} alt="profile" />
                   </Col>
@@ -267,9 +282,9 @@ class newApplicant extends Component {
                     />
                     <p className="errorText">{errorMessage}</p>
                   </Col>
-                  <Col>
+                  {/* <Col>
                     <InputFieldV3 id={3} type={"field"} label={"Type"} inject={"Applicant"} placeholder={"Applicant"} locked={true} />
-                  </Col>
+                  </Col> */}
                 </Row>
     
                 {/* Notification */}
@@ -277,7 +292,7 @@ class newApplicant extends Component {
                 {errorMessage === "" && (
                   <>
                     <Row className="sectionHeader">
-                      <p>File Uploads</p>
+                      <p style={{fontWeight: "bold"}}>Required File Uploads</p>
                     </Row>
                     {files.map((item, index) => (
                       <div key={index}>
@@ -287,7 +302,19 @@ class newApplicant extends Component {
                           </Col>
                           <Col md={4}></Col>
                           <Col md={4} className="switch">
-                            <Col>{selectedFiles[item.alias] && <span className="icon" onClick={() => this.viewFile(item.alias)}>Preview</span>}</Col>
+                            <Col>
+                            {selectedFiles[item.alias] && 
+                            (
+                              <div class="contentButton link">
+                                <button onClick={() => this.viewFile(item.alias)} style={{display: 'flex', alignItems: 'center'}}>
+                                <FontAwesomeIcon icon={faMagnifyingGlass} style={{marginRight: 5}} />
+                                <span className="upload-text">Preview</span>
+                              </button>
+                              </div>
+                            )
+                            // <span className="icon" onClick={() => this.viewFile(item.alias)}>Preview</span>)
+                            }
+                            </Col>
                             <Col>
                               <input
                                 type="file"
@@ -295,7 +322,13 @@ class newApplicant extends Component {
                                 onChange={(event) => this.handleFileChange(event, item.alias)}
                                 ref={(input) => { this.fileInputs = { ...this.fileInputs, [item.alias]: input }; }}
                               />
-                              <span className="icon" onClick={() => this.handleUpdateClick(item.alias)}>Upload</span>
+                              <div class="contentButton link">
+                              <button onClick={() => this.handleUpdateClick(item.alias)} style={{display: 'flex', alignItems: 'center'}}>
+                                <FontAwesomeIcon icon={faUpload} style={{marginRight: 5}} />
+                                <span className="upload-text">Upload</span>
+                              </button>
+                              </div>
+                              {/* <span className="icon" onClick={() => this.handleUpdateClick(item.alias)}>Upload</span> */}
                             </Col>
                           </Col>
                         </Row>

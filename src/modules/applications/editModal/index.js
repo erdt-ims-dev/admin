@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import 'modules/applications/applications.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {  faChevronDown, faChevronUp, faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
+import {  faChevronDown, faChevronUp, faFilePdf, faMagnifyingGlass, faPen, } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputFieldV4 from 'modules/generic/inputV4';
 import InputFieldV3 from 'modules/generic/inputV3';
@@ -14,7 +14,8 @@ import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
 import { connect } from 'react-redux'; // Import connect from react-redux
-
+import './style.css'
+import { toast } from 'react-toastify'; // Import toast from react-toastify
 
 const files = [
     {
@@ -87,7 +88,12 @@ class EditModal extends Component {
             fileToUpload: null,
             overwriteModal: false,
             discardModal: false,
-            isCollapsed: true
+            isCollapsed: true,
+
+            // added alias mapping
+            aliasToTitle: {},
+            // Modified state checker
+            hasChanges: false,
         };
         
       }
@@ -96,6 +102,11 @@ class EditModal extends Component {
         if (setData && setData!== null) {
             this.getComment();
         }
+        const aliasToTitle = {};
+        files.forEach(file => {
+            aliasToTitle[file.alias] = file.title;
+        });
+        this.setState({ aliasToTitle });
     }
     
     componentDidUpdate(prevProps) {
@@ -166,6 +177,7 @@ class EditModal extends Component {
                     ...prevState.selectedFiles,
                     [alias]: { file, fileURL },
                 },
+                hasChanges: true,
             }), () => {
                 // Optionally, you can close the file selection window here
             });
@@ -191,20 +203,33 @@ class EditModal extends Component {
             })
         }
         uploadFile() {
-            const { selectedFiles } = this.state;
+            if (!this.state.hasChanges) {
+                toast.warn("No changes made.");
+                return;
+            }
+            const { selectedFiles, aliasToTitle } = this.state;
             const { setData } = this.props;
             let formData = new FormData();
         
             // Append user_id to the FormData
             formData.append('user_id', setData.user_id);
         
-            // Loop through each file and append it to the FormData
-            Object.entries(selectedFiles).forEach(([field, fileData]) => {
+            // Loop through each file and check if it's a PDF
+            for (const [field, fileData] of Object.entries(selectedFiles)) {
                 if (fileData && fileData.file) {
-                    // Append each file with its field name as the key
-                    formData.append(field, fileData.file);
+                    const file = fileData.file;
+
+                    // Check if the file type is PDF
+                    if (file.type !== 'application/pdf') {
+                        const fieldTitle = aliasToTitle[field] || field; // Use title from aliasToTitle, fallback to alias
+                        toast.error(`"${file.name}" is not a PDF file. Please upload PDF files only in the "${fieldTitle}" field.`);
+                        return; // Stop the function if a non-PDF file is found
+                    }
+                    
+                    // Append each valid file with its field name as the key
+                    formData.append(field, file);
                 }
-            });
+            }
         
             // Set loading to true before starting the API call
             this.props.setIsLoadingV2(true);
@@ -215,17 +240,17 @@ class EditModal extends Component {
                 this.props.setIsLoadingV2(false);
         
                 if (response && response.data) {
-                    alert("File(s) uploaded to server");
+                    toast.success("File(s) uploaded successfully!");
                     this.handleDiscard();
                     this.props.refreshList();
                     this.props.onHide();
                 } else {
-                    alert("There has been an error uploading your files to the server. Please try again");
+                    toast.error("Error uploading files to the server. Please try again.");
                     this.handleDiscard();
                 }
             }, error => {
-                // Set loading to false in case of an error
                 this.props.setIsLoadingV2(false);
+                toast.error("Upload failed. Check your connection or try again.");
                 console.log(error);
             });
         }
@@ -266,7 +291,7 @@ class EditModal extends Component {
                // Display the file using the fileURL
                window.open(fileURL, '_blank');
             } else {
-               alert("No file selected for viewing.");
+                toast.warn("No file selected for viewing.");
             }
            };
 
@@ -299,12 +324,12 @@ class EditModal extends Component {
 
         </Row>
 
-        <Row className='Row'>
+        <Row className='Row' style={{alignItems:'center'}}>
             <Col className='imageCircle'>
                 <img className='circle' src={placeholder}></img>
             </Col>
             <Col className='imageText'>
-                <p className=''>{setData ?  `${setData.first_name} ${setData.middle_name} ${setData.last_name}, ${setData.program}` : ''}</p>
+            <p className=''>{setData ? `${setData.first_name} ${setData.middle_name !== 'null' ? setData.middle_name : ''} ${setData.last_name}, ${setData.program}` : ''}</p>
             </Col>
         </Row>
         <Row className='Row'>
@@ -312,7 +337,7 @@ class EditModal extends Component {
             <InputFieldV4
                 id={3}
                 type={'field'}
-                label={'Staff Comment'}
+                label={'Latest Staff Comment'}
                 inject={this.state.comment}
                 locked={true}
                 active={false}
@@ -348,12 +373,20 @@ class EditModal extends Component {
                             <Col  className='switch'>
                             {fileUrl && (
                                 <>
-                                <span 
+                                <div class="contentButton link">
+                                        <button onClick={() => {
+                                        window.open(fileUrl, '_blank');
+                                        }} style={{display: 'flex', alignItems: 'center'}}>
+                                        <FontAwesomeIcon icon={faFilePdf} style={{marginRight: 5}} />
+                                        <span className="upload-text">Submitted File</span>
+                                        </button>
+                                    </div>
+                                {/* <span 
                                     className='icon'
                                     onClick={() => {
                                         window.open(fileUrl, '_blank');
                                     }}
-                                >View Server File</span>
+                                >View Server File</span> */}
                                
                                 </>
                                 
@@ -361,7 +394,19 @@ class EditModal extends Component {
                             
                             </Col>
                             <Col className='switch'>
-                                {selectedFiles[item.alias] ? (<span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>) : ""}
+                                {selectedFiles[item.alias] ? 
+                                (
+                                    <div class="contentButton link">
+                                        <button onClick={() => this.viewFile(item.alias)} style={{display: 'flex', alignItems: 'center'}}>
+                                        <FontAwesomeIcon icon={faMagnifyingGlass} style={{marginRight: 5}} />
+                                        <span className="upload-text">Preview File</span>
+                                        </button>
+                                    </div>
+                                    // <span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>
+                                ) 
+                                    : ""
+                                    
+                                }
 
                             </Col>
                             <Col className='switch'>
@@ -373,11 +418,17 @@ class EditModal extends Component {
                                     this.fileInputs[item.alias] = input;
                                 }}
                             />
-                                <span 
+                            <div class="contentButton link">
+                                <button onClick={() => this.handleUpdateClick(item.alias)} style={{display: 'flex', alignItems: 'center'}}>
+                                <FontAwesomeIcon icon={faPen} style={{marginRight: 5}} />
+                                <span className="upload-text">Update File</span>
+                                </button>
+                            </div>
+                                {/* <span 
                                 className='icon'
                                 onClick={() => this.handleUpdateClick(item.alias)}
                                 >Update
-                                </span>
+                                </span> */}
                             </Col>
 
                         </Row>
@@ -427,7 +478,7 @@ class EditModal extends Component {
                 discardModal: true
             })
             }}>Discard Changes</Button>
-        <Button variant='primary' onClick={()=>{this.uploadFile()}}>Save Changes</Button>
+        <Button variant='primary' onClick={()=>{this.uploadFile()}} disabled={!this.state.hasChanges}>Save Changes</Button>
       </Modal.Footer>
     </Modal>
                     

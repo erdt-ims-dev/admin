@@ -165,6 +165,14 @@ class Applications extends Component {
       },() => {
      })
     }
+
+    handlePageClick = (data) => {
+      const selectedPage = data.selected;
+      this.setState({ currentPage: selectedPage }, () => {
+          this.getList(); // Fetch the new data based on the selected page
+      });
+  };
+  
     // Form handling
     
     

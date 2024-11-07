@@ -6,6 +6,7 @@ import {  faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
 import { connect } from 'react-redux';
+import { toast } from 'react-toastify'; // Import toast from react-toastify
 
 class endorseModal extends Component {
     constructor(props) {
@@ -27,14 +28,18 @@ class endorseModal extends Component {
           this.props.setIsLoadingV2(false);
   
           if (response && response.data) {
+              toast.success('Applicant Successfully Rejected')
+
               this.props.onHide();
               this.props.refreshList();
           } else {
-              console.log('error on retrieve');
+            toast.error('Something went wrong. Try again.')
           }
       }, error => {
           // Trigger loading state to false in case of an error
           this.props.setIsLoadingV2(false);
+          toast.error('Something went wrong. Check your connection and try again.')
+
           console.log(error);
       });
   }
