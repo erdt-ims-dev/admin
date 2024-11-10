@@ -9,8 +9,10 @@ import "./style.scss";
 import API from 'services/Api';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const TABLE_HEADERS = ["Scholar ID", "Last Name", "First Name", "Program", "Actions"];
+
 
 const SEMESTER_OPTIONS = [
   { label: "1st semester", value: "1st semester" },
@@ -45,9 +47,12 @@ const ScholarList = () => {
   const [selectedSemester, setSelectedSemester] = useState(defaultSemester);
   const [selectedYear, setSelectedYear] = useState(defaultYear);
   const [show, setShow] = useState(false);
+  const [showv2, setShowv2] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedScholar, setSelectedScholar] = useState(null);
   const [selectedScholarId, setSelectedScholarId] = useState(null);
+
+  const history = useHistory();
   
   // Redux dispatchers
   const state = useSelector((state) => state);
@@ -99,6 +104,34 @@ const ScholarList = () => {
   const handleShow = (scholar) => {
     setSelectedScholar(scholar);
     setShow(true);
+  };
+
+  const handleShowv2 = (scholar) => {
+
+    if (selectedScholarId === scholar) {
+      console.log("yes");
+      setSelectedScholar(null); // Close modal if the same scholar is clicked
+      setSelectedScholarId(null); // Open modal for the selected scholar
+    } else {
+      console.log("no");
+      setSelectedScholarId(scholar); // Open modal for the selected scholar
+      setSelectedScholar(scholar); // Close modal if the same scholar is clicked
+      console.log(selectedScholarId);
+    }
+
+    console.log("test: " + showv2)
+    setSelectedScholar(scholar);
+    setShowv2(value => !value);
+  };
+
+  const closeShowv2 = (scholar) => {
+    console.log("scholar: " + scholar.id)
+    setSelectedScholarId(scholar.id); // Open modal for the selected scholar
+    setSelectedScholar(scholar.id); // Close modal if the same scholar is clicked
+    console.log("teselectedScholarst: " + selectedScholar)
+    console.log("selectedScholarId: " + selectedScholarId)
+    // setShowv2(false);
+    setShowv2(value => !value);
   };
 
   const handleClose = () => setShow(false);
@@ -175,8 +208,22 @@ const ScholarList = () => {
                   <td>{scholar.account_details?.last_name}</td>
                   <td>{scholar.account_details?.first_name}</td>
                   <td>{scholar.account_details?.program}</td>
-                  <td style={{ textAlign: "center" }}>
-                  <span className='link' onClick={() => handleShow(scholar)}>
+                  <td style={{ textAlign: "center", position: "relative"  }}>
+                    {/* <span className='link' onClick={() => handleShow(scholar)}> */}
+                    {selectedScholarId === scholar.id && (
+                        <div className="scholar-modal" style={{ textAlign: "start"}}>
+                        <p onClick={() => history.push({
+                          pathname: `/scholars/${selectedScholar?.user_id}/scholar_details`,
+                          state: selectedScholarId
+                        })}>
+                        Scholar Details</p>
+                          {/* <p onClick={() => closeShowv2(scholar.id)}>Scholar Tasks</p> */}
+                          <p onClick={() => history.push(`/scholars/${selectedScholar?.user_id}/scholar_tasks`)}>Scholar Tasks</p>
+                          <p onClick={() => history.push(`/scholars/${selectedScholar?.user_id}/scholar_portfolio`)}>Scholar Portfolio</p>
+                          <p onClick={() => handleShow()}>Leave Application</p>
+                        </div>
+                      )}
+                  <span className='link' style={{ textAlign: "start"}} onClick={() => handleShowv2(scholar.id)}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M19.8898 19.0493L15.8588 15.0182C15.7869 14.9463 15.6932 14.9088 15.5932 14.9088H15.2713C16.3431 13.7495 16.9994 12.2027 16.9994 10.4997C16.9994 6.90923 14.0901 4 10.4997 4C6.90923 4 4 6.90923 4 10.4997C4 14.0901 6.90923 16.9994 10.4997 16.9994C12.2027 16.9994 13.7495 16.3431 14.9088 15.2744V15.5932C14.9088 15.6932 14.9495 15.7869 15.0182 15.8588L19.0493 19.8898C19.1961 20.0367 19.4336 20.0367 19.5805 19.8898L19.8898 19.5805C20.0367 19.4336 20.0367 19.1961 19.8898 19.0493ZM10.4997 15.9994C7.45921 15.9994 4.99995 13.5402 4.99995 10.4997C4.99995 7.45921 7.45921 4.99995 10.4997 4.99995C13.5402 4.99995 15.9994 7.45921 15.9994 10.4997C15.9994 13.5402 13.5402 15.9994 10.4997 15.9994Z" fill="#404041"/>
                     </svg>

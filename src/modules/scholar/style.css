@@ -9,18 +9,6 @@
   margin-right: 20px;
 }
 
-.table-container {
-  margin: 20px;
-  padding-block: 20px;
-  border-radius: 20px;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
-  margin-top: 50px;
-}
-.table-container th,
-.table-container td {
-  background-color: #d9e8f6;
-}
-
 .icon {
   color: #66a5e2;
   margin: 0px 5px;
@@ -33,53 +21,52 @@
 
 .link {
   margin-right: 10px;
-}/*# sourceMappingURL=style.css.map */
-
-.contentHeader {
-  height: fit-content;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 auto;
 }
 
-.contentLabel {
+.button {
+  background-color: #007bff; /* Primary button color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+.dropzone {
+  border: 2px dashed #007bff; /* Border color */
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  background-color: #e9ecef; /* Light background for dropzone */
+  margin-bottom: 15px;
+}
+.dropzone:hover {
+  border-color: #0056b3; /* Darker border on hover */
+}
+
+.scholar-modal {
+  padding: 0;
+  outline: 1px solid #e6e6e6;
+  border-radius: 8px;
+  width: 174px;
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  text-align: start;
-  padding: 8px 0px;
-  gap: 4px;
-  /*4px*/
-}
-
-.contentLabel h4 {
-  font-size: 1.75rem;
-}
-
-.contentLabel p {
   font-size: 14px;
-  margin: 0;
-}
-
-.contentButton button {
-  width: fit-content;
-  height: 40px;
-  padding: 6px 16px;
-  outline: 1px solid #2a75c0;
-  border-radius: 8px;
-  color: #2a75c0;
-  border: none;
-  font-size: 14px;
-  font-weight: 600;
   line-height: 24px;
+  background-color: #fff;
+  position: absolute;
+  left: -6rem;
+  top: -2.5rem;
+  z-index: 5;
 }
-
-.contentButton button:hover {
-  background-color: #2a75c0;
-  color: #f5f5f5;
-  outline: none;
-  transition: background-color 0.3s;
+.scholar-modal p {
+  padding: 8px 16px;
 }
-
+.scholar-modal p:hover {
+  cursor: pointer;
+  background-color: #ececec;
+}/*# sourceMappingURL=style.css.map */
