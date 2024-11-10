@@ -45,7 +45,10 @@ function ScholarPortfolio() {
     const setIsLoadingV2 = (status) => {
         dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
     };
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setShow(false)
+        resetFiles()
+    };
     const handleShow = () => setShow(true);
 
     const handleEditShow = (portfolio) => {
@@ -67,23 +70,26 @@ function ScholarPortfolio() {
       }));
     };
     const handleFileChange = (event) => {
-        const files = Array.from(event.target.files);
+        // Handle file selection, whether through dropzone or file input
+        const files = event.target.files ? Array.from(event.target.files) : [];
     
-        if (files.length > 5) {
-            toast.error('You can only upload up to 5 files.');
-            setSelectedFiles([]);
-            return;
+        if (files.length > 0) {
+            if (files.length + selectedFiles.length > 5) {
+                toast.error('You can only upload up to 5 files.');
+                return;
+            }
+    
+            // Filter out non-PDF files
+            const validFiles = files.filter(file => file.type === 'application/pdf');
+    
+            if (validFiles.length !== files.length) {
+                toast.error('Only PDF files are allowed!');
+                return;
+            }
+    
+            // Update selected files
+            setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
         }
-    
-        // Check if all files are PDFs
-        const validFiles = files.filter(file => file.type === 'application/pdf');
-        if (validFiles.length !== files.length) {
-            toast.error('Only PDF files are allowed!');
-            setSelectedFiles([]);
-            return;
-        }
-    
-        setSelectedFiles(validFiles); // Store valid files
     };
     
   
@@ -256,7 +262,9 @@ function ScholarPortfolio() {
             }
         }
     };
-
+    const resetFiles = () => {
+        setSelectedFiles([]);
+    };
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: '.pdf' });
 
     return (
@@ -323,7 +331,16 @@ function ScholarPortfolio() {
                         )}
                     </Form.Group>
                     <Form.Group controlId="formStudy">
-                        <Form.Label>Files</Form.Label>
+                        <Form.Label>
+                            Files
+                            <Button
+                                variant="link"
+                                onClick={resetFiles}
+                                style={{ paddingLeft: '10px', color: 'blue', textDecoration: 'underline', fontSize: '10px' }}
+                            >
+                                Reset
+                            </Button>
+                        </Form.Label>
                         {/* <input
                             type="file"
                             multiple
