@@ -112,8 +112,8 @@ class AnnouncementDashboard extends Component {
         <Container>
           {/* Fallback message when there are no announcements */}
           {messages.length === 0 ? (
-            <div>
-              <span>Oops! Looks like there aren't any messages for now</span>
+            <div className="no-data-message" >
+              <p>Oops, looks like there aren't any submissions yet!</p>
             </div>
           ) : (
             messages.map((item) => (

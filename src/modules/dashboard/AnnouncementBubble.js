@@ -25,7 +25,7 @@ class AnnouncementBubble extends Component {
         if(isLoading){
             return (
                 <Container fluid className="announcement-container">
-                <Row noGutters>
+                <Row noGutters style={{ alignItems: 'center'}}>
                     <Col style={{
                         display:'flex',
                         alignItems: 'center',
@@ -58,13 +58,13 @@ class AnnouncementBubble extends Component {
         }
         return (
             <Container fluid className="announcement-container">
-            <Row noGutters>
+            <Row noGutters style={{alignItems: 'center'}}>
                 <Col style={{
                     display:'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
                 }}>
-                    <Image src={profilePic} alt="Profile" className="profile-pic" roundedCircle />
+                    <Image src={profilePic ? profilePic : placeholder} alt="Profile" className="profile-pic" roundedCircle />
                 </Col>
                 <Col className="bubble-content" md={{ span: 9 }} style={{
                 }}>
