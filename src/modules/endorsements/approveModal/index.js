@@ -61,6 +61,7 @@ class approveModal extends Component {
 
     handleApprove(){
       const {setData} = this.props
+      // console.log("setdata", setData)
       API.request('scholar_request/approveApplicant', {
         id: setData.id
       }, response => {
