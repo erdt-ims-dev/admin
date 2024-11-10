@@ -92,7 +92,7 @@ class newApplicant extends Component {
       if (fileURL) {
         window.open(fileURL, '_blank');
       } else {
-        alert('No file selected for viewing.');
+        toast.info('No file selected for viewing.');
       }
     };
   

@@ -13,8 +13,11 @@ import Col from 'react-bootstrap/Col';
 import placeholder from 'assets/img/placeholder.jpeg'
 import { Button } from 'react-bootstrap';
 import API from 'services/Api'
-// create new application when 
+import { faUpload, faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+ 
 
+// Nov 10 - I think this is unused. Instead using modules/setup
 const files = [
     {
         title: "Transcript of Record",
@@ -96,7 +99,7 @@ class newApplicant extends Component {
                // Display the file using the fileURL
                window.open(fileURL, '_blank');
             } else {
-               alert("No file selected for viewing.");
+               toast.info("No file selected for viewing.");
             }
            };
            handleFileChange = (event, alias) => {
@@ -334,8 +337,18 @@ class newApplicant extends Component {
                                             </Col>
                                             <Col md={4} className='switch'>
                                                 <Col>
-                                                {selectedFiles[item.alias] ? (<span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>) : ""}
-
+                                                {/* {selectedFiles[item.alias] ? (<span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>) : ""} */}
+                                                {selectedFiles[item.alias] && 
+                                                    (
+                                                    <div class="contentButton link">
+                                                        <button onClick={() => this.viewFile(item.alias)} style={{display: 'flex', alignItems: 'center'}}>
+                                                        <FontAwesomeIcon icon={faMagnifyingGlass} style={{marginRight: 5}} />
+                                                        <span className="upload-text">Preview</span>
+                                                    </button>
+                                                    </div>
+                                                    )
+                                                    // <span className="icon" onClick={() => this.viewFile(item.alias)}>Preview</span>)
+                                                    }
                                                 </Col>
 
                                                 <Col>
@@ -347,11 +360,17 @@ class newApplicant extends Component {
                                                     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
                                                  }}
                                                 />
-                                                <span 
+                                                {/* <span 
                                                 className='icon'
                                                 onClick={() => this.handleUpdateClick(item.alias)}
                                                 >Upload
-                                                </span>
+                                                </span> */}
+                                                <div class="contentButton link">
+                                                <button onClick={() => this.handleUpdateClick(item.alias)} style={{display: 'flex', alignItems: 'center'}}>
+                                                    <FontAwesomeIcon icon={faUpload} style={{marginRight: 5}} />
+                                                    <span className="upload-text">Upload</span>
+                                                </button>
+                                                </div>
                                                 </Col>
                                             </Col>
                                         </Row>
