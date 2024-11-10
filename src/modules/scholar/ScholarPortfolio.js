@@ -33,7 +33,7 @@ function ScholarPortfolio() {
       study_category: true,
       publish_type: true,
     });
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFiles, setSelectedFiles] = useState([]);
 
     const [selectedPortfolio, setSelectedPortfolio] = useState(null); // Add state for selected portfolio
     const [editShow, setEditShow] = useState(false); // State for edit modal
@@ -45,7 +45,10 @@ function ScholarPortfolio() {
     const setIsLoadingV2 = (status) => {
         dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
     };
-    const handleClose = () => setShow(false);
+    const handleClose = () => {
+        setShow(false)
+        resetFiles()
+    };
     const handleShow = () => setShow(true);
 
     const handleEditShow = (portfolio) => {
@@ -66,17 +69,29 @@ function ScholarPortfolio() {
           [fieldName]: event.target.value
       }));
     };
-    const handleFileChange = (fieldName, event) => {
-      const file = event.target.files[0];
-      if (file && file.type === 'application/pdf') {
-          setSelectedPortfolio(prevPortfolio => ({
-              ...prevPortfolio,
-              [fieldName]: file
-          }));
-      } else {
-          toast.error('Only PDF files are allowed!');
-      }
-  };
+    const handleFileChange = (event) => {
+        // Handle file selection, whether through dropzone or file input
+        const files = event.target.files ? Array.from(event.target.files) : [];
+    
+        if (files.length > 0) {
+            if (files.length + selectedFiles.length > 5) {
+                toast.error('You can only upload up to 5 files.');
+                return;
+            }
+    
+            // Filter out non-PDF files
+            const validFiles = files.filter(file => file.type === 'application/pdf');
+    
+            if (validFiles.length !== files.length) {
+                toast.error('Only PDF files are allowed!');
+                return;
+            }
+    
+            // Update selected files
+            setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
+        }
+    };
+    
   
     const fetchPortfolio = async () => {
         API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.id }, 
@@ -96,12 +111,18 @@ function ScholarPortfolio() {
     const formValidation = () => {
         let formIsValid = true;
         const updatedValidation = { ...validation };
+        
+        // Validate each field in the form
         Object.entries(newPortfolios).forEach(([key, value]) => {
             if (key === 'study') {
-                // Check if a file is selected
-                if (!selectedFile) {
+                // Check if files are selected and if the number of files is <= 5
+                if (!selectedFiles || selectedFiles.length === 0) {
                     updatedValidation.study = false;
                     formIsValid = false;
+                } else if (selectedFiles.length > 5) {
+                    updatedValidation.study = false;
+                    formIsValid = false;
+                    toast.error('You can upload a maximum of 5 files.');
                 } else {
                     updatedValidation.study = true;
                 }
@@ -112,9 +133,11 @@ function ScholarPortfolio() {
                 updatedValidation[key] = true;
             }
         });
+    
         setValidation(updatedValidation);
         return formIsValid;
     };
+    
 
     const createNewPortfolio = async (e) => {
         e.preventDefault();
@@ -124,15 +147,19 @@ function ScholarPortfolio() {
             const formData = new FormData();
             formData.append('scholar_id', newPortfolios.id);
             formData.append('study_name', newPortfolios.study_name);
-            formData.append('study', selectedFile);
             formData.append('study_category', newPortfolios.study_category);
             formData.append('publish_type', newPortfolios.publish_type);
+            // Append all selected files
+            selectedFiles.forEach((file, index) => {
+                formData.append('study[]', file); // Use 'study[]' to handle multiple files
+            });
             API.uploadFile('scholar_portfolio/create', formData, response => {
                 if (!response.data.error) {
                     const newPortfolio = { ...response.data, tempId: uuidv4() };
                     setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
                     fetchPortfolio();
                     setShow(false);
+                    setSelectedFiles([]); // Clear the selected file
                     toast.success('Portfolio created successfully');
                 } else {
                     toast.error('Error creating portfolio');
@@ -228,16 +255,16 @@ function ScholarPortfolio() {
 
     const onDrop = (acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-            if (file.type !== 'application/pdf') {
-                toast.error('Only PDF files are allowed!');
-                setSelectedFile(null);
+            if (acceptedFiles.length + selectedFiles.length <= 5) {
+                setSelectedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
             } else {
-                setSelectedFile(file);
+                toast.error('You can only upload up to 5 files!');
             }
         }
     };
-
+    const resetFiles = () => {
+        setSelectedFiles([]);
+    };
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: '.pdf' });
 
     return (
@@ -304,18 +331,41 @@ function ScholarPortfolio() {
                         )}
                     </Form.Group>
                     <Form.Group controlId="formStudy">
-                        <Form.Label>File</Form.Label>
+                        <Form.Label>
+                            Files
+                            <Button
+                                variant="link"
+                                onClick={resetFiles}
+                                style={{ paddingLeft: '10px', color: 'blue', textDecoration: 'underline', fontSize: '10px' }}
+                            >
+                                Reset
+                            </Button>
+                        </Form.Label>
+                        {/* <input
+                            type="file"
+                            multiple
+                            onChange={handleFileChange} // Updated handler
+                            accept="application/pdf"
+                        /> */}
                         <div {...getRootProps()} className="dropzone">
-                            <input {...getInputProps()} />
+                            <input {...getInputProps()} onChange={handleFileChange} />
                             {isDragActive ? (
-                                <p>Drop the file here...</p>
+                                <p>Drop the files here...</p>
                             ) : (
-                                <p>Drag and drop a file here, or click to select one</p>
+                                <p>Drag and drop files here, or click to select them</p>
                             )}
                         </div>
-                        {selectedFile && <p>Selected file: {selectedFile.name}</p>}
+                        {selectedFiles && selectedFiles.length > 0 && (
+                            <div>
+                                <ul>
+                                    {selectedFiles.map((file, index) => (
+                                        <li key={index}>{file.name}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                         {!validation.study && (
-                            <p style={{color:'red', fontStyle:'italic'}}>Enter file</p>
+                            <p style={{color:'red', fontStyle:'italic'}}>Please select files</p>
                         )}
                     </Form.Group>
                 </Form>
@@ -419,7 +469,12 @@ function ScholarPortfolio() {
                                 <td>{index + 1}</td>
                                 <td>{portfolio.study_name}</td>
                                 <td>
-                                    <a href={portfolio.study} target="_blank" rel="noreferrer noopener">View link</a>
+                                    {/* Parse the 'study' JSON string and loop through the URLs */}
+                                    {JSON.parse(portfolio.study).map((url, urlIndex) => (
+                                        <div key={urlIndex}>
+                                            <a href={url} target="_blank" rel="noreferrer noopener">View link {urlIndex + 1}</a>
+                                        </div>
+                                    ))}
                                 </td>
                                 <td>{portfolio.study_category}</td>
                                 <td>{portfolio.publish_type}</td>
