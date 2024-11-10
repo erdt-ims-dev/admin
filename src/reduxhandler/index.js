@@ -97,14 +97,14 @@ const reducer = (state = initialState, action) => {
       };
 
     case types.SET_IS_LOADING:
-      console.log("isLoading")
+      // console.log("isLoading")
       return {
         ...state,
         isLoading: action.payload.status,
       };
 
     case types.SET_IS_LOADING_V2:
-      console.log("isLoadingV2", )
+      // console.log("isLoadingV2", )
       return {
         ...state,
         isLoadingV2: action.payload.status

@@ -70,13 +70,21 @@ class Register extends Component {
     return (
       <div className="loginContainer">
         <div className="loginForm">
-          <Container className="d-flex flex-column justify-content-center align-content-center">
-            <Row className="Row">
-              <h3 className="text-center">Hi There</h3>
+          <Container className="">
+            <Row className="">
+            <h3 className="">Register</h3>
+            <p>Register and proceed using the app.</p>
             </Row>
-            <Row className="Row mx-4">
+            <Row className="">
               <Col>
-                <InputField
+              <label><b>First Name:</b></label>
+              <input
+                onChange={(e) => this.setState({ firstName: e.target.value, errorFirstName: '' })}
+                placeholder="Enter first name here"
+                type="text"
+              />
+              <p className="errorText">{errorFirstName}</p>
+                {/* <InputField
                   id={1}
                   type={"name"}
                   label={"First Name"}
@@ -84,10 +92,17 @@ class Register extends Component {
                   active={false}
                   onChange={(firstName) => this.setState({ firstName, errorFirstName: '' })}
                 />
-                <p className='errorText'>{errorFirstName}</p>
+                <p className='errorText'>{errorFirstName}</p> */}
               </Col>
               <Col>
-                <InputField
+              <label><b>Last Name:</b></label>
+              <input
+                onChange={(e) => this.setState({ lastName: e.target.value, errorLastName: '' })}
+                placeholder="Enter last name here"
+                type="text"
+              />
+              <p className="errorText">{errorLastName}</p>
+                {/* <InputField
                   id={2}
                   type={"name"}
                   label={"Last Name"}
@@ -95,11 +110,18 @@ class Register extends Component {
                   active={false}
                   onChange={(lastName) => this.setState({ lastName, errorLastName: '' })}
                 />
-                <p className='errorText'>{errorLastName}</p>
+                <p className='errorText'>{errorLastName}</p> */}
               </Col>
             </Row>
-            <Row className="Row mx-4">
-              <InputField
+            <Row className="">
+            <label><b>Email:</b></label>
+              <input
+                onChange={(e) => this.setState({ email: e.target.value, errorEmail: '' })}
+                placeholder="Enter email here"
+                type="email"
+              />
+              <p className="errorText">{errorEmail}</p>
+              {/* <InputField
                 id={3}
                 type={"email"}
                 label={"Email"}
@@ -107,24 +129,28 @@ class Register extends Component {
                 active={false}
                 onChange={(email) => this.setState({ email, errorEmail: '' })}
               />
-              <p className='errorText'>{errorEmail}</p>
+              <p className='errorText'>{errorEmail}</p> */}
             </Row>
             <Row className="Row mx-4">
-              <Button variant="primary" size="lg" onClick={this.submit}>
+              {/* <Button variant="primary" size="lg" onClick={this.submit}>
                 Register
-              </Button>
+              </Button> */}
+              <button className="input-item-button" onClick={this.submit}>
+                Register
+              </button>
             </Row>
-            <Row className="Row">
-              <p className="text-center text-white mb-4">
-                Already have an account? Sign in{" "}
+            <Row className="">
+              <p className="">
+              Already have an account? Sign in &nbsp;
                 <a
-                  className="underline-hover"
+                  className=""
                   onClick={() => this.props.history.push("/")}
-                >
-                  here
+                >  
+                 here
                 </a>
               </p>
             </Row>
+            
           </Container>
         </div>
       </div>

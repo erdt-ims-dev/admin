@@ -56,61 +56,164 @@ const handleEdit = (row) => {
     ],
     []
  );
+ const isEmpty = !data || data.length === 0;
 
- return isLoading? (
+//  return isLoading? (
   
+//   <Table bordered hover>
+//     <thead>
+//       {headerGroups.map(headerGroup => (
+//         <tr {...headerGroup.getHeaderGroupProps()}>
+//           {headerGroup.headers.map(column => (
+//             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+//           ))}
+//         </tr>
+//       ))}
+//     </thead>
+//     <tbody>
+//         <tr>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//         </tr>
+//     </tbody>
+//     <tbody>
+//         <tr>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//         </tr>
+//     </tbody>
+//     <tbody>
+//         <tr>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//           <td ><Skeleton baseColor='lightgrey'/></td>
+//         </tr>
+//     </tbody>
+//   </Table>
+// ) : (
+//   <Table bordered hover {...getTableProps()}>
+//     <thead>
+//       {headerGroups.map(headerGroup => (
+//         <tr {...headerGroup.getHeaderGroupProps()}>
+//           {headerGroup.headers.map(column => (
+//             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+//           ))}
+//         </tr>
+//       ))}
+//     </thead>
+//     <tbody {...getTableBodyProps()}>
+//       {rows.map(row => {
+//         prepareRow(row);
+//         return (
+//           <tr {...row.getRowProps()}>
+//             {row.cells.map(cell => (
+//               <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+//             ))}
+//           </tr>
+//         );
+//       })}
+//     </tbody>
+//   </Table>
+// )
+return isLoading ? (
   <Table bordered hover>
-<thead>
-      {headerGroups.map(headerGroup => (
+    <thead>
+      {headerGroups.map((headerGroup) => (
         <tr {...headerGroup.getHeaderGroupProps()}>
-          {headerGroup.headers.map(column => (
+          {headerGroup.headers.map((column) => (
             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
           ))}
         </tr>
       ))}
     </thead>
     <tbody>
-        <tr>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-        </tr>
+      <tr>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+      </tr>
     </tbody>
     <tbody>
-        <tr>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-        </tr>
+      <tr>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+      </tr>
     </tbody>
     <tbody>
-        <tr>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-          <td ><Skeleton baseColor='lightgrey'/></td>
-        </tr>
+      <tr>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+      </tr>
     </tbody>
   </Table>
+) : isEmpty ? (
+  <div style={{paddingBottom: 25}}>
+  <Table bordered hover {...getTableProps()}>
+    <thead>
+      {headerGroups.map((headerGroup) => (
+        <tr {...headerGroup.getHeaderGroupProps()}>
+          {headerGroup.headers.map((column) => (
+            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+          ))}
+        </tr>
+      ))}
+    </thead>
+  </Table>
+  <div className="no-data-message" >
+    <p>Oops, looks like there aren't any submissions yet!</p>
+  </div>
+  </div>
 ) : (
   <Table bordered hover {...getTableProps()}>
     <thead>
-      {headerGroups.map(headerGroup => (
+      {headerGroups.map((headerGroup) => (
         <tr {...headerGroup.getHeaderGroupProps()}>
-          {headerGroup.headers.map(column => (
+          {headerGroup.headers.map((column) => (
             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
           ))}
         </tr>
       ))}
     </thead>
     <tbody {...getTableBodyProps()}>
-      {rows.map(row => {
+      {rows.map((row) => {
         prepareRow(row);
         return (
           <tr {...row.getRowProps()}>
-            {row.cells.map(cell => (
+            {row.cells.map((cell) => (
               <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
             ))}
           </tr>
@@ -118,7 +221,7 @@ const handleEdit = (row) => {
       })}
     </tbody>
   </Table>
-)
+);
 }
 
 export default TableComponent;

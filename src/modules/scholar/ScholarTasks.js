@@ -2,9 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { v4 as uuidv4 } from 'uuid';
-import API from 'services/Api'
+import API from 'services/Api';
 import { toast, ToastContainer, Slide } from 'react-toastify';
-import Stack from '../generic/spinnerV2';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+
 const TABLE_HEADERS = ["#", "Midterm Assessment", "Final Assessment", "Status", "Action"];
 
 function ScholarTasks() {
@@ -13,360 +17,269 @@ function ScholarTasks() {
 
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState({
-      id: scholar.id,
-      midterm_assessment: '',
-      final_assessment: '',
-      approval_status: 'pending',
+        id: scholar.id,
+        midterm_assessment: '',
+        final_assessment: '',
+        approval_status: 'pending',
     });
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [validation, setValidation] = useState({ midterm_assessment: true, final_assessment: true });
+    const [isLoading, setIsLoading] = useState(false);
+    const [showModal, setShowModal] = useState({ add: false, edit: false, delete: false });
 
-    const [validation, setValidation] = useState({
-      midterm_assessment: true,
-      final_assessment: true,
-      approval_status: true,
-    });
-
-    // create refs for input elements
     const midtermInput = useRef(null);
     const finalInput = useRef(null);
-
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    
-    //edit modal
-    const [selectedTask, setSelectedTask] = useState([]);
-    const [editTaskShow, setEditTaskShow] = useState(false);
-
-    const handleEditTaskShow = (task) => {
-      // console.log(task);
-      setSelectedTask(task);
-      setEditTaskShow(true);
-    }
-    const handleEditTaskClose = () => setEditTaskShow(false);
-    
-     //delete confimation modal
-     const [deleteTaskShow, setDeleteTaskShow] = useState(false);
-     const handleDeleteTaskShow = (task) => {
-      setSelectedTask(task);
-      setDeleteTaskShow(true);
-     }
-     const handleDeleteTaskClose = () => setDeleteTaskShow(false);
-
-    //input binding; not sure if works for files
-    const handleInputChange = (fieldName, event) => {
-      const file = event.target.files[0];
-      setNewTask((prevState) => ({
-      ...prevState,
-        [fieldName]: file,
-      }));
-
-      if (selectedTask) {
-        setSelectedTask({...selectedTask, [fieldName]: file });
-      }
+    // Redux dispatchers
+    const state = useSelector((state) => state);
+    const dispatch = useDispatch();
+    const setIsLoadingV2 = (status) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
     };
-    const [isLoading, setIsLoading] = useState(false);
-    //fetch all
+
+    const handleModalShow = (type, task = null) => {
+        setSelectedTask(task);
+        
+        setShowModal({ ...showModal, [type]: true });
+    };
+
+    const handleModalClose = (type) => setShowModal({ ...showModal, [type]: false });
+
     const fetchTasks = async () => {
-      API.request('scholar_tasks/retrieveMultipleByParameter', { col: 'scholar_id', value: newTask.id }, response => {
-        if (response && response.data) {
-          setTasks(response.data)
-        } else {
-          console.log('error on retrieve');
-        }
-      }, error => {
-        console.log(error);
-      });
-    }
-    
-    const formValidation = async () => {
-      let formIsValid = true;
+        setIsLoading(true);
+        setIsLoadingV2(true)
+        API.request(
+            'scholar_tasks/retrieveMultipleByParameter',
+            { col: 'scholar_id', value: scholar.id },
+            response => {
+                if (response && response.data) {
+                    setTasks(response.data);
+                } else {
+                    toast.error('An error occurred. Please try again');
+                }
+                setIsLoading(false);
+                setIsLoadingV2(false)
 
-      Object.entries(newTask).forEach(([key, value]) => {
-        if (!value) {
-          setValidation(prevState => ({
-            ...prevState,
-            [key]: false
-          }));
-          formIsValid = false;
-        }
-      });
-      // console.log(validation);
-      return (formIsValid) ? true : false;
-    }
+            },
+            error => {
+                console.error(error);
+                toast.error('Error fetching tasks');
+                setIsLoading(false);
+                setIsLoadingV2(false)
 
-    //create
-    const createTask = async (e) => {
-
-      e.preventDefault();
-      setIsLoading(true); 
-      let validated = formValidation();
-      if (validated) 
-        {
-          const formData = new FormData();
-          formData.append('scholar_id', newTask.id);
-          formData.append('midterm_assessment', midtermInput.current.files[0]);
-          formData.append('final_assessment', finalInput.current.files[0]);
-          //publish_type set to 'pending' by default;
-
-          API.uploadFile('scholar_tasks/create', formData, response => {
-            if (!response.data.error) {
-              // console.log('Data created successfully', response.data);
-              const newTask = {...response.data, tempId: uuidv4() };
-              setTasks(prevTasks => [...prevTasks, newTask]);
-              // toast.success("Task Added!",  {
-              //   position: "top-center",
-              //   autoClose: 5000,
-              //   hideProgressBar: false,
-              //   closeOnClick: true,
-              //   pauseOnHover: true,
-              //   draggable: true,
-              //   progress: undefined,
-              //   theme: "light",
-              //   transition: Slide,
-              //   });
-              fetchTasks();
-              setShow(false);
-              setIsLoading(false);
-            } else {
-              console.log('error on retrieve');
-              setShow(true);
-              setIsLoading(false);
             }
-          }, error => {
-            console.log(error)
-          });
-        }
-        else
-        {
-          console.log('not valid');
-          setShow(true); // Ensure the modal stays open
-        }
+        );
     };
 
-    //edit 
-    const editTask = async (e) => {
+    const formValidation = () => {
+        const isValid = !!(newTask.midterm_assessment && newTask.final_assessment);
+        setValidation({ midterm_assessment: !!newTask.midterm_assessment, final_assessment: !!newTask.final_assessment });
+        return isValid;
+    };
+
+    const handleFileChange = (fieldName, event) => {
+        const file = event.target.files[0];
+        setNewTask(prevTask => ({ ...prevTask, [fieldName]: file }));
+        if (selectedTask) setSelectedTask({ ...selectedTask, [fieldName]: file });
+    };
+
+    const createTask = async (e) => {
       e.preventDefault();
-      setIsLoading(true); 
+      
+      if (!midtermInput.current.files[0] || !finalInput.current.files[0]) {
+        toast.info('Both Midterm and Final files need to be uploaded.');
+        return;
+    }
+    if (!formValidation()) return;
+      setIsLoading(true);
+      setIsLoadingV2(true)
 
       const formData = new FormData();
-      
-      formData.append('id', selectedTask.id);
-      formData.append('scholar_id', selectedTask.scholar_id);
-      formData.append('midterm_assessment', selectedTask.midterm_assessment ? selectedTask.midterm_assessment : midtermInput.current.files[0]);
-      //(midtermInput.current.files[0] !== null) ? formData.append('midterm_assessment', midtermInput.current.files[0]) : formData.append('midterm_assessment', '');
-      formData.append('final_assessment', selectedTask.final_assessment ? selectedTask.final_assessment : finalInput.current.files[0]);
-      //(finalInput.current.files[0] !== null) ? formData.append('final_assessment', finalInput.current.files[0]) : formData.append('final_assessment', '');
-      formData.append('approval_status', selectedTask.approval_status);
-      // console.log(formData);
-      API.uploadFile('scholar_tasks/updateOne', formData, response => {
-        if (response && response.data) {
-          // console.log('Data updated successfully', response.data);
-          fetchTasks();
-          setIsLoading(false); 
-        } else {
-          console.log('error on retrieve');
-          setIsLoading(false); 
-        }
+      formData.append('scholar_id', newTask.id);
+      formData.append('midterm_assessment', midtermInput.current.files[0]);
+      formData.append('final_assessment', finalInput.current.files[0]);
+  
+      API.uploadFile('scholar_tasks/create', formData, response => {
+          if (response.data && !response.data.error) {
+              const newTaskData = {
+                  id: response.data.id, // Assuming the response contains the new task ID
+                  midterm_assessment: URL.createObjectURL(midtermInput.current.files[0]), // Create a URL for viewing
+                  final_assessment: URL.createObjectURL(finalInput.current.files[0]), // Create a URL for viewing
+                  approval_status: 'pending',
+              };
+              setTasks(prevTasks => [...prevTasks, newTaskData]); // Update local tasks state
+              toast.success('Task created successfully');
+              setShowModal({ ...showModal, add: false });
+          } else {
+              toast.error('An error occurred. Please try again');
+          }
+          setIsLoading(false);
+          setIsLoadingV2(false)
+
       }, error => {
-        console.log(error)
-      })
-      setEditTaskShow(false);
+          console.error(error);
+          toast.error('Error creating task');
+          setIsLoading(false);
+          setIsLoadingV2(false)
+
+      });
+  };
+  
+
+    const editTask = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setIsLoadingV2(true)
+
+        const formData = new FormData();
+        formData.append('id', selectedTask.id);
+        formData.append('scholar_id', selectedTask.scholar_id);
+        formData.append('midterm_assessment', selectedTask.midterm_assessment || midtermInput.current.files[0]);
+        formData.append('final_assessment', selectedTask.final_assessment || finalInput.current.files[0]);
+        formData.append('approval_status', selectedTask.approval_status);
+
+        API.uploadFile('scholar_tasks/updateOne', formData, response => {
+            if (response && response.data) {
+                fetchTasks();
+                toast.success('Task updated successfully');
+            } else {
+                toast.error('Error updating task');
+            }
+            setIsLoading(false);
+            setIsLoadingV2(false)
+
+            setShowModal({ ...showModal, edit: false });
+        }, error => {
+            console.error(error);
+            toast.error('Error updating task');
+            setIsLoading(false);
+            setIsLoadingV2(false)
+
+        });
     };
 
-    //delete
     const deleteTask = async (e) => {
-      e.preventDefault();
-      setIsLoading(true); 
-      // console.log(selectedTask.id)
-      API.request('scholar_tasks/delete', {
-        id: selectedTask.id,
-      }, response => {
-        console.log('Data deleted successfully');
-        setIsLoading(false); 
-      }, error => {
-        console.log(error)
-        setIsLoading(false); 
-      })
-      //console.log(selectedPortfolio);
-      //to see the changes in the table after and close the modal
-      setTasks(tasks.filter(tasks => tasks.id !== selectedTask.id));
-      setDeleteTaskShow(false);
+        e.preventDefault();
+        setIsLoading(true);
+        setIsLoadingV2(true)
+
+        console.log('Deleting Task:', selectedTask);
+        API.request('scholar_tasks/delete', { id: selectedTask.id }, () => {
+            setTasks(tasks.filter(task => task.id !== selectedTask.id));
+            toast.success('Task deleted successfully');
+            setIsLoading(false);
+            setIsLoadingV2(false)
+
+            setShowModal({ ...showModal, delete: false });
+        }, error => {
+            console.error(error);
+            toast.error('Error deleting task');
+            setIsLoading(false);
+            setIsLoadingV2(false)
+
+        });
     };
 
     useEffect(() => {
-      fetchTasks(); 
+        fetchTasks();
     }, []);
 
-
-
     return (
-      <>
-      {isLoading && <Stack />}
-      {/* <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        /> */}
-      <div style={{ float:'left', textAlign:'left'}}>
-        <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
-        <p>This is the Scholar Tasks page</p>
-      </div>
-        <Button 
-          onClick={handleShow} 
-          style={{float:'right', marginTop:'1rem'}}> Add New Task </Button>
-      {/* <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>id</th>
-            <th>Midterm Assessment</th>
-            <th>Final Assessment</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task, index) => (
-            <tr key={task.id}>
-              <td>{index+1}</td>
-              <td>{task.id}</td>
-              <td>{task.midterm_assessment}</td>
-              <td>{task.final_assessment}</td>
-              <td>{task.approval_status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Task</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <Form>
-          <Form.Group controlId="formStudyName">
-              <Form.Label>Midterm</Form.Label>
-              <Form.Control type="file" placeholder="Midterm Assessment" onChange={(event) => handleInputChange('midterm_assessment', event)} ref={midtermInput}  />
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.midterm_assessment === false ? 'enter file' : ''}</p>}
-          </Form.Group>
-          <Form.Group controlId="formStudy">
-              <Form.Label>Final</Form.Label>
-              <Form.Control type="file" placeholder="Final Assessment" onChange={(event) => handleInputChange('final_assessment', event)} ref={finalInput}  />
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.final_assessment === false ? 'enter file' : ''}</p>}
-          </Form.Group>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Status</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('study_category', event)} value={newTask.approval_status} disabled/>
-          </Form.Group>
-        </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={createTask}>
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <>
+            <ToastContainer position="top-center" autoClose={5000} hideProgressBar transition={Slide} />
+            <div style={{ float: 'left', textAlign: 'left' }}>
+                <h3>Welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
+                <p>This is the Scholar Tasks page</p>
+            </div>
+            {/* <Button onClick={() => handleModalShow('add')} style={{ float: 'right', marginTop: '1rem' }}>Add New Task</Button> */}
+            <div class="contentButton">
+              <button onClick={() => handleModalShow('add')} style={{ float: 'right', marginTop: '1rem' }}>+ Add New Task</button>
+            </div>
+            <Table style={{ marginTop: '4.5rem' }}>
+                <thead>
+                    <tr>{TABLE_HEADERS.map(header => <th key={header}>{header}</th>)}</tr>
+                </thead>
+                <tbody>
+                    {isLoading && (
+                        <tr>
+                            <td colSpan={TABLE_HEADERS.length}><Skeleton count={3} height={50} /></td>
+                        </tr>
+                    )}
+                    {!isLoading && tasks.length === 0 && (
+                        <tr>
+                            <td colSpan={TABLE_HEADERS.length} style={{ textAlign: 'center' }}>
+                                Oops, looks like there are no tasks submitted.
+                            </td>
+                        </tr>
+                    )}
+                    {!isLoading && tasks.length > 0 && (
+                        tasks.map((task, index) => (
+                            <tr key={task.id || task.tempId}>
+                                <td>{index + 1}</td>
+                                <td><a href={task.midterm_assessment} target="_blank" rel="noreferrer noopener">View File</a></td>
+                                <td><a href={task.final_assessment} target="_blank" rel="noreferrer noopener">View File</a></td>
+                                <td>{task.approval_status}</td>
+                                <td>
+                                    <span className="link" onClick={() => handleModalShow('edit', task)}>Edit</span>
+                                    <span className="link" onClick={() => handleModalShow('delete', task)}>Delete</span>
+                                </td>
+                            </tr>
+                        ))
+                    )}
+                </tbody>
+            </Table>
 
-      {/* to edit portfolios */}
-      <Modal show={editTaskShow} onHide={handleEditTaskClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit New Study</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <Form>
-          <Form.Group controlId="formStudyName">
-              <Form.Label>Midterm</Form.Label><br/>
-              <a href={selectedTask.midterm_assessment} target="_blank" rel="noreferrer noopener">link</a>
-              <Form.Control type="file" placeholder="Midterm file" onChange={(event) => handleInputChange('midterm_assessment', event)} ref={midtermInput} />
-          </Form.Group>
-          <Form.Group controlId="formStudy">
-              <Form.Label>Final</Form.Label><br/>
-              <a href={selectedTask.final_assessment} target="_blank" rel="noreferrer noopener">link</a>
-              <Form.Control type="file" placeholder="Final file" onChange={(event) => handleInputChange('final_assessment', event)}  ref={finalInput}/>
-          </Form.Group>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Status</Form.Label>
-              <Form.Control 
-                        type="text" 
-                        placeholder="Enter Study Category" 
-                        onChange={(event) => {
-                        // Extract the new value from the event
-                        const newValue = event.target.value;
-                        // Update the selectedTask state with the new approval_status
-                        setSelectedTask(prevTask => ({...prevTask, approval_status: newValue }));
-                      }} 
-                      value={selectedTask?.approval_status}
-                  />
-          </Form.Group>
-        </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleEditTaskClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={editTask} >
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      
-       {/* delete confirmation modal for tasks */}
-       <Modal show={deleteTaskShow} onHide={handleDeleteTaskClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Are you sure?</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteTaskClose}>
-            No
-          </Button>
-          <Button variant="primary" onClick={deleteTask}>
-            Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <div className="table-container" style={{ marginTop:'4.5rem'}}>
-        <Table>
-          <thead>
-            <tr>
-              {TABLE_HEADERS.map((header) => (
-                <th key={header}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tasks.map((task, index) => (
-                <tr key={task.id || task.tempId}>
-                  <td key={index + 1}>{index + 1}</td>
-                  {/* <td>{portfolio.scholar_id}</td> */}
-                  {/* <td>{portfolio.study}</td> */}
-                  <td> <a href={task.midterm_assessment} target="_blank" rel="noreferrer noopener">View File</a> </td>
-                  {/* <td>{portfolio.study_category}</td> */}
-                  <td > <a href={task.final_assessment} target="_blank" rel="noreferrer noopener">View File</a> </td>
-                  <td>{task.approval_status}</td>
-                  <td>
-                    <span className='link' 
-                          onClick={() => handleEditTaskShow(task)} 
-                          >Edit</span>
-                    <span className='link' 
-                          onClick={() => handleDeleteTaskShow(task)}
-                          >Delete</span>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-      </div>
-      </>
+            <Modal show={showModal.add} onHide={() => handleModalClose('add')}>
+                <Modal.Header closeButton><Modal.Title>Add New Task</Modal.Title></Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="formMidterm">
+                            <Form.Label>Midterm</Form.Label>
+                            <Form.Control type="file" onChange={(event) => handleFileChange('midterm_assessment', event)} ref={midtermInput} />
+                        </Form.Group>
+                        <Form.Group controlId="formFinal">
+                            <Form.Label>Final</Form.Label>
+                            <Form.Control type="file" onChange={(event) => handleFileChange('final_assessment', event)} ref={finalInput} />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => handleModalClose('add')}>Close</Button>
+                    <Button variant="primary" onClick={createTask}>Submit</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showModal.edit} onHide={() => handleModalClose('edit')}>
+                <Modal.Header closeButton><Modal.Title>Edit Task</Modal.Title></Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="formMidterm">
+                            <Form.Label>Midterm</Form.Label>
+                            <Form.Control type="file" onChange={(event) => handleFileChange('midterm_assessment', event)} ref={midtermInput} />
+                        </Form.Group>
+                        <Form.Group controlId="formFinal">
+                            <Form.Label>Final</Form.Label>
+                            <Form.Control type="file" onChange={(event) => handleFileChange('final_assessment', event)} ref={finalInput} />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => handleModalClose('edit')}>Close</Button>
+                    <Button variant="primary" onClick={editTask}>Submit</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showModal.delete} onHide={() => handleModalClose('delete')}>
+                <Modal.Header closeButton><Modal.Title>Delete Task</Modal.Title></Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this task?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => handleModalClose('delete')}>Close</Button>
+                    <Button variant="danger" onClick={deleteTask}>Delete</Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
-  }
-  
-  export default ScholarTasks;
+}
+
+export default ScholarTasks;

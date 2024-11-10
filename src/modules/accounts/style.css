@@ -459,3 +459,80 @@ h4 {
   background-size: 12px 12px;
   padding-right: 1.5rem; /* Adjust padding to make room for the arrow */
 }
+
+/* pagination */
+
+/* Container for pagination buttons */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+/* Styling for each page number button */
+.pagination li {
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+/* Styling for page numbers */
+.pagination li a {
+  padding: 8px 12px;
+  border: 1px solid #404041;
+  border-radius: 4px;
+  color: #404041;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for page numbers */
+.pagination li a:hover {
+  background-color: grey;
+  color: #fff;
+}
+
+/* Styling for the active page */
+.pagination .active a {
+  background-color: #404041;
+  color: #fff;
+  border-color: #404041;
+}
+
+/* Styling for the 'Previous' and 'Next' buttons */
+.pagination .previous a,
+.pagination .next a {
+  padding: 8px 12px;
+  color: #404041;
+  border: 1px solid #404041;
+  border-radius: 4px;
+}
+
+/* Disable 'Previous' and 'Next' when not clickable */
+.pagination .disabled a {
+  color: #aaa;
+  cursor: not-allowed;
+  border-color: #aaa;
+}
+/* Search */
+/* style.css */
+
+.table-container {
+  margin-top: 20px;
+  background-color: none;
+}
+
+.input-group {
+  /* max-width: 400px; Set max width for the input group */
+}
+
+.input-group .form-control {
+  /* border-right: none; Remove border on the right side */
+}
+
+.input-group .btn {
+  /* border-left: none; Remove border on the left side */
+}

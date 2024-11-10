@@ -173,7 +173,7 @@ class ViewModal extends Component {
             <InputFieldV4
                 id={3}
                 type={'field'}
-                label={'Staff Comment'}
+                label={'Latest Staff Comment'}
                 inject={this.state.comment}
                 locked={true}
                 active={false}

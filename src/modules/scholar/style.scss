@@ -35,3 +35,32 @@
 {
   margin-right: 10px;
 }
+
+// Added - kyle
+
+.button {
+  background-color: #007bff; /* Primary button color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+      background-color: #0056b3; /* Darker shade on hover */
+  }
+}
+
+.dropzone {
+  border: 2px dashed #007bff; /* Border color */
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  background-color: #e9ecef; /* Light background for dropzone */
+  margin-bottom: 15px;
+
+  &:hover {
+      border-color: #0056b3; /* Darker border on hover */
+  }
+}

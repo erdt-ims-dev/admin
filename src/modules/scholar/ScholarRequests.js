@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import API from 'services/Api'
+import { useDispatch, useSelector } from 'react-redux';
 
 const TABLE_HEADERS = ["#", "Midterm Assessment", "Final Assessment", "Status", "Action"];
 
@@ -28,7 +29,12 @@ function ScholarRequests() {
   useEffect(() => {
     fetchRequests();
   }, []);
-
+  // Redux dispatchers
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const setIsLoadingV2 = (status) => {
+      dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
+  };
 
   return (
     <>

@@ -6,3 +6,61 @@
 /* .btn{
   background-color: blue;
 } */
+
+/* pagination */
+
+/* Container for pagination buttons */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+/* Styling for each page number button */
+.pagination li {
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+/* Styling for page numbers */
+.pagination li a {
+  padding: 8px 12px;
+  border: 1px solid #404041;
+  border-radius: 4px;
+  color: #404041;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for page numbers */
+.pagination li a:hover {
+  background-color: grey;
+  color: #fff;
+}
+
+/* Styling for the active page */
+.pagination .active a {
+  background-color: #404041;
+  color: #fff;
+  border-color: #404041;
+}
+
+/* Styling for the 'Previous' and 'Next' buttons */
+.pagination .previous a,
+.pagination .next a {
+  padding: 8px 12px;
+  color: #404041;
+  border: 1px solid #404041;
+  border-radius: 4px;
+}
+
+/* Disable 'Previous' and 'Next' when not clickable */
+.pagination .disabled a {
+  color: #aaa;
+  cursor: not-allowed;
+  border-color: #aaa;
+}

@@ -9,12 +9,14 @@ import { Box } from "@mui/material";
 import Breadcrumbs from "modules/generic/breadcrumb";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import  TableComponent  from 'modules/generic/tableV3/variation1';
+import  TableComponent  from 'modules/generic/tableV3/variation2';
 import ViewModal from 'modules/applications/viewModal/index'
 import RejectModal from 'modules/endorsements/rejectModal/index'
 import ApproveModal from 'modules/endorsements/approveModal/index'
 
 import API from 'services/Api'
+import { toast } from 'react-toastify'; // Import toast from react-toastify
+import { connect } from 'react-redux'; // Import connect from react-redux
 
 
 class Endorsements extends Component {
@@ -69,7 +71,11 @@ class Endorsements extends Component {
           data: [],
           list: [],
           setData: null,
-          tableLoader: true
+          tableLoader: true,
+          currentPage: 0, // Track current page
+          pageCount: 0, // Track total number of pages
+          itemsPerPage: 10, // Items per page
+          totalEntries: 0,
           };
       };
       // Methods
@@ -120,28 +126,50 @@ class Endorsements extends Component {
     }
     // State
     getList(callback){
-      API.request('scholar_request/retrieveEndorsedTableAndDetail', {
+    this.props.setIsLoadingV2(true);
+    const { currentPage, itemsPerPage, } = this.state; // Get current page and items per page
+    const offset = currentPage * itemsPerPage; // Calculate offset
+
+      API.request('scholar_request/paginateEndorsed', {
+        offset, 
+        limit: itemsPerPage,
       }, response => {
+          this.props.setIsLoadingV2(false);
+
           if (response && response.data) {
-              const details = [];
-              const list = [];
+          
+              // const details = [];
+              // const list = [];
   
-              response.data.forEach(element => {
-                  details.push(element.details);
-                  list.push(element.list);
-              });
+              // response.data.forEach(element => {
+              //     details.push(element.details);
+              //     list.push(element.list);
+              // });
   
+              // this.setState({
+              //     data: details,
+              //     list: list
+              // }, () => {
+              //     // Call the callback function after setting the state
+              //     if (typeof callback === 'function') {
+              //         callback();
+              //     }
+              // });
+              const { items, total } = response.data;
+
               this.setState({
-                  data: details,
-                  list: list
+                  data: items.map(item => item.details),
+                  list: items.map(item => item.list),
+                  pageCount: Math.ceil(total / itemsPerPage),
+                  totalEntries: total
               }, () => {
-                  // Call the callback function after setting the state
                   if (typeof callback === 'function') {
                       callback();
                   }
               });
           } else {
               console.log('error on retrieve');
+              this.props.setIsLoadingV2(false);
               // Optionally, call the callback function with an error or a specific value
               if (typeof callback === 'function') {
                   callback(false);
@@ -149,6 +177,8 @@ class Endorsements extends Component {
           }
       }, error => {
           console.log(error);
+          this.props.setIsLoadingV2(false);
+
           // Optionally, call the callback function with an error or a specific value
           if (typeof callback === 'function') {
               callback(false);
@@ -215,5 +245,11 @@ class Endorsements extends Component {
         )
     }
 }
-
-export default Endorsements
+const mapStateToProps = (state) => ({ state });
+    
+    const mapDispatchToProps = (dispatch) => ({
+      setIsLoadingV2: (status) => dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } }),
+    });
+    
+    export default connect(mapStateToProps, mapDispatchToProps)(Endorsements);
+// export default Endorsements

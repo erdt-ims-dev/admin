@@ -21,6 +21,9 @@ import API from 'services/Api'
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // Toast notification
+import ReactPaginate from 'react-paginate';
 
 class Applications extends Component {
     constructor(props) {
@@ -82,7 +85,11 @@ class Applications extends Component {
           data: [], // will contain the finalized value to be displayed in the Table Component
           setData: null, // will contain which row has been selected and details associated with it
           list: null, // will contain the current Applicant List pulled from DB
-          tableLoader: true  
+          tableLoader: true,
+          currentPage: 0, // Track current page
+          pageCount: 0, // Track total number of pages
+          itemsPerPage: 10, // Items per page
+          totalEntries: 0,  
         };
       };
       // Modal Handling
@@ -158,25 +165,41 @@ class Applications extends Component {
       },() => {
      })
     }
+
+    handlePageClick = (data) => {
+      const selectedPage = data.selected;
+      this.setState({ currentPage: selectedPage }, () => {
+          this.getList(); // Fetch the new data based on the selected page
+      });
+  };
+  
     // Form handling
     
     
     
     // State
     getList(callback){
-      API.request('scholar_request/retrievePendingTableAndDetail', {}, response => {
+      this.props.setIsLoadingV2(true);
+      const { currentPage, itemsPerPage, searchQuery } = this.state; // Get current page and items per page
+      const offset = currentPage * itemsPerPage; // Calculate offset
+      API.request('scholar_request/paginate', {
+        offset, 
+        limit: itemsPerPage,
+      }, response => {
           if (response && response.data) {
               const details = [];
               const list = [];
   
-              response.data.forEach(element => {
+              response.data.items.forEach(element => {
                   details.push(element.details);
                   list.push(element.list);
               });
   
               this.setState({
                   data: details,
-                  list: list
+                  list: list,
+                  pageCount: Math.ceil(response.data.total / itemsPerPage),
+                totalEntries: response.data.total,
               }, () => {
                   // Call the callback function after setting the state
                   if (typeof callback === 'function') {
@@ -190,8 +213,11 @@ class Applications extends Component {
                   callback(false);
               }
           }
+          this.props.setIsLoadingV2(false);
+
       }, error => {
           console.log(error);
+          this.props.setIsLoadingV2(false);
           // Optionally, call the callback function with an error or a specific value
           if (typeof callback === 'function') {
               callback(false);
@@ -209,7 +235,7 @@ class Applications extends Component {
   }
     
     render() {
-      const { columns, data, showEdit, showEndorse, showReject, showView, showRemarks, setData, tableLoader } = this.state;
+      const { totalEntries, itemsPerPage, pageCount, columns, data, showEdit, showEndorse, showReject, showView, showRemarks, setData, tableLoader } = this.state;
       const {history} = this.props;
       return (
       <div className="">
@@ -230,13 +256,26 @@ class Applications extends Component {
             
             
         <div class="contentButton">
-          <button onClick={()=>{ history.push('/new_application')}}>+ Add New</button>
+          <button onClick={()=>{ history.push('/new_application')}}>+ Add New Application</button>
         </div>
       </Box>
 
       <div className="table-container">
         <TableComponent columns={columns} data={data} isLoading={tableLoader}/>
-        
+        {totalEntries > itemsPerPage && ( // Conditionally render pagination
+                        <ReactPaginate
+                            previousLabel={'Previous'}
+                            nextLabel={'Next'}
+                            breakLabel={'...'}
+                            breakClassName={'break-me'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                        />
+                    )}
       </div>
       {/* <ViewModal
       setData={setData}

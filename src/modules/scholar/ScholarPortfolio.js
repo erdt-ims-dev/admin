@@ -1,19 +1,25 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
-import API from 'services/Api'
+import { useDropzone } from 'react-dropzone';
+import API from 'services/Api';
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { v4 as uuidv4 } from 'uuid';
-import Stack from '../generic/spinnerV2';
-
+import { toast } from 'react-toastify';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import 'react-toastify/dist/ReactToastify.css';
 import "./style.scss";
-const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type",  "Action"];
+import { useDispatch, useSelector } from 'react-redux';
+
+const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type", "Action"];
+
 function ScholarPortfolio() {
     const location = useLocation();
     const scholar = location.state.scholar;
-    //to display table
-    const [portfolios, setPortfolios] = useState([]);
 
-    //initialize for new portfolio
+    const [portfolios, setPortfolios] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [show, setShow] = useState(false);
     const [newPortfolios, setNewPortfolios] = useState({
       id: scholar.id,
       study_name: '',
@@ -27,382 +33,408 @@ function ScholarPortfolio() {
       study_category: true,
       publish_type: true,
     });
-    const [isLoading, setIsLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
 
-    // create refs for file elements
-    const studyFile = useRef(null);
-    //create modal
-    const [show, setShow] = useState(false);
+    const [selectedPortfolio, setSelectedPortfolio] = useState(null); // Add state for selected portfolio
+    const [editShow, setEditShow] = useState(false); // State for edit modal
+    const [deleteShow, setDeleteShow] = useState(false); // State for delete modal
+    const studyFile = useRef(null); // Reference for file input in edit modal
+    // Redux dispatchers
+    const state = useSelector((state) => state);
+    const dispatch = useDispatch();
+    const setIsLoadingV2 = (status) => {
+        dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
+    };
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    //edit modal
-    const [selectedPortfolio, setSelectedPortfolio] = useState(null);
-    const [editShow, setEditShow] = useState(false);
-
     const handleEditShow = (portfolio) => {
-      setSelectedPortfolio(portfolio);
-      // console.log(portfolio);
-      setEditShow(true);
-    }
+        setSelectedPortfolio(portfolio);
+        setEditShow(true);
+    };
     const handleEditClose = () => setEditShow(false);
-    
-    //delete confimation modal
-    const [deleteShow, setDeleteShow] = useState(false);
+
     const handleDeleteShow = (portfolio) => {
-      setSelectedPortfolio(portfolio);
-      //console.log(portfolio);
-      setDeleteShow(true);
-    }
+        setSelectedPortfolio(portfolio);
+        setDeleteShow(true);
+    };
     const handleDeleteClose = () => setDeleteShow(false);
 
-    //bind input to newPortfolios
     const handleInputChange = (fieldName, event) => {
       setNewPortfolios(prevState => ({
           ...prevState,
           [fieldName]: event.target.value
       }));
     };
-    //separate bind for files
     const handleFileChange = (fieldName, event) => {
       const file = event.target.files[0];
-      setNewPortfolios((prevState) => ({
-      ...prevState,
-        [fieldName]: file,
-      }));
-      // Also update selectedPortfolio.study if editing
-      if (selectedPortfolio) {
-        setSelectedPortfolio({...selectedPortfolio, [fieldName]: file });
-      }
-    };
-
-    //fetch
-    const fetchPortfolio = async () => {
-      API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: newPortfolios.id }, response => {
-        if (response && response.data) {
-          setPortfolios(response.data)
-        } else {
-          console.log('error on retrieve');
-        }
-      }, error => {
-        console.log(error);
-      });
-    }
-
-    const formValidation = async () => {
-      let formIsValid = true;
-
-      Object.entries(newPortfolios).forEach(([key, value]) => {
-        if (!value) {
-          setValidation(prevState => ({
-            ...prevState,
-            [key]: false
+      if (file && file.type === 'application/pdf') {
+          setSelectedPortfolio(prevPortfolio => ({
+              ...prevPortfolio,
+              [fieldName]: file
           }));
-          formIsValid = false;
-          console.log("please fill all fields");
-        }
-      });
-      return (formIsValid) ? true : false;
-    }
-
-    //set newPortfolios to API
-    const createNewPortfolio = async (e) => {
-      e.preventDefault();
-      setIsLoading(true); 
-
-      let validated = formValidation();
-      if (validated)
-        {
-          const formData = new FormData();
-          //console.log(newPortfolios)
-          formData.append('scholar_id', newPortfolios.id);
-          formData.append('study_name', newPortfolios.study_name);
-          formData.append('study', studyFile.current.files[0]);
-          formData.append('study_category', newPortfolios.study_category);
-          formData.append('publish_type', newPortfolios.publish_type);
-          //console.log(newPortfolios);
-          API.uploadFile('scholar_portfolio/create', formData, response => {
-            if (!response.data.error) {
-              // console.log('Data created successfully', response.data);
-              const newPortfolio = {...response.data, tempId: uuidv4() };
-              setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
-              fetchPortfolio();
-              setShow(false);
-              setIsLoading(false); 
+      } else {
+          toast.error('Only PDF files are allowed!');
+      }
+  };
+  
+    const fetchPortfolio = async () => {
+        API.request('scholar_portfolio/retrieveMultipleByParameter', { col: 'scholar_id', value: scholar.id }, 
+        response => {
+            if (response && response.data) {
+                setPortfolios(response.data);
             } else {
-              console.log('error on retrieve');
-              setIsLoading(false); 
+                toast.error('Error retrieving portfolios');
             }
-          }, error => {
-            console.log(error);
-          })
-        }
-        else
-        {
-          console.log('not valid');
-          setShow(true); // Ensure the modal stays open
-        }
+            setIsLoading(false); // End loading after data fetch
+        }, error => {
+            toast.error('Error retrieving portfolios');
+            setIsLoading(false);
+        });
     };
 
-    //edit specific portfolios
+    const formValidation = () => {
+        let formIsValid = true;
+        const updatedValidation = { ...validation };
+        Object.entries(newPortfolios).forEach(([key, value]) => {
+            if (key === 'study') {
+                // Check if a file is selected
+                if (!selectedFile) {
+                    updatedValidation.study = false;
+                    formIsValid = false;
+                } else {
+                    updatedValidation.study = true;
+                }
+            } else if (!value) {
+                updatedValidation[key] = false;
+                formIsValid = false;
+            } else {
+                updatedValidation[key] = true;
+            }
+        });
+        setValidation(updatedValidation);
+        return formIsValid;
+    };
+
+    const createNewPortfolio = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setIsLoadingV2(true);
+        if (formValidation()) {
+            const formData = new FormData();
+            formData.append('scholar_id', newPortfolios.id);
+            formData.append('study_name', newPortfolios.study_name);
+            formData.append('study', selectedFile);
+            formData.append('study_category', newPortfolios.study_category);
+            formData.append('publish_type', newPortfolios.publish_type);
+            API.uploadFile('scholar_portfolio/create', formData, response => {
+                if (!response.data.error) {
+                    const newPortfolio = { ...response.data, tempId: uuidv4() };
+                    setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
+                    fetchPortfolio();
+                    setShow(false);
+                    toast.success('Portfolio created successfully');
+                } else {
+                    toast.error('Error creating portfolio');
+                }
+                setIsLoading(false);
+                setIsLoadingV2(false);
+
+            }, error => {
+                toast.error('Error creating portfolio');
+                setIsLoading(false);
+                setIsLoadingV2(false);
+
+            });
+        } else {
+            toast.warning('Please fill in all required fields');
+            setIsLoading(false);
+            setIsLoadingV2(false);
+
+        }
+    };
     const editPortfolio = async (e) => {
-      e.preventDefault();
-      setIsLoading(true); 
+      // e.preventDefault();
+      setIsLoading(true);
+      setIsLoadingV2(true);
+
       const formData = new FormData();
-      // console.log(selectedPortfolio);
       formData.append('id', selectedPortfolio.id);
       formData.append('scholar_id', newPortfolios.id);
       formData.append('study_name', selectedPortfolio.study_name);
-      formData.append('study', selectedPortfolio.study ? selectedPortfolio.study : studyFile.current.files[0]); 
-      //formData.append('study', studyFile.current.files[0]); 
+  
+      // Handle file update: use `selectedPortfolio.study` or `studyFile` if a new file is uploaded
+      formData.append('study', selectedPortfolio.study ? selectedPortfolio.study : studyFile.current.files[0]);
+  
       formData.append('study_category', selectedPortfolio.study_category);
       formData.append('publish_type', selectedPortfolio.publish_type);
-      // console.log(studyFile.current.files[0]);
-      API.uploadFile('scholar_portfolio/updateOne', formData, response => {
-        if (!response.data.error) {
-          // console.log('Data updated successfully', response.data);
-          fetchPortfolio();
-          setIsLoading(false); 
-        } else {
-          console.log('error on retrieve');
-          setIsLoading(false); 
+  
+      API.uploadFile('scholar_portfolio/updateOne', formData, 
+          (response) => {
+              if (!response.data.error) {
+                  toast.success('Portfolio updated successfully');
+                  fetchPortfolio(); // Refresh portfolio list
+              } else {
+                  toast.error('Error updating portfolio');
+              }
+              setIsLoading(false); // End loading
+              setIsLoadingV2(false);
+
+              setEditShow(false);  // Close edit modal
+          }, 
+          (error) => {
+              console.log(error);
+              toast.error('Error updating portfolio');
+              setIsLoadingV2(false);
+
+              setIsLoading(false);
+          }
+      );
+  };
+  const deletePortfolio = async () => {
+    setIsLoading(true); 
+    setIsLoadingV2(true);
+
+    // Call API to delete the selected portfolio
+    API.request(
+        'scholar_portfolio/delete',
+        { id: selectedPortfolio.id },
+        (response) => {
+            toast.success('Entry deleted successfully');
+            // Filter out the deleted portfolio from the local state
+            setPortfolios(portfolios.filter(portfolio => portfolio.id !== selectedPortfolio.id));
+            setIsLoading(false); 
+            setIsLoadingV2(false);
+
+        },
+        (error) => {
+            toast.error('There was an error in deleting the entry');
+
+            console.error(error);
+            setIsLoading(false); 
+            setIsLoadingV2(false);
+
         }
-      }, error => {
-        console.log(error)
-      })
-      // console.log(selectedPortfolio);
-      setEditShow(false);
-    };
+    );
 
-    //delete
-    const deletePortfolio = async (e) => {
-      e.preventDefault();
-      setIsLoading(true); 
-      // console.log(setSelectedPortfolio.id)
-      API.request('scholar_portfolio/delete', {
-        id: selectedPortfolio.id,
-      }, response => {
-        console.log('Data deleted successfully');
-        setIsLoading(false); 
-      }, error => {
-        console.log(error)
-        setIsLoading(false); 
-      })
-      //console.log(selectedPortfolio);
-      //to see the changes in the table after and close the modal
-      setPortfolios(portfolios.filter(portfolios => portfolios.id !== selectedPortfolio.id));
-      setDeleteShow(false);
-    };
+    // Close the delete modal
+    setDeleteShow(false);
+};
 
-    //console.log(portfolios);
+  
     useEffect(() => {
-      fetchPortfolio();
+        fetchPortfolio();
     }, []);
 
-    //console.log(portfolios);
+    const onDrop = (acceptedFiles) => {
+        if (acceptedFiles && acceptedFiles.length > 0) {
+            const file = acceptedFiles[0];
+            if (file.type !== 'application/pdf') {
+                toast.error('Only PDF files are allowed!');
+                setSelectedFile(null);
+            } else {
+                setSelectedFile(file);
+            }
+        }
+    };
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: '.pdf' });
 
     return (
       <>
-      {isLoading && <Stack />}
-      <div style={{ float:'left', textAlign:'left'}}>
-        <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
-        <p>This is the Scholar Portfolio page</p>
-      </div>
-      <div style={{float:'right', marginTop:'1rem'}}>
-        <Button onClick={handleShow}> Add New Study </Button>
-      </div>
-      {/* <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>id</th>
-            <th>study</th>
-            <th>study_name</th>
-            <th>study_category</th>
-            <th>publish_type</th>
-          </tr>
-        </thead>
-        <tbody>
-        {Object.values(portfolios).map((portfolio, index) => (
-          <tr key={portfolio.id}>
-            <td>{index+1}</td>
-            <td>{portfolio.scholar_id}</td>
-            <td>{portfolio.study}</td>
-            <td>{portfolio.study_name}</td>
-            <td>{portfolio.study_category}</td>
-            <td>{portfolio.publish_type}</td>
-          </tr>
-        ))}
-        </tbody>
-      </table> */}
-      {/* for new portfolios */}
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Study</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <Form>
-          <Form.Group controlId="formStudyName">
-              <Form.Label>Study Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Name" onChange={(event) => handleInputChange('study_name', event)} />
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.study_name === false ? 'enter study' : ''}</p>}
-          </Form.Group>
-          <Form.Group controlId="formStudy">
-              <Form.Label>Study</Form.Label>
-              <Form.Control type="file" placeholder="Enter Study" onChange={(event) => handleInputChange('study', event)} ref={studyFile} />
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.study === false ? 'enter file' : ''}</p>}
-          </Form.Group>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Study Category</Form.Label>
-              <Form.Select aria-label="Select Study Category" value={newPortfolios.study_category} onChange={(event) => handleInputChange('study_category', event)}>
-                <option value="">Select Study Category</option>
-                <option value="Journal">Journal</option>
-                <option value="Research Paper">Research Paper</option>
-                <option value="Case Study">Case Study</option>
-                <option value="Other">Other</option>
-              </Form.Select>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.study_category === false ? 'enter category' : ''}</p>}   
-          </Form.Group>
-          <br/>
-          <Form.Group controlId="formPublishType">
-              <Form.Label>Publish Type</Form.Label>
-              {/* <Form.Control type="text" placeholder="Enter Study Type" onChange={(event) => handleInputChange('publish_type', event)} /> */}
-              <Form.Select aria-label="Select Publish Type" value={newPortfolios.publish_type} onChange={(event) => handleInputChange('publish_type', event)}>
-                <option value="">Select Publish Type</option>
-                <option value="Local">Local</option>
-                <option value="International">International</option>
-              </Form.Select>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.publish_type === false ? 'enter category' : ''}</p>}   
-          </Form.Group>
-        </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={createNewPortfolio}>
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      
-      {/* to edit portfolios */}
-      <Modal show={editShow} onHide={handleEditClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit New Study</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <Form>
-          <Form.Group controlId="formStudyName">
-              <Form.Label>Study Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Name" 
-                            onChange={(event) => {
-                              // Extract the new value from the event
-                              const newValue = event.target.value;
-                              // Update the selectedPortfolio state with the new approval_status
-                              setSelectedPortfolio(prevTask => ({...prevTask, study_name: newValue }));
-                            }} 
-                            value={selectedPortfolio?.study_name} 
-                          />
-          </Form.Group>
-          <Form.Group controlId="formStudy">
-              <Form.Label>Study</Form.Label>
-              <Form.Control type="file" placeholder="Enter first name" onChange={(event) => handleFileChange('study', event)}  ref={studyFile}/>
-          </Form.Group>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Study Category</Form.Label>
-              <Form.Select 
-                    aria-label="Select Study Category" 
-                    value={selectedPortfolio?.study_category} 
-                    onChange={(event) => {
-                              // Extract the new value from the event
-                              const newValue = event.target.value;
-                              // Update the selectedPortfolio state with the new study_category
-                              setSelectedPortfolio(prevTask => ({...prevTask, study_category: newValue }));
-                            }} 
-                    >
-                <option value="">Select Study Category</option>
-                <option value="Journal">Journal</option>
-                <option value="Research Paper">Research Paper</option>
-                <option value="Case Study">Case Study</option>
-                <option value="Other">Other</option>
-              </Form.Select>
-          </Form.Group>
-          <br/>
-          <Form.Group controlId="formPublishType">
-              <Form.Label>Publish Type</Form.Label>
-              <Form.Select 
-                    aria-label="Select Study Category" 
-                    value={selectedPortfolio?.publish_type} 
-                    onChange={(event) => {
-                              // Extract the new value from the event
-                              const newValue = event.target.value;
-                              // Update the selectedPortfolio state with the new publish_type
-                              setSelectedPortfolio(prevTask => ({...prevTask, publish_type: newValue }));
-                            }} 
+        <div style={{ float:'left', textAlign:'left'}}>
+            <h3>{scholar.account_details.last_name} {scholar.account_details.first_name}'s Portfolio</h3>
+            <p>Below are all the files submitted</p>
+        </div>
+        <div style={{float:'right', marginTop:'1rem'}}>
+            {/* <Button onClick={handleShow}> Add New Study </Button> */}
+            <div class="contentButton">
+              <button onClick={handleShow}>+ Add New Study</button>
+            </div>
+
+        </div>
+
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Add New Study</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form>
+                    <Form.Group controlId="formStudyName">
+                        <Form.Label>Study Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter Study Name"
+                            onChange={(event) => handleInputChange('study_name', event)}
+                        />
+                        {!validation.study_name && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Enter study name</p>
+                        )}
+                    </Form.Group>
+                    <Form.Group controlId="formStudyCategory">
+                        <Form.Label>Study Category</Form.Label>
+                        <Form.Select
+                            aria-label="Select Study Category"
+                            value={newPortfolios.study_category}
+                            onChange={(event) => handleInputChange('study_category', event)}
                         >
-                    <option value="">Select Study Category</option>
-                    <option value="Local">Local</option>
-                    <option value="International">International</option>
-              </Form.Select>      
-          </Form.Group>
-        </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleEditClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={editPortfolio}>
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      
-       {/* to delete confirmation portfolios */}
-      <Modal show={deleteShow} onHide={handleDeleteClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Are you sure?</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteClose}>
-            No
-          </Button>
-          <Button variant="primary" onClick={deletePortfolio}>
-            Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <div className="table-container" style={{ marginTop:'4.5rem'}}>
-        <Table>
-          <thead>
-            <tr>
-              {TABLE_HEADERS.map((header) => (
-                <th key={header}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {portfolios.map((portfolio, index) => (
-                <tr key={portfolio.id || portfolio.tempId}>
-                  <td>{index+1}</td>
-                  {/* <td>{portfolio.scholar_id}</td> */}
-                  <td>{portfolio.study_name}</td>
-                  {/* <td>{portfolio.study_category}</td> */}
-                  <td> <a href={portfolio.study} target="_blank" rel="noreferrer noopener"> View link</a></td>
-                  <td>{portfolio.study_category}</td>
-                  <td>{portfolio.publish_type} </td>
-                  <td>
-                    <span className='link' onClick={() => handleEditShow(portfolio)} >Edit</span>
-                    <span className='link' onClick={() => handleDeleteShow(portfolio)}> Delete</span>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
-      </div>
+                            <option value="">Select Study Category</option>
+                            <option value="Journal">Journal</option>
+                            <option value="Research Paper">Research Paper</option>
+                            <option value="Case Study">Case Study</option>
+                            <option value="Other">Other</option>
+                        </Form.Select>
+                        {!validation.study_category && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Enter category</p>
+                        )}
+                    </Form.Group>
+                    <Form.Group controlId="formPublishType">
+                        <Form.Label>Publish Type</Form.Label>
+                        <Form.Select
+                            aria-label="Select Publish Type"
+                            value={newPortfolios.publish_type}
+                            onChange={(event) => handleInputChange('publish_type', event)}
+                        >
+                            <option value="">Select Publish Type</option>
+                            <option value="Local">Local</option>
+                            <option value="International">International</option>
+                        </Form.Select>
+                        {!validation.publish_type && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Enter publish type</p>
+                        )}
+                    </Form.Group>
+                    <Form.Group controlId="formStudy">
+                        <Form.Label>File</Form.Label>
+                        <div {...getRootProps()} className="dropzone">
+                            <input {...getInputProps()} />
+                            {isDragActive ? (
+                                <p>Drop the file here...</p>
+                            ) : (
+                                <p>Drag and drop a file here, or click to select one</p>
+                            )}
+                        </div>
+                        {selectedFile && <p>Selected file: {selectedFile.name}</p>}
+                        {!validation.study && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Enter file</p>
+                        )}
+                    </Form.Group>
+                </Form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>Close</Button>
+                <Button variant="primary" onClick={createNewPortfolio}>Submit</Button>
+            </Modal.Footer>
+        </Modal>
+        {/* Edit */}
+        <Modal show={editShow} onHide={handleEditClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Edit New Study</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form>
+                    <Form.Group controlId="formStudyName">
+                        <Form.Label>Study Name</Form.Label>
+                        <Form.Control 
+                            type="text" 
+                            placeholder="Enter Study Name" 
+                            onChange={(event) => setSelectedPortfolio(prev => ({ ...prev, study_name: event.target.value }))} 
+                            value={selectedPortfolio?.study_name || ''} 
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formStudy">
+                        <Form.Label>Study</Form.Label>
+                        <Form.Control 
+                            type="file" 
+                            onChange={(event) => handleFileChange('study', event)} 
+                            ref={studyFile} 
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formStudyCategory">
+                        <Form.Label>Study Category</Form.Label>
+                        <Form.Select
+                            aria-label="Select Study Category"
+                            value={selectedPortfolio?.study_category || ''}
+                            onChange={(event) => setSelectedPortfolio(prev => ({ ...prev, study_category: event.target.value }))}
+                        >
+                            <option value="">Select Study Category</option>
+                            <option value="Journal">Journal</option>
+                            <option value="Research Paper">Research Paper</option>
+                            <option value="Case Study">Case Study</option>
+                            <option value="Other">Other</option>
+                        </Form.Select>
+                    </Form.Group>
+                    <Form.Group controlId="formPublishType">
+                        <Form.Label>Publish Type</Form.Label>
+                        <Form.Select
+                            aria-label="Select Publish Type"
+                            value={selectedPortfolio?.publish_type || ''}
+                            onChange={(event) => setSelectedPortfolio(prev => ({ ...prev, publish_type: event.target.value }))}
+                        >
+                            <option value="">Select Publish Type</option>
+                            <option value="Local">Local</option>
+                            <option value="International">International</option>
+                        </Form.Select>
+                    </Form.Group>
+                </Form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleEditClose}>Close</Button>
+                <Button variant="primary" onClick={() => editPortfolio(selectedPortfolio)}>Submit</Button>
+            </Modal.Footer>
+        </Modal>
+        {/* Delete */}
+        <Modal show={deleteShow} onHide={handleDeleteClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Are you sure?</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleDeleteClose}>No</Button>
+                <Button variant="primary" onClick={deletePortfolio}>Yes</Button>
+            </Modal.Footer>
+        </Modal>
+        <div className="table-container" style={{ marginTop: '4.5rem' }}>
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        {TABLE_HEADERS.map((header) => (
+                            <th key={header}>{header}</th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {isLoading ? (
+                        Array(5).fill().map((_, index) => (
+                            <tr key={index}>
+                                {TABLE_HEADERS.map((_, colIndex) => (
+                                    <td key={colIndex}>
+                                        <Skeleton height={20} />
+                                    </td>
+                                ))}
+                            </tr>
+                        ))
+                    ) : (
+                        portfolios.map((portfolio, index) => (
+                            <tr key={portfolio.id || portfolio.tempId}>
+                                <td>{index + 1}</td>
+                                <td>{portfolio.study_name}</td>
+                                <td>
+                                    <a href={portfolio.study} target="_blank" rel="noreferrer noopener">View link</a>
+                                </td>
+                                <td>{portfolio.study_category}</td>
+                                <td>{portfolio.publish_type}</td>
+                                <td>
+                                    <span className="link" onClick={() => handleEditShow(portfolio)}>Edit</span>
+                                    <span className="link" onClick={() => handleDeleteShow(portfolio)}> Delete</span>
+                                </td>
+                            </tr>
+                        ))
+                    )}
+                </tbody>
+            </Table>
+        </div>
       </>
     );
-  }
-  
-  export default ScholarPortfolio;
+}
+
+export default ScholarPortfolio;

@@ -3,19 +3,22 @@ import './style.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { faEye, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faThumbsUp, faSearch  } from '@fortawesome/free-solid-svg-icons'
 
 import { Box } from "@mui/material";
 import Breadcrumbs from "../generic/breadcrumb";
-import { Button } from "react-bootstrap";
+import { Button, InputGroup, FormControl } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import  TableComponent  from 'modules/generic/tableV3/index';
 import ViewModal from './viewModal/index'
 import EditModal from './editModal/index'
 import DeleteModal from './deleteModal/index'
 import API from 'services/Api'
-
-
+import ReactPaginate from 'react-paginate';
+import { withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // Toast notification
 class Accounts extends Component {
     constructor(props) {
       super(props);
@@ -24,6 +27,7 @@ class Accounts extends Component {
         showView: false,
         showDelete: false,
         showEdit: false,
+        searchQuery: '',
         columns: [
           {
             Header: 'Email',
@@ -66,7 +70,11 @@ class Accounts extends Component {
           ],
           data: [],
           setData: null,
-          tableLoader: true
+          tableLoader: true,
+          currentPage: 0, // Track current page
+          pageCount: 0, // Track total number of pages
+          itemsPerPage: 10, // Items per page
+          totalEntries: 0,
           };
       };
       // Modal Handling
@@ -108,17 +116,23 @@ class Accounts extends Component {
     }
     onDeactivate(){
       const {setData} = this.state
+      this.props.setIsLoadingV2(true)
       API.request('user/delete', {
           id: setData.id
       }, response => {
         if (response && response.data) {
+          toast.success("Account Deactivated")
           this.closeDelete()
           this.getList()
         }else{
-          console.log('error on retrieve')
+          toast.error("There was an error on deletion. Please try again")
+          // console.log('error on retrieve')
         }
+        this.props.setIsLoadingV2(false)
       }, error => {
-        console.log(error)
+        toast.error("An error occurred. Please try again.")
+        this.props.setIsLoadingV2(false)
+        // console.log(error)
       })
     }
     closeDelete(){
@@ -130,33 +144,60 @@ class Accounts extends Component {
     }
     // State
     getList(callback){
-      API.request('user/retrieveAll', {
+      this.props.setIsLoadingV2(true);
+      const { currentPage, itemsPerPage, searchQuery } = this.state; // Get current page and items per page
+      const offset = currentPage * itemsPerPage; // Calculate offset
+
+      // console.log("page", currentPage, itemsPerPage, searchQuery, offset)
+      API.request('user/paginate', {
+        offset, 
+        limit: itemsPerPage,
+        search: searchQuery
       }, response => {
+        this.props.setIsLoadingV2(false);
           if (response && response.data) {
+            // console.log('Total Entries:', response.data.total); // Debug log
+
               this.setState({
-                  account_list: response.data
+                  account_list: response.data.accounts,
+                  pageCount: Math.ceil(response.data.total / itemsPerPage),
+                  tableLoader: false,
+                  totalEntries: response.data.total, // Set total entries
+
               }, () => {
+                // console.log("Updated account list:", this.state.account_list);
                   // Call the callback function after setting the state
                   if (typeof callback === 'function') {
                       callback();
                   }
               });
           } else {
-              console.log('error on retrieve');
+              // console.log('error on retrieve');
               // Optionally, call the callback function with an error or a specific value
               if (typeof callback === 'function') {
                   callback(false);
               }
           }
       }, error => {
-          console.log(error);
+          // console.log(error);
+          this.props.setIsLoadingV2(false);
           // Optionally, call the callback function with an error or a specific value
           if (typeof callback === 'function') {
               callback(false);
           }
       });
   }
-  
+  handlePageClick = (data) => {
+    const selectedPage = data.selected; // Get the selected page index
+    this.setState({ currentPage: selectedPage, tableLoader: true }, () => {
+        this.getList(); // Fetch data for the selected page
+    });
+};
+
+  // Method to handle the search
+  handleSearch = () => {
+    this.getList();
+  };
   componentDidMount(){
       this.getList(() => {
           // This function will be called after getList successfully retrieves data
@@ -167,7 +208,7 @@ class Accounts extends Component {
   }
     
     render() {
-      const { columns, account_list, showEdit, showDelete, showView, setData, tableLoader } = this.state;
+      const { searchQuery, totalEntries, itemsPerPage, columns, account_list, showEdit, showDelete, showView, setData, tableLoader, pageCount } = this.state;
       const {history} = this.props;
       return (
       <div className="container">
@@ -182,11 +223,44 @@ class Accounts extends Component {
          {/* <Button onClick={()=>{ history.push('/#')}}>
            Add New Account
          </Button> */}
+
+                    
+      </Box>
+      <Box>
+      <InputGroup className="mb-3 mt-3">
+          <FormControl
+              placeholder="Search Account"
+              aria-label="Search"
+              value={searchQuery}
+              onChange={(e) => this.setState({ searchQuery: e.target.value })}
+          />
+          <Button variant="outline-secondary" onClick={this.handleSearch}>
+              <FontAwesomeIcon icon={faSearch} />
+          </Button>
+      </InputGroup>
       </Box>
           {/* with scroll */}
-          <div className="table-container" style={{ overflowY: 'auto', maxHeight: '600px' }}> 
-        <TableComponent columns={columns} data={account_list} isLoading={tableLoader}/>
-      </div>
+          {/* <div className="table-container" style={{ overflowY: 'auto', maxHeight: '600px' }}> */}
+         
+          <div className="table-container" style={{}}> 
+
+            <TableComponent columns={columns} data={account_list} isLoading={tableLoader}/>
+            {totalEntries > itemsPerPage && ( // Conditionally render pagination
+                        <ReactPaginate
+                            previousLabel={'Previous'}
+                            nextLabel={'Next'}
+                            breakLabel={'...'}
+                            breakClassName={'break-me'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                        />
+                    )}
+
+          </div>
       <ViewModal
       setData={setData}
       show={showView}
@@ -209,4 +283,12 @@ class Accounts extends Component {
     }
 }
 
-export default Accounts
+const mapStateToProps = (state) => ({ state });
+
+const mapDispatchToProps = (dispatch) => ({
+  setIsLoading: (status) => dispatch({ type: 'SET_IS_LOADING', payload: { status } }),
+  setIsLoadingV2: (status) => dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } }),
+  userActivity: () => dispatch({ type: 'USER_ACTIVITY' }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Accounts));

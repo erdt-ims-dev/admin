@@ -1,10 +1,14 @@
-import { useEffect, useState , useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import { Table, Button, Modal, Form } from "react-bootstrap";
-import API from 'services/Api'
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // Toast notification
+import API from 'services/Api';
 import { v4 as uuidv4 } from 'uuid';
 import Stack from '../generic/spinnerV2';
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { useDispatch, useSelector } from 'react-redux';
 const TABLE_HEADERS = ["#", "Leave Start", "Leave End", "Leave Letter", "Status", "Comment", "Action"];
 
 function ScholarLeaveApplication() {
@@ -21,7 +25,12 @@ function ScholarLeaveApplication() {
     comment_id: 'no comment',
   });
   const letterFile = useRef(null);
-
+  // Redux dispatchers
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const setIsLoadingV2 = (status) => {
+    dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
+  };
   //error modal
   const [validation, setValidation] = useState({ 
     id: true,
@@ -34,24 +43,39 @@ function ScholarLeaveApplication() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState([]);
-  const [errorModal, setErrorModal] = useState(false);
+  const [errorModal, setErrorModal] = useState(false); 
+  const [show, setShow] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [editRequestShow, setEditRequestShow] = useState(false);
+
   const errorClose = () => setErrorModal(false);
   const errorShow = () => setErrorModal(true);
 
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setError([]);
+    setValidation({
+      id: true,
+      leave_start: true,
+      leave_end: true,
+      leave_letter: true,
+      status: true,
+      comment: true,
+      comment_id: true,
+    });
+    setShow(false);
+  };
   const handleShow = () => setShow(true);
 
   
   //edit modal
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [editRequestShow, setEditRequestShow] = useState(false);
+  
   
   const handleEditRequestShow = (request) => {
     setSelectedRequest(request);
     setEditRequestShow(true);
   }
   const handleEditRequestClose = () => setEditRequestShow(false);
+  const handleDeleteRequestClose = () => setDeleteRequestShow(false);
 
   
   //delete confimation modal
@@ -60,7 +84,6 @@ function ScholarLeaveApplication() {
   setSelectedRequest(request);
   setDeleteRequestShow(true);
   }
-  const handleDeleteRequestClose = () => setDeleteRequestShow(false);
 
   //input binding; not sure if works for files
   const handleInputChange = (fieldName, event) => {
@@ -97,16 +120,20 @@ const validateField = (fieldName, value) => {
   }
 };
   const fetchRequests = async () => {
+    setIsLoading(true);
+
     API.request('leave_application/retrieveMultipleByParameter', { col: 'user_id', value: newLeaveRequest.id }, response => {
       if (response && response.data) {
         // Make the second API call to retrieve account details
         setLeaveRequests(response.data)
         // console.log(leaverequests)
       } else {
-        console.log('error on retrieve');
+        toast.error("Failed to retrieve leave requests");
       }
+      setIsLoading(false);
     }, error => {
       console.log(error);
+      setIsLoading(false);
     });
   }
 
@@ -119,19 +146,21 @@ const validateField = (fieldName, value) => {
             [key]: false
           }));
           formIsValid = false;
-          console.log("please fill all fields");
+          // console.log("please fill all fields");
         }
       });
-      return (formIsValid) ? true : false;
+      // return (formIsValid) ? true : false;
+      return formIsValid;
   }
   
   //create
   const createRequest = async (e) => {
     e.preventDefault();
-    setIsLoading(true); 
-    let validated = formValidation();
-    if (validated) {
+    setIsLoadingV2(true);
+    // let validated = formValidation();
+    // if (validated) {
       // console.log(newLeaveRequest)
+    if (formValidation()) {
       const formData = new FormData();
       formData.append('user_id', newLeaveRequest.id);
       formData.append('leave_letter', letterFile.current.files[0]);
@@ -143,25 +172,31 @@ const validateField = (fieldName, value) => {
       API.uploadFile('leave_application/create', formData, response => {
         if (!response.data.error) {
           // console.log('Data created successfully', response.data);
+          toast.success("Leave request created successfully");
           const newTask = {...response.data, tempId: uuidv4() };
           setLeaveRequests(prevTasks => [...prevTasks, newTask]);
           fetchRequests();
           setShow(false);
-          setIsLoading(false); 
         } else {
-          console.log(response.data.error);
+          // console.log(response.data.error);
+          toast.error("Failed to create leave request");
           setError(response.data.error);
           errorShow();
-          setIsLoading(false); 
         }
+        setIsLoadingV2(false); 
       }, error => {
+        toast.error("Something went wrong. Please try again");
+        setIsLoadingV2(false);
         console.log(error)
       });
     }
     else
     {
-      console.log('not valid');
+      // console.log('not valid');
+      toast.error("All fields must be filled");
       setShow(true); // Ensure the modal stays open
+      setIsLoadingV2(false);
+      setIsLoading(false);
     }
   };
 
@@ -169,26 +204,34 @@ const validateField = (fieldName, value) => {
     const editRequest = async (e) => {
       e.preventDefault();
       setIsLoading(true); 
+      setIsLoadingV2(true);
+
       const formData = new FormData();
       // console.log(selectedRequest);
       formData.append('user_id', newLeaveRequest.id);
       formData.append('id', selectedRequest.id);
-      formData.append('leave_letter', selectedRequest.leave_letter ? selectedRequest.leave_letter : letterFile.current.files[0]);
+      // formData.append('leave_letter', selectedRequest.leave_letter ? selectedRequest.leave_letter : letterFile.current.files[0]);
+      formData.append('leave_letter', selectedRequest.leave_letter || letterFile.current.files[0]);
       formData.append('leave_start', selectedRequest.leave_start);
       formData.append('leave_end', selectedRequest.leave_end);
       formData.append('status', selectedRequest.status);
       //console.log(selectedRequest.id);
       API.uploadFile('leave_application/updateOne', formData, response => {
         if (response && response.data) {
-          // console.log('Data updated successfully', response.data);
+          toast.success("Leave request updated successfully");
           fetchRequests();
-          setIsLoading(false); 
         } else {
-          console.log('error on retrieve');
-          setIsLoading(false); 
+          toast.error("Failed to update leave request");
         }
+        setIsLoading(false);
+        setIsLoadingV2(false);
+
       }, error => {
         console.log(error)
+        toast.error("Error occurred while updating leave request");
+        setIsLoading(false);
+        setIsLoadingV2(false);
+
       })
       setEditRequestShow(false);
     };
@@ -197,19 +240,30 @@ const validateField = (fieldName, value) => {
     const deleteRequest = async (e) => {
       e.preventDefault();
       setIsLoading(true); 
+      setIsLoadingV2(true);
+
       // console.log(selectedRequest.id);
       API.request('leave_application/delete', {
         id: selectedRequest.id,
       }, response => {
-        console.log('Data deleted successfully');
-        setIsLoading(false); 
+        if (!response.data.error) {
+          toast.success("Leave request deleted successfully");
+          setLeaveRequests(prevRequests => prevRequests.filter(request => request.id !== selectedRequest.id));
+        } else {
+          toast.error("Failed to delete leave request");
+        }
+        setIsLoading(false);
+        setIsLoadingV2(false);
+
       }, error => {
         console.log(error)
-        setIsLoading(false); 
+        toast.error("Error occurred while deleting leave request");
+        setIsLoading(false);
+        setIsLoadingV2(false);
+
       })
       //console.log(selectedPortfolio);
       //to see the changes in the table after and close the modal
-      setLeaveRequests(leaverequests.filter(leaverequests => leaverequests.id !== selectedRequest.id));
       setDeleteRequestShow(false);
     };
   useEffect(() => {
@@ -219,7 +273,7 @@ const validateField = (fieldName, value) => {
 
   return (
     <>
-    {isLoading && <Stack />}
+    
     {/* <div style={{ float:'left', textAlign:'left'}}>
       <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
       <p>This is the Scholar Leave Request page</p>
@@ -233,9 +287,10 @@ const validateField = (fieldName, value) => {
         <p>This is the Scholar Leave Request page</p>
       </div>
       <div class="contentButton">
-        <button onClick={handleShow}>+ Add New Applicant</button>
+        <button onClick={handleShow}>+ Add New Leave Request</button>
       </div>
     </div>
+    
     {/* error modal */}
     <Modal show={errorModal} onHide={errorClose}>
         <Modal.Header closeButton>
@@ -283,23 +338,23 @@ const validateField = (fieldName, value) => {
               <Form.Label>Leave Start</Form.Label>
               {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_start', event)}></input>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_start === false ? 'enter leave start' : ''}</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_start === false ? 'Missing field' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudy">
               <Form.Label>Leave End</Form.Label>
               {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_end === false ? 'enter leave end' : ''}</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_end === false ? 'Missing field' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>
               <Form.Control type="file" placeholder="Enter Study Category" onChange={(event) => handleInputChange('leave_letter', event)} ref={letterFile}/>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_letter === false ? 'enter leave letter' : ''}</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_letter === false ? 'Missing file' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
               <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly disabled/>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.status === false ? 'enter study' : ''}</p>}
+              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.status === false ? 'Missing field' : ''}</p>}
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Comment</Form.Label>
@@ -407,9 +462,26 @@ const validateField = (fieldName, value) => {
                 <th key={header}>{header}</th>
               ))}
             </tr>
+            
           </thead>
           <tbody>
-            {leaverequests.map((request, index) => (
+            {isLoading && (
+              <tr>
+                <td colSpan={TABLE_HEADERS.length}>
+                  <Skeleton count={5} height={30} />
+                </td>
+              </tr>
+              
+
+            )}
+            {!isLoading && leaverequests.length === 0 && (
+              <tr>
+                <td colSpan={TABLE_HEADERS.length} style={{textAlign: 'center'}}>
+                  Oops, looks like there are no leave requests to show.
+                </td>
+              </tr>
+            )}
+            {!isLoading && leaverequests.map((request, index) => (
                 <tr key={request.id || request.tempId}>
                   <td>{index + 1}</td>
                   <td>{request.leave_start}</td>

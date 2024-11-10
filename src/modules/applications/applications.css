@@ -139,9 +139,11 @@
     height: auto;
     margin: 0px 20px;
     padding: 30px 20px;
-    background-color: #d9e8f6;
+    /* background-color: #d9e8f6; */
+    background-color: lightgrey;
+
     border-radius: 10px;
-    box-shadow: 2px 7px lightgray;
+    box-shadow: 2px 7px darkgray;
 
 } 
 .applicantData div{
