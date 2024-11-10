@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './style.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faEye, faX, faComment } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faEye, faX, faComment, faImages, faCheckDouble } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputField from 'modules/generic/input';
 import InputFieldV2 from 'modules/generic/inputV2';
@@ -20,6 +20,8 @@ import WarningModal from 'modules/generic/warningModalV2'
 import API from 'services/Api'
 import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { faUpload, faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
+import { toast } from 'react-toastify'; // Import toast from react-toastify
 
 const notification = [
     {
@@ -97,6 +99,7 @@ class Setup extends Component {
           showPasswordModal: false,
           warningModal: false,
           selectedProgram: '',
+          aliasToTitle: {},
 
           selectedFiles: {
             tor: null,
@@ -105,6 +108,7 @@ class Setup extends Component {
             medical_certificate: null,
             nbi_clearance: null,
             admission_notice: null,
+            // added alias mapping
         },
         overwriteModal: false,
         discardModal: false,
@@ -155,8 +159,14 @@ class Setup extends Component {
             status: this.props.user.status,
             program: this.props.details.program,
             status: this.props.user.status,
-            profile: this.props.details.profile_picture 
+            profile: this.props.details.profile_picture ? this.props.details.profile_picture : null
         })
+        // change alias to title
+        const aliasToTitle = {};
+        files.forEach(file => {
+            aliasToTitle[file.alias] = file.title;
+        });
+        this.setState({ aliasToTitle });
       }
     //   File Section
     viewFile = (alias) => {
@@ -174,6 +184,10 @@ class Setup extends Component {
         let fileURL = null;
     
         if (file) {
+            if (file.type !== "application/pdf") {
+                toast.error("Only PDF files are allowed"); // Display an error message
+                return;
+              }
             fileURL = URL.createObjectURL(file);
             this.setState(prevState => ({
                 selectedFiles: {
@@ -183,6 +197,24 @@ class Setup extends Component {
             }), () => {
                 // Optionally, you can close the file selection window here
             });
+        }
+    };
+    handleProfilePictureChange = (event) => {
+        const file = event.target.files[0];
+        const validImageTypes = ["image/png", "image/jpeg", "image/jpg"];
+    
+        if (file) {
+            // Check if the selected file type is valid
+            if (!validImageTypes.includes(file.type)) {
+                toast.error("Invalid file type. Please upload a PNG or JPEG image.");
+                
+                // Reset the file input so that the user can select again without needing to clear manually
+                event.target.value = null;
+                return;
+            }
+    
+            // If the file type is valid, update the state
+            this.setState({ fileInput: file });
         }
     };
     handleUpdateClick = (alias) => {
@@ -234,20 +266,64 @@ class Setup extends Component {
             emailRetrieved: false
         });
     }
+    handleDisregard(){
+        this.setState({
+            warningModal: false
+        })
+    }
       
         handleChange = (event) => {
             this.setState({ program: event.target.value });
         };
       handleFileInput = () => {
         // Use the file input reference to trigger the file selection dialog
+        // if (this.fileInputRef) {
+        //     this.fileInputRef.click();
+        // }
         if (this.fileInputRef) {
+            this.fileInputRef.onchange = this.handleProfilePictureChange;
             this.fileInputRef.click();
         }
     };
+     validateSelectedFiles = () => {
+        const { selectedFiles } = this.state;
+        // Check if all entries in selectedFiles have both file and fileURL
+        return Object.values(selectedFiles).every(
+            (fileEntry) => fileEntry && fileEntry.file && fileEntry.fileURL
+        );
+    };
+    // validateSelectedFiles = () => {
+    //     const { selectedFiles, files } = this.state;
+    //     const missingFiles = [];
+    //     console.log("validate")
+    //     selectedFiles.forEach((file) => {
+    //         const fileEntry = selectedFiles[file.alias];
+    
+    //         // Check if fileEntry is valid and contains the file and fileURL properties
+    //         if (!fileEntry || !fileEntry.file || !fileEntry.fileURL) {
+    //             missingFiles.push(file.title); // Add the title of the missing file for clearer messaging
+    //         }
+    //     });
+    
+    //     if (missingFiles.length > 0) {
+    //         toast.info(`Please upload the following files: ${missingFiles.join(', ')}`);
+    //     }
+    
+    //     // Return true if there are no missing files, else return false
+    //     return missingFiles.length === 0;
+    // };
     uploadFile() {
-        const { selectedFiles, user, first_name, middle_name, last_name } = this.state;
+        const { aliasToTitle, selectedFiles, user, first_name, middle_name, last_name } = this.state;
+        // const missingFiles = this.validateSelectedFiles();
+        console.log("validate")
+
+        // if (missingFiles.length > 0) {
+        //     // Show specific missing file names
+        //     toast.info(`Please upload the following required files: ${missingFiles.join(", ")}`);
+        //     return; // Exit the function early if files are missing
+        // }
         if (!this.validateSelectedFiles()) {
-            alert("Please upload all required files.");
+            toast.info("Please upload all required files.");
             return; // Exit the function early if not validated
         }
         let formData = new FormData();
@@ -258,6 +334,9 @@ class Setup extends Component {
         formData.append('first_name', first_name);
         if(middle_name) {
             formData.append('middle_name', middle_name);
+        }else {
+            formData.append('middle_name', "");
+
         }
         formData.append('last_name', last_name);
         formData.append('program', this.state.program);
@@ -275,21 +354,26 @@ class Setup extends Component {
             this.props.setIsLoadingV2(false);
     
             if (response && response.data) {
-                alert("File(s) uploaded to server");
+                toast.success("Files successfully uploaded to server.");
 
 
                 this.updateUser()
             } else {
-                alert("There has been an error uploading your files to the server. Please try again");
+                toast.error("There has been an error uploading your files to the server. Please try again.");
                 this.handleDiscard();
             }
         }, error => {
             // Trigger loading state to false in case of an error
+            toast.error("There has been an error uploading your files to the server. Check your connection and try again");
+
             this.props.setIsLoadingV2(false);
             console.log(error);
         });
     }
+    
     updateUser(){
+        this.props.setIsLoadingV2(true);
+
         API.uploadFile('user/retrieveEmailAccountDetails', {
         email: this.state.email
         }, response => {
@@ -301,23 +385,18 @@ class Setup extends Component {
                 this.props.setDetails(response.data.details)
                 this.props.history.push('/dashboard');
             } else {
-                alert("There has been an error uploading your files to the server. Please try again");
+                toast.error("There has been an error uploading your files to the server. Please try again");
                 this.handleDiscard();
             }
         }, error => {
             // Trigger loading state to false in case of an error
+            toast.error("There has been an error uploading your files to the server. Check your connection and try again");
             this.props.setIsLoadingV2(false);
             console.log(error);
         });
     }
     
-    validateSelectedFiles = () => {
-        const { selectedFiles } = this.state;
-        // Check if all entries in selectedFiles have both file and fileURL
-        return Object.values(selectedFiles).every(
-            (fileEntry) => fileEntry && fileEntry.file && fileEntry.fileURL
-        );
-    };
+   
     
     // Profile
     uploadProfile(){
@@ -339,15 +418,17 @@ class Setup extends Component {
                 this.props.setIsLoadingV2(false);
         
                 if (response.data) {
+                    toast.success("Profile picture successfully updated.");
                     this.props.setDetails(response.data.data)
                     this.setState({
                         fileInput: null
                     })
                 } else {
-                    alert("There has been an error updating. Please try again");
+                    toast.error("There has been an error uploading your files to the server. Please try again.");
                 }
             }, error => {
                 // Set loading to false in case of an error
+                toast.error("There has been an error uploading your files to the server. Check your connection and try again");
                 this.props.setIsLoadingV2(false);
                 console.log(error);
             });
@@ -402,23 +483,24 @@ class Setup extends Component {
                         </Row>
                         <hr className='break'/>
 
-                        <Row className='Row'>
+                        <Row className='Row' style={{alignItems: 'center'}}>
                         <Col className='imageCircle'>
                         <div className='overlay'>
                             <img 
                                 className='circle' 
                                 src={
                                     this.state.fileInput 
-                                       ? URL.createObjectURL(this.state.fileInput) 
-                                        : this.props.details.profile_picture 
-                                           ? this.props.details.profile_picture 
+                                        ? URL.createObjectURL(this.state.fileInput) 
+                                        : this.props.details.profile_picture?.trim() 
+                                            ? this.props.details.profile_picture 
                                             : placeholder
-                                } 
+                                }
                                 alt='profile' 
                                 onClick={this.handleFileInput} 
                             />
                             <input 
                                 type="file" 
+                                accept="image/png, image/jpeg, image/jpg"
                                 ref={(input) => { this.fileInputRef = input; }} 
                                 onChange={this.onFileChange} 
                                 style={{ display: 'none' }}
@@ -444,11 +526,24 @@ class Setup extends Component {
                                 alignItems: 'center',
             
                             }}>
-                                <Button onClick={this.handleFileInput} variant="light"  style={{fontSize: '14px', width: 'auto', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>Update Profile Picture</Button>
+                                {/* <Button onClick={this.handleFileInput} variant="light"  style={{fontSize: '14px', width: 'auto', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>Update Profile Picture</Button> */}
+                                <div class="contentButton link">
+                                    <button onClick={this.handleFileInput} style={{display: 'flex', alignItems: 'center'}}>
+                                    <FontAwesomeIcon icon={faImages} style={{marginRight: 5}} />
+                                    <span className="upload-text">Upload Picture</span>
+                                    </button>
+                                </div>
                                 {
-                                    this.state.fileInput && (<Button disabled={this.state.fileInput ? false : true} onClick={()=>{this.openWarningModal()}} variant="light"  style={{fontSize: '14px', width: 'auto', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                    Confirm update
-                                </Button>
+                                    this.state.fileInput && (
+                                    // <Button disabled={this.state.fileInput ? false : true} onClick={()=>{this.openWarningModal()}} variant="light"  style={{fontSize: '14px', width: 'auto', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                                    // Confirm update
+                                    // </Button>
+                                    <div class="contentButton link">
+                                        <button disabled={this.state.fileInput ? false : true} onClick={()=>{this.openWarningModal()}} style={{display: 'flex', alignItems: 'center'}}>
+                                        <FontAwesomeIcon icon={faCheckDouble} style={{marginRight: 5}} />
+                                        <span className="upload-text">Confirm</span>
+                                        </button>
+                                    </div>
                                 )}
                             </Col>
                         </Row>
@@ -528,9 +623,9 @@ class Setup extends Component {
                         </Row>
                         <hr className='break'/>
                         <Row className='sectionHeader'>
-                        <p style={{fontWeight: 'bold'}}>File Uploads</p>
+                        <p style={{fontWeight: 'bold'}}>Required File Uploads</p>
                         </Row>
-                        <Row className='Row'>
+                        <Row className='Row' >
                            
 
                     {
@@ -538,7 +633,7 @@ class Setup extends Component {
                             return(
                                 <div>
                                     
-                                        <Row className='Row' key={index}>
+                                        <Row className='Row' key={index} style={{marginBottom: 10}}>
                                             <Col style={{
                                                 justifyContent: 'start',
                                                 display: 'flex'
@@ -550,8 +645,17 @@ class Setup extends Component {
                                             </Col>
                                             <Col md={4} className='switch'>
                                                 <Col>
-                                                {selectedFiles[item.alias] ? (<span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>) : ""}
-
+                                                {/* {selectedFiles[item.alias] ? (<span className='icon' onClick={() => this.viewFile(item.alias)}>Preview</span>) : ""} */}
+                                                {selectedFiles[item.alias] && 
+                                                (
+                                                <div class="contentButton link">
+                                                    <button onClick={() => this.viewFile(item.alias)} style={{display: 'flex', alignItems: 'center'}}>
+                                                    <FontAwesomeIcon icon={faMagnifyingGlass} style={{marginRight: 5}} />
+                                                    <span className="upload-text">Preview</span>
+                                                </button>
+                                                </div>
+                                                )
+                                                }
                                                 </Col>
 
                                                 <Col>
@@ -563,11 +667,17 @@ class Setup extends Component {
                                                     this.fileInputs = { ...this.fileInputs, [item.alias]: input };
                                                  }}
                                                 />
-                                                <span 
+                                                <div class="contentButton link">
+                                                <button onClick={() => this.handleUpdateClick(item.alias)} style={{display: 'flex', alignItems: 'center'}}>
+                                                    <FontAwesomeIcon icon={faUpload} style={{marginRight: 5}} />
+                                                    <span className="upload-text">Upload</span>
+                                                </button>
+                                                </div>
+                                                {/* <span 
                                                 className='icon'
                                                 onClick={() => this.handleUpdateClick(item.alias)}
                                                 >Upload
-                                                </span>
+                                                </span> */}
                                                 </Col>
                                             </Col>
                                         </Row>
@@ -589,7 +699,7 @@ class Setup extends Component {
                                 Discard
                             </Button>
                             <Button onClick={()=>{this.uploadFile()}}>
-                                Save
+                                Submit Application
                             </Button>
                         </Col>
                         </Row>
@@ -617,7 +727,7 @@ class Setup extends Component {
                         })
                         this.uploadProfile()
                 }}
-                    onHide={() => {this.handleDiscard()}}
+                    onHide={() => {this.handleDisregard()}}
                 />
                 <WarningModal
                     show={this.state.overwriteModal}
