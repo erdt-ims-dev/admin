@@ -32,7 +32,7 @@ class RemarksModal extends Component {
     // Trigger loading state to false after the API call is completed
     this.props.setIsLoadingV2(false);
     if (response && response.comments) {
-      toast.error('Comment Successfully Added.')
+      toast.success('Comment Successfully Added.')
       this.props.onHide()
       this.props.refreshList()
       this.setState({

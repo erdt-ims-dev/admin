@@ -45,26 +45,41 @@ class Status extends Component {
             Header: 'View Files',
             accessor: 'files',
             Cell: ({ cell: { row } }) => (
-              <div className='flex'>
-                <span className='link' onClick={() => this.handleView(row.original)}>View</span>
-              </div>
+              // <div className='flex'>
+              //   <span className='link' onClick={() => this.handleView(row.original)}>View</span>
+              // </div>
+              <span className='link' onClick={() => this.handleView(row.original)}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19.8898 19.0493L15.8588 15.0182C15.7869 14.9463 15.6932 14.9088 15.5932 14.9088H15.2713C16.3431 13.7495 16.9994 12.2027 16.9994 10.4997C16.9994 6.90923 14.0901 4 10.4997 4C6.90923 4 4 6.90923 4 10.4997C4 14.0901 6.90923 16.9994 10.4997 16.9994C12.2027 16.9994 13.7495 16.3431 14.9088 15.2744V15.5932C14.9088 15.6932 14.9495 15.7869 15.0182 15.8588L19.0493 19.8898C19.1961 20.0367 19.4336 20.0367 19.5805 19.8898L19.8898 19.5805C20.0367 19.4336 20.0367 19.1961 19.8898 19.0493ZM10.4997 15.9994C7.45921 15.9994 4.99995 13.5402 4.99995 10.4997C4.99995 7.45921 7.45921 4.99995 10.4997 4.99995C13.5402 4.99995 15.9994 7.45921 15.9994 10.4997C15.9994 13.5402 13.5402 15.9994 10.4997 15.9994Z" fill="#404041"/>
+                  </svg>
+                  View Files
+                  <label class="link-label">View</label>
+                </span>
             ),
           },
           {
             Header: 'Tracking',
             accessor: 'actions',
             Cell: ({ cell: { row } }) => (
-              <div className='flex'>
-                <span className='link' onClick={() => this.handleTrack(row.original)}>Track</span>
+              // <div className='flex'>
+              //   <span className='link' onClick={() => this.handleTrack(row.original)}>Track</span>
 
-              </div>
+              // </div>
+              <span className='link' onClick={() => this.handleTrack(row.original)}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.25 10.8328H12.5V9.99943H14.1667C15.276 9.99943 15.8385 8.65308 15.0495 7.86662L10.8828 3.69995C10.3932 3.21037 9.60417 3.21297 9.11458 3.69995L4.94792 7.86662C4.16406 8.65047 4.72135 9.99943 5.83333 9.99943H7.5V10.8328H3.75C3.0599 10.8328 2.5 11.3927 2.5 12.0828V15.4161C2.5 16.1062 3.0599 16.6661 3.75 16.6661H16.25C16.9401 16.6661 17.5 16.1062 17.5 15.4161V12.0828C17.5 11.3927 16.9401 10.8328 16.25 10.8328ZM5.83333 8.74943L10 4.58276L14.1667 8.74943H11.25V12.9161H8.75V8.74943H5.83333ZM16.25 15.4161H3.75V12.0828H7.5V12.9161C7.5 13.6062 8.0599 14.1661 8.75 14.1661H11.25C11.9401 14.1661 12.5 13.6062 12.5 12.9161V12.0828H16.25V15.4161ZM15.2083 13.7494C15.2083 14.0958 14.9297 14.3744 14.5833 14.3744C14.237 14.3744 13.9583 14.0958 13.9583 13.7494C13.9583 13.4031 14.237 13.1244 14.5833 13.1244C14.9297 13.1244 15.2083 13.4031 15.2083 13.7494Z" fill="#404041"/>
+                  </svg>
+                  Track Application
+                  <label class="link-label">Track</label>
+                </span>
             ),
           },
           ],
           data: [],
           list: [],
           setData: null,
-          tableLoader: true
+          tableLoader: true,
+          // id: null,
           };
       };
       // Methods
@@ -102,8 +117,13 @@ class Status extends Component {
     
     // State
     getList(callback){
+      const id = this.props.details.id;
+      if (!id) {
+        console.log("ID is not available yet");
+        return;
+    }
       API.request('scholar_request/retrieveUserApplications', {
-        id: this.props.details.id
+        id: id
       }, response => {
           if (response && response.data) {
               const details = [];
@@ -113,6 +133,7 @@ class Status extends Component {
   
               this.setState({
                   data: details,
+                  tableLoader: false,
               }, () => {
                   // Call the callback function after setting the state
                   if (typeof callback === 'function') {
@@ -121,6 +142,9 @@ class Status extends Component {
               });
           } else {
               console.log('error on retrieve');
+              this.setState({
+                tableLoader: false
+              })
               // Optionally, call the callback function with an error or a specific value
               if (typeof callback === 'function') {
                   callback(false);
@@ -135,15 +159,16 @@ class Status extends Component {
       });
   }
   
-  componentDidMount(){
-      this.getList(() => {
-          // This function will be called after getList successfully retrieves data
-          this.setState({
-              tableLoader: false,
-          });
-      });
+  componentDidMount() {
+    if (this.props.details && this.props.details.id) {
+        this.getList();
+    }
+}
+componentDidUpdate(prevProps) {
+  if (prevProps.details.id !== this.props.details.id && this.props.details.id) {
+      this.getList();
   }
-  
+}
     render() {
       const { columns, data, tableLoader, showView, showTrack,  } = this.state;
       return (
@@ -155,7 +180,7 @@ class Status extends Component {
           alignItems: "center",
         }}
       >
-        <Breadcrumbs header="List of Applications" subheader="Here Are All The Applications Submitted"/>
+        <Breadcrumbs header="List of Applications" subheader="Here Are All The Applications You Submitted"/>
       </Box>
 
       <div className="table-container">

@@ -113,23 +113,29 @@ class Tracker extends Component {
                     <Modal.Body style={{ backgroundColor: '#f1f5fb', maxHeight: '75vh', overflowX: 'hidden', overflowY: 'auto' }}>
                         <Container>
                         <Row className="Row">
-                            <Row className='Row'>
-                            <span>Date submitted: {formattedDate}</span>
-                            </Row>
+                        <Row className="Row">
+                            <span>
+                                Date submitted: <span style={{ fontWeight: 'bold' }}>{formattedDate}</span>
+                            </span>
+                        </Row>
                             <Row className='Row'>
                                 <Col>
-                                <span>Staff: {staffStatusText}</span>
-                                
+                                {/* <span>Staff Approval: {staffStatusText}</span> */}
+                                <span>
+                                    Staff Approval: <span style={{ fontWeight: 'bold' }}>{staffStatusText}</span>
+                                </span>
                                 </Col>
                                 <Col>
                                 <div className="comment-container">
-                                    <p>{`Remarks: ${comments}`}</p>
+                                    <p>{`Remarks: ${comments ? comments : "None"}`}</p>
                                 </div>
                                 </Col>
                             </Row>
                             <Row className='Row'>
-                            <span>Coordinator: {coordinatorStatusText}</span>
-                                
+                            {/* <span>Coordinator Approval: {coordinatorStatusText}</span> */}
+                            <span>
+                                Coordinator Approval: <span style={{ fontWeight: 'bold' }}>{coordinatorStatusText}</span>
+                            </span>  
                             </Row>
                                 
                             </Row>

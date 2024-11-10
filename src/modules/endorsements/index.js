@@ -159,7 +159,7 @@ class Endorsements extends Component {
 
               this.setState({
                   data: items.map(item => item.details),
-                  list: items.map(item => item.list),
+                  // list: items.map(item => item.list),
                   pageCount: Math.ceil(total / itemsPerPage),
                   totalEntries: total
               }, () => {

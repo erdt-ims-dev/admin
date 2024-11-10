@@ -353,7 +353,7 @@ class Setup extends Component {
             // Trigger loading state to false after the API call is completed
             this.props.setIsLoadingV2(false);
     
-            if (response && response.data) {
+            if (response && response.data !== null) {
                 toast.success("Files successfully uploaded to server.");
 
 

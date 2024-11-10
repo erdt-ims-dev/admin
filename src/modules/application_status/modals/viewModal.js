@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import 'modules/applications/applications.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronUp, faEye, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp, faFilePdf, faUpload } from '@fortawesome/free-solid-svg-icons'
 import Breadcrumb from 'modules/generic/breadcrumb';
 import InputField from 'modules/generic/input';
 import InputFieldV4 from 'modules/generic/inputV4';
@@ -181,14 +181,22 @@ class ViewModal extends Component {
                         <Col md={3}></Col>
                         <Col md={3} className='switch'>
                             {fileUrl && (
-                                <span
-                                    className='icon'
-                                    onClick={() => {
+                                // <span
+                                //     className='icon'
+                                //     onClick={() => {
+                                //         window.open(fileUrl, '_blank');
+                                //     }}
+                                // >
+                                //     View Uploaded File
+                                // </span>
+                                <div class="contentButton link">
+                                        <button onClick={() => {
                                         window.open(fileUrl, '_blank');
-                                    }}
-                                >
-                                    View Uploaded File
-                                </span>
+                                        }} style={{display: 'flex', alignItems: 'center'}}>
+                                        <FontAwesomeIcon icon={faFilePdf} style={{marginRight: 5}} />
+                                        <span className="upload-text">Submitted File</span>
+                                        </button>
+                                    </div>
                             )}
                         </Col>
                     </Row>

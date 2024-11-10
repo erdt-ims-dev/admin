@@ -76,6 +76,8 @@ const reducer = (state = initialState, action) => {
       };
       
     case types.SET_DETAILS:
+      console.log(action.payload.details)
+
       return {
         ...state,
         details: action.payload.details,
