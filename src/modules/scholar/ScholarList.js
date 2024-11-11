@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table, Row, Modal, Button } from "react-bootstrap";
+import Col from "react-bootstrap/Col";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Skeleton from 'react-loading-skeleton';
@@ -9,6 +10,7 @@ import "./style.scss";
 import API from 'services/Api';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { backdropClasses } from "@mui/material";
 
 const TABLE_HEADERS = ["Scholar ID", "Last Name", "First Name", "Program", "Actions"];
 
@@ -212,27 +214,40 @@ const ScholarList = () => {
       </Modal>
 
       <Modal show={show} onHide={handleClose}>
+        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
         <Modal.Header closeButton>
           <Modal.Title>Scholar Details</Modal.Title>
         </Modal.Header>
+        </div>
         <Modal.Body>
           {selectedScholar && (
             <>
-              <p>ID: {selectedScholar.id}</p>
+              <Row>
+              <Col xs={3}>Last Name:</Col><Col> {selectedScholar.account_details?.last_name}</Col>
+              </Row>
+              <Row>
+              <Col xs={3}>First Name:</Col><Col> {selectedScholar.account_details?.first_name}</Col>
+              </Row>
+              <Row>
+              <Col xs={3}>Program:</Col><Col> {selectedScholar.account_details?.program}</Col>
+              </Row>
+              <br />
+              {/* <p>ID: {selectedScholar.id}</p>
               <p>User ID: {selectedScholar.user_id}</p>
               <p>Last Name: {selectedScholar.account_details?.last_name}</p>
               <p>First Name: {selectedScholar.account_details?.first_name}</p>
-              <p>Program: {selectedScholar.account_details?.program}</p>
+              <p>Program: {selectedScholar.account_details?.program}</p> */}
             </>
           )}
           
-          <Link
+          <div className="modalActions">
+            <Link
             to={{
               pathname: `scholars/${selectedScholar?.user_id}/scholar_portfolio`,
               state: { scholar: selectedScholar }
             }}
-          >
-            <Button variant="primary" onClick={() => handleShow()}>Scholar portfolio</Button>
+            >
+              <Button variant="dark" onClick={() => handleShow()}>Scholar portfolio</Button>
           </Link>
           <Link
             to={{
@@ -240,7 +255,7 @@ const ScholarList = () => {
               state: { scholar: selectedScholar }
             }}
           >
-            <Button variant="primary" onClick={() => handleShow()}>Scholar Tasks</Button>
+            <Button variant="dark" onClick={() => handleShow()}>Scholar Tasks</Button>
           </Link>
           <Link
             to={{
@@ -248,7 +263,7 @@ const ScholarList = () => {
               state: { scholar: selectedScholar }
             }}
           >
-            <Button variant="primary" onClick={() => handleShow()}>Leave Application</Button>
+            <Button variant="dark" onClick={() => handleShow()}>Leave Application</Button>
           </Link>
           <Link
             to={{
@@ -256,11 +271,12 @@ const ScholarList = () => {
               state: { scholar: selectedScholar }
             }}
           >
-            <Button variant="primary" onClick={() => handleShow()}>Scholar Details</Button>
+            <Button variant="dark" onClick={() => handleShow()}>Scholar Details</Button>
           </Link>
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="dark" onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>

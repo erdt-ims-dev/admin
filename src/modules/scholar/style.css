@@ -9,18 +9,6 @@
   margin-right: 20px;
 }
 
-.table-container {
-  margin: 20px;
-  padding-block: 20px;
-  border-radius: 20px;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
-  margin-top: 50px;
-}
-.table-container th,
-.table-container td {
-  background-color: #d9e8f6;
-}
-
 .icon {
   color: #66a5e2;
   margin: 0px 5px;
@@ -32,54 +20,60 @@
 }
 
 .link {
+  text-align: center;
+  padding: 0;
+  margin: 0;
   margin-right: 10px;
-}/*# sourceMappingURL=style.css.map */
-
-.contentHeader {
-  height: fit-content;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 auto;
+}
+.link svg {
+  height: 24px;
+  width: 24px;
+}
+.linkhover {
+  fill: lightblue;
+  cursor: pointer;
+  background-color: #ececec;
 }
 
-.contentLabel {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  text-align: start;
-  padding: 8px 0px;
-  gap: 4px;
-  /*4px*/
+.button {
+  background-color: #007bff; /* Primary button color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
 }
 
-.contentLabel h4 {
-  font-size: 1.75rem;
+.dropzone {
+  border: 2px dashed #007bff; /* Border color */
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  background-color: #e9ecef; /* Light background for dropzone */
+  margin-bottom: 15px;
+}
+.dropzone:hover {
+  border-color: #0056b3; /* Darker border on hover */
 }
 
-.contentLabel p {
-  font-size: 14px;
+.modalActions {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, 1fr);
   margin: 0;
 }
-
-.contentButton button {
-  width: fit-content;
-  height: 40px;
-  padding: 6px 16px;
-  outline: 1px solid #2a75c0;
-  border-radius: 8px;
-  color: #2a75c0;
-  border: none;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 24px;
+.modalActions button {
+  margin: 0;
+  width: 13rem !important;
 }
 
-.contentButton button:hover {
-  background-color: #2a75c0;
-  color: #f5f5f5;
-  outline: none;
-  transition: background-color 0.3s;
-}
-
+.modal-dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 89vh;
+}/*# sourceMappingURL=style.css.map */

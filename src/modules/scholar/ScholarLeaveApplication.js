@@ -356,11 +356,11 @@ const validateField = (fieldName, value) => {
               <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly disabled/>
               {<p style={{color:'red', fontStyle:'italic'}}>{ validation.status === false ? 'Missing field' : ''}</p>}
           </Form.Group>
-          <Form.Group controlId="formStudyCategory">
+          {/* <Form.Group controlId="formStudyCategory">
               <Form.Label>Comment</Form.Label>
               <Form.Control type="text" placeholder="" onChange={(event) => handleInputChange('status', event)} value={''} readOnly disabled/>
-              {/* {newLeaveRequest.comment_id === '' && <p style={{color:'red', fontStyle:'italic'}}>enter comment</p>} */}
-          </Form.Group>
+            {newLeaveRequest.comment_id === '' && <p style={{color:'red', fontStyle:'italic'}}>enter comment</p>}
+          </Form.Group> */}
         </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -486,16 +486,45 @@ const validateField = (fieldName, value) => {
                   <td>{index + 1}</td>
                   <td>{request.leave_start}</td>
                   <td>{request.leave_end}</td>
-                  <td> <a href={request.leave_letter} target="_blank" rel="noreferrer noopener">View File</a></td>
+                  <td style={{ textAlign: "center" }}>
+                  {/* <span className='link'>
+                    <a href={request.leave_letter} target="_blank" rel="noreferrer noopener">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M27.8453 16.9608L24.8549 13.9479C24.5403 13.6312 23.9999 13.8537 23.9999 14.3V16.3366H19.9999V10.8325C19.9999 10.3033 19.7845 9.79082 19.4095 9.41624L15.9141 5.92084C15.5391 5.54584 15.0308 5.33334 14.502 5.33334H5.99957C4.89583 5.33751 4 6.23334 4 7.33708V24.667C4 25.7708 4.89583 26.6666 5.99957 26.6666H17.997C19.1012 26.6666 19.9999 25.7708 19.9999 24.667V20.3362H17.9999V24.667H5.99957V7.33708H12.665V11.6696C12.665 12.2237 13.1108 12.6691 13.665 12.6691H17.9999V16.3362H11.1666C10.8904 16.3362 10.6666 16.56 10.6666 16.8362V17.8362C10.6666 18.1125 10.8904 18.3362 11.1666 18.3362H23.9999V20.3729C23.9999 20.8191 24.5403 21.0416 24.8549 20.7249L27.8453 17.712C28.0516 17.5041 28.0516 17.1687 27.8453 16.9608ZM14.6645 10.6696V7.49958L17.8349 10.6696H14.6645Z" fill="#404041"/>
+                    </svg>
+                    </a>
+                  </span> */}
+                  <span className='link'>
+                    <a href={request.leave_letter} target="_blank" rel="noreferrer noopener">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M27.8453 16.9608L24.8549 13.9479C24.5403 13.6312 23.9999 13.8537 23.9999 14.3V16.3366H19.9999V10.8325C19.9999 10.3033 19.7845 9.79082 19.4095 9.41624L15.9141 5.92084C15.5391 5.54584 15.0308 5.33334 14.502 5.33334H5.99957C4.89583 5.33751 4 6.23334 4 7.33708V24.667C4 25.7708 4.89583 26.6666 5.99957 26.6666H17.997C19.1012 26.6666 19.9999 25.7708 19.9999 24.667V20.3362H17.9999V24.667H5.99957V7.33708H12.665V11.6696C12.665 12.2237 13.1108 12.6691 13.665 12.6691H17.9999V16.3362H11.1666C10.8904 16.3362 10.6666 16.56 10.6666 16.8362V17.8362C10.6666 18.1125 10.8904 18.3362 11.1666 18.3362H23.9999V20.3729C23.9999 20.8191 24.5403 21.0416 24.8549 20.7249L27.8453 17.712C28.0516 17.5041 28.0516 17.1687 27.8453 16.9608ZM14.6645 10.6696V7.49958L17.8349 10.6696H14.6645Z" fill="#404041"/>
+                    </svg>
+                    </a>
+                    <label className='link-label' style={{ width: "4rem" }}>View file</label>
+                  </span>
+                  </td>
                   <td>{request.status}</td>
                   <td>{request.comment_id}</td>
-                  <td>
-                    <span className='link' 
+                  <td style={{ textAlign: "center" }}>
+                    {/* <span className='link' 
                           onClick={() => handleEditRequestShow(request)} 
-                          >Edit</span>
-                    <span className='link' 
+                  >Edit</span>
+                   */}
+                  <span className='link' onClick={() => handleEditRequestShow(request)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M19.8898 19.0493L15.8588 15.0182C15.7869 14.9463 15.6932 14.9088 15.5932 14.9088H15.2713C16.3431 13.7495 16.9994 12.2027 16.9994 10.4997C16.9994 6.90923 14.0901 4 10.4997 4C6.90923 4 4 6.90923 4 10.4997C4 14.0901 6.90923 16.9994 10.4997 16.9994C12.2027 16.9994 13.7495 16.3431 14.9088 15.2744V15.5932C14.9088 15.6932 14.9495 15.7869 15.0182 15.8588L19.0493 19.8898C19.1961 20.0367 19.4336 20.0367 19.5805 19.8898L19.8898 19.5805C20.0367 19.4336 20.0367 19.1961 19.8898 19.0493ZM10.4997 15.9994C7.45921 15.9994 4.99995 13.5402 4.99995 10.4997C4.99995 7.45921 7.45921 4.99995 10.4997 4.99995C13.5402 4.99995 15.9994 7.45921 15.9994 10.4997C15.9994 13.5402 13.5402 15.9994 10.4997 15.9994Z" fill="#404041"/>
+                    </svg>
+                    <label className='link-label'>View</label>
+                  </span>
+                    {/* <span className='link' 
                           onClick={() => handleDeleteRequestShow(request)}
-                          >Delete</span>
+                          >Delete</span> */}
+                  <span className='link' onClick={() => (handleDeleteRequestShow(request))}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13.4874 11.9998L16.8537 8.63358C17.0484 8.4389 17.0484 8.12296 16.8537 7.92796L16.0715 7.14577C15.8768 6.95108 15.5608 6.95108 15.3658 7.14577L11.9998 10.5123L8.63354 7.14604C8.43884 6.95134 8.12291 6.95134 7.92721 7.14604L7.14503 7.92823C6.95033 8.12293 6.95033 8.43887 7.14503 8.63357L10.5113 11.9998L7.14503 15.366L7.92721 16.1482C8.12291 16.3429 8.43884 16.3429 8.63354 16.1482L11.9998 12.781L15.3658 16.1479C15.5605 16.3426 15.8764 16.3426 16.0711 16.1479L16.8537 15.366L13.4874 11.9998Z" fill="#404041"/>
+                    </svg>
+                    <label className='link-label'>Delete</label>
+                  </span>
                   </td>
                 </tr>
               ))}
