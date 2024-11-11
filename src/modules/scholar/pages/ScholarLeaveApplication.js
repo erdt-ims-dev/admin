@@ -1,7 +1,7 @@
 import { useEffect, useState , useRef} from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { Table, Button, Modal, Form } from "react-bootstrap";
+import { Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
 import API from 'services/Api'
 import { v4 as uuidv4 } from 'uuid';
 import Stack from 'modules/generic/spinnerV2';
@@ -227,11 +227,11 @@ const validateField = (fieldName, value) => {
     {isLoading && <Stack />}
     <div style={{ float:'left', textAlign:'left'}}>
       <h3>welcome {details.last_name} {details.first_name}</h3>
-      <p>This is the Scholar Leave Request page</p>
+      <p>This is the Scholar Leave Request page1</p>
     </div>
     <Button 
             onClick={handleShow} 
-            style={{float:'right', marginTop:'1rem'}}> Add New Request </Button>
+            style={{float:'right', marginTop:'1rem'}}> Add New Request 1</Button>
     {/* error modal */}
     <Modal show={errorModal} onHide={errorClose}>
         <Modal.Header closeButton>
@@ -276,16 +276,32 @@ const validateField = (fieldName, value) => {
         <Modal.Body>
         <Form>
           <Form.Group controlId="formStudyName">
+          <Row>
+              <Col xs={3}>
               <Form.Label>Leave Start</Form.Label>
+              </Col>
               {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_start', event)}></input>
+              <Col>
+              <input type="date" placeholder=" Ex: 2024-03-19" style={{ marginLeft: '1rem' }} onChange={(event) => handleInputChange('leave_start', event)}></input>
+              </Col>
+              <Col>
               {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_start === false ? 'enter leave start' : ''}</p>}
+              </Col>
+          </Row>
           </Form.Group>
           <Form.Group controlId="formStudy">
+          <Row>
+              <Col xs={3}>
               <Form.Label>Leave End</Form.Label>
+              </Col>
+              <Col>
               {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
+              </Col>
+              <Col>
               {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_end === false ? 'enter leave end' : ''}</p>}
+              </Col>
+          </Row>
           </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>

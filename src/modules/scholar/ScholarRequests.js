@@ -39,7 +39,7 @@ function ScholarRequests() {
   return (
     <>
     <h3>welcome {scholar.account_details.last_name} {scholar.account_details.first_name}</h3>
-    <p>This is the Scholar Requests page</p>
+    <p>This is the Scholar Requests page1</p>
     <table>
       <thead>
         <tr>
