@@ -3,6 +3,7 @@
   height: 15vh;
   padding: 1%;
 }
+/* *{outline: 1px solid #10b798;} */
 .uscLogo{
 
 }
@@ -95,6 +96,7 @@ width: 40%;
   font-size: 10px;
   width: fit-content;
   font-weight: 500;
+  margin-left: 1rem;
 }
 /* Sidebard */
 .sidebarContainer{
@@ -300,6 +302,8 @@ display: flex;
 justify-content: start; /* Center the logo horizontally */
 align-items: center; /* Center the logo vertically */
 height: 100px; /* Adjust based on your needs */
+gap: 0.5rem;
+margin-top: 0.5rem;
 }
 
 .logo {

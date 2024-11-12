@@ -15,21 +15,24 @@ export class Footer extends Component {
               <div className='logo-container'>
                   <div className='logo-item'>
                       <img style={{
+                        height: 75,
+                        width: 75
+                      }} src={SOE} alt="DCISM Logo" />
+                  </div>
+                  <div className='logo-item'>
+                      <img style={{
                         height: 100,
                         width: 200
                       }} src={USCLogo} alt="USC Logo" />
                   </div>
+                <div className='disclaimer'>
+                  <p>BINDR @ 2023-2024. All Rights Reserved</p>
+                </div>
                   <div className='logo-item'>
                       <img style={{
                         height: 100,
                         width: 200
                       }} src={DCISM} alt="DCISM Logo" />
-                  </div>
-                  <div className='logo-item'>
-                      <img style={{
-                        height: 75,
-                        width: 75
-                      }} src={SOE} alt="DCISM Logo" />
                   </div>
                   <div className='logo-item'>
                       <img style={{
@@ -43,6 +46,7 @@ export class Footer extends Component {
                         width: 250
                       }} src={Bindr} alt="DCISM Logo" />
                   </div> */}
+                
               </div>
               {/* <div className='details'>
               <List className='footerLinks'>
@@ -62,9 +66,6 @@ export class Footer extends Component {
                 
               </List>
               </div> */}
-              <div className='disclaimer'>
-                <p>BINDR @ 2023-2024. All Rights Reserved</p>
-              </div>
             </div>
             </div>
         )
