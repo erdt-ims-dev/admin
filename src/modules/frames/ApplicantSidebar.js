@@ -24,9 +24,9 @@ import {
   faList,
   faClipboardCheck
 } from "@fortawesome/free-solid-svg-icons";
-
-import "./style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./style.css";
+
 
 // Modify 'item' as needed
 const item = [

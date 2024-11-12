@@ -10,7 +10,10 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
 import "./style.scss";
 import { useDispatch, useSelector } from 'react-redux';
-
+import { 
+    faCloudArrowDown
+  } from "@fortawesome/free-solid-svg-icons";
+  import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const TABLE_HEADERS = ["#", "Study Name", "Study", "Study Category", "Publish Type", "Action"];
 
 function ScholarPortfolio() {
@@ -72,24 +75,30 @@ function ScholarPortfolio() {
     const handleFileChange = (event) => {
         // Handle file selection, whether through dropzone or file input
         const files = event.target.files ? Array.from(event.target.files) : [];
-    
-        if (files.length > 0) {
-            if (files.length + selectedFiles.length > 5) {
-                toast.error('You can only upload up to 5 files.');
-                return;
+         // Filter valid files and check file types and sizes
+        const validFiles = [];
+        const invalidFiles = [];
+        files.forEach(file => {
+            if (!file.name.endsWith('.zip') && !file.name.endsWith('.rar')) {
+                invalidFiles.push(`${file.name} is not a ZIP or RAR file.`);
+            } else if (file.size > 10485760) { // 10MB in bytes
+                invalidFiles.push(`${file.name} exceeds the 10MB size limit.`);
+            } else {
+                validFiles.push(file);
             }
-    
-            // Filter out non-PDF files
-            const validFiles = files.filter(file => file.type === 'application/pdf');
-    
-            if (validFiles.length !== files.length) {
-                toast.error('Only PDF files are allowed!');
-                return;
-            }
-    
-            // Update selected files
-            setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
+        });
+        // Display errors for invalid files
+        if (invalidFiles.length > 0) {
+            invalidFiles.forEach(error => toast.error(error));
+            return;
         }
+        // Limit to 5 files
+        if (validFiles.length + selectedFiles.length > 5) {
+            toast.error('You can only upload up to 5 zip/rar files.');
+            return;
+        }
+        // Update selected files state
+        setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
     };
     
   
@@ -103,7 +112,7 @@ function ScholarPortfolio() {
             }
             setIsLoading(false); // End loading after data fetch
         }, error => {
-            toast.error('Error retrieving portfolios');
+            toast.error('Error retrieving portfolios. Check your connection and try again');
             setIsLoading(false);
         });
     };
@@ -153,7 +162,7 @@ function ScholarPortfolio() {
             selectedFiles.forEach((file, index) => {
                 formData.append('study[]', file); // Use 'study[]' to handle multiple files
             });
-            API.uploadFile('scholar_portfolio/create', formData, response => {
+            API.uploadFile('scholar_portfolio/upload', formData, response => {
                 if (!response.data.error) {
                     const newPortfolio = { ...response.data, tempId: uuidv4() };
                     setPortfolios(prevTasks => [...prevTasks, newPortfolio]);
@@ -190,24 +199,26 @@ function ScholarPortfolio() {
       formData.append('scholar_id', newPortfolios.id);
       formData.append('study_name', selectedPortfolio.study_name);
   
-      // Handle file update: use `selectedPortfolio.study` or `studyFile` if a new file is uploaded
-      formData.append('study', selectedPortfolio.study ? selectedPortfolio.study : studyFile.current.files[0]);
+      // Append all selected files like in createNewPortfolio
+    selectedFiles.forEach((file, index) => {
+        formData.append('study[]', file)
+    });
   
       formData.append('study_category', selectedPortfolio.study_category);
       formData.append('publish_type', selectedPortfolio.publish_type);
   
-      API.uploadFile('scholar_portfolio/updateOne', formData, 
+      API.uploadFile('scholar_portfolio/uploadEdit', formData, 
           (response) => {
               if (!response.data.error) {
-                  toast.success('Portfolio updated successfully');
-                  fetchPortfolio(); // Refresh portfolio list
+                toast.success('Portfolio updated successfully');
+                fetchPortfolio(); // Refresh portfolio list
+                setEditShow(false); // Close edit modal
+                setSelectedFiles([]); // Clear the selected files for future edits
               } else {
                   toast.error('Error updating portfolio');
               }
               setIsLoading(false); // End loading
               setIsLoadingV2(false);
-
-              setEditShow(false);  // Close edit modal
           }, 
           (error) => {
               console.log(error);
@@ -253,19 +264,24 @@ function ScholarPortfolio() {
         fetchPortfolio();
     }, []);
 
-    const onDrop = (acceptedFiles) => {
-        if (acceptedFiles && acceptedFiles.length > 0) {
-            if (acceptedFiles.length + selectedFiles.length <= 5) {
-                setSelectedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-            } else {
-                toast.error('You can only upload up to 5 files!');
-            }
-        }
-    };
+    // const onDrop = (acceptedFiles) => {
+    //     if (acceptedFiles && acceptedFiles.length > 0) {
+    //         // Check if the total files do not exceed 5
+    //         if (selectedFiles.length + acceptedFiles.length <= 5) {
+    //             // Update state based on the previous state value
+    //             setSelectedFiles((prevFiles) => {
+    //                 const updatedFiles = [...prevFiles, ...acceptedFiles];
+    //                 return updatedFiles; // Return the new array of files
+    //             });
+    //         } else {
+    //             toast.error('You can only upload up to 5 files!');
+    //         }
+    //     }
+    // };
     const resetFiles = () => {
         setSelectedFiles([]);
     };
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: '.pdf' });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleFileChange, accept: '.zip, .rar' });
 
     return (
       <>
@@ -338,24 +354,18 @@ function ScholarPortfolio() {
                                 onClick={resetFiles}
                                 style={{ paddingLeft: '10px', color: 'blue', textDecoration: 'underline', fontSize: '10px' }}
                             >
-                                Reset
+                                Clear
                             </Button>
                         </Form.Label>
-                        {/* <input
-                            type="file"
-                            multiple
-                            onChange={handleFileChange} // Updated handler
-                            accept="application/pdf"
-                        /> */}
                         <div {...getRootProps()} className="dropzone">
-                            <input {...getInputProps()} onChange={handleFileChange} />
+                            <input {...getInputProps()} onChange={handleFileChange}/>
                             {isDragActive ? (
                                 <p>Drop the files here...</p>
                             ) : (
-                                <p>Drag and drop files here, or click to select them</p>
+                                <p>Click here to select ZIP/RAR files</p>
                             )}
                         </div>
-                        {selectedFiles && selectedFiles.length > 0 && (
+                        {selectedFiles.length > 0 && (
                             <div>
                                 <ul>
                                     {selectedFiles.map((file, index) => (
@@ -391,14 +401,7 @@ function ScholarPortfolio() {
                             value={selectedPortfolio?.study_name || ''} 
                         />
                     </Form.Group>
-                    <Form.Group controlId="formStudy">
-                        <Form.Label>Study</Form.Label>
-                        <Form.Control 
-                            type="file" 
-                            onChange={(event) => handleFileChange('study', event)} 
-                            ref={studyFile} 
-                        />
-                    </Form.Group>
+                    
                     <Form.Group controlId="formStudyCategory">
                         <Form.Label>Study Category</Form.Label>
                         <Form.Select
@@ -424,6 +427,38 @@ function ScholarPortfolio() {
                             <option value="Local">Local</option>
                             <option value="International">International</option>
                         </Form.Select>
+                    </Form.Group>
+                    <Form.Group controlId="formStudy">
+                        <Form.Label>
+                            Files
+                            <Button
+                                variant="link"
+                                onClick={resetFiles}
+                                style={{ paddingLeft: '10px', color: 'blue', textDecoration: 'underline', fontSize: '10px' }}
+                            >
+                                Clear
+                            </Button>
+                        </Form.Label>
+                        <div {...getRootProps()} className="dropzone">
+                            <input {...getInputProps()} onChange={handleFileChange}/>
+                            {isDragActive ? (
+                                <p>Drop the files here...</p>
+                            ) : (
+                                <p>Click here to select ZIP/RAR files</p>
+                            )}
+                        </div>
+                        {selectedFiles.length > 0 && (
+                            <div>
+                                <ul>
+                                    {selectedFiles.map((file, index) => (
+                                        <li key={index}>{file.name}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        {!validation.study && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Please select files</p>
+                        )}
                     </Form.Group>
                 </Form>
             </Modal.Body>
@@ -474,7 +509,7 @@ function ScholarPortfolio() {
                                         JSON.parse(portfolio.study).map((url, urlIndex) => (
                                             <div key={urlIndex}>
                                                 <a href={url} target="_blank" rel="noreferrer noopener">
-                                                    View link {urlIndex + 1}
+                                                    Download File
                                                 </a>
                                             </div>
                                         ))
@@ -485,8 +520,20 @@ function ScholarPortfolio() {
                                 <td>{portfolio.study_category}</td>
                                 <td>{portfolio.publish_type}</td>
                                 <td>
-                                    <span className="link" onClick={() => handleEditShow(portfolio)}>Edit</span>
-                                    <span className="link" onClick={() => handleDeleteShow(portfolio)}> Delete</span>
+                                    <span className='link' onClick={() => handleEditShow(portfolio)}>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15.5721 14.7789L16.5722 13.779C16.7284 13.6228 17.0003 13.7322 17.0003 13.9571V18.5002C17.0003 19.3282 16.3284 20 15.5003 20H4.50003C3.67189 20 3 19.3282 3 18.5002V7.50183C3 6.67383 3.67189 6.00205 4.50003 6.00205H13.0471C13.269 6.00205 13.3815 6.27076 13.2252 6.43011L12.2252 7.42997C12.1783 7.47683 12.1158 7.50183 12.0471 7.50183H4.50003V18.5002H15.5003V14.9539C15.5003 14.8882 15.5253 14.8258 15.5721 14.7789ZM20.466 8.47356L12.2596 16.6786L9.43451 16.9911C8.61575 17.0817 7.91886 16.3912 8.00948 15.5663L8.32199 12.7417L16.5284 4.53664C17.2441 3.82112 18.4003 3.82112 19.1128 4.53664L20.4629 5.88644C21.1785 6.60196 21.1785 7.76117 20.466 8.47356ZM17.3784 9.43905L15.5628 7.62369L9.7564 13.4322L9.52827 15.4725L11.5689 15.2444L17.3784 9.43905ZM19.4035 6.94879L18.0535 5.59898C17.9253 5.47088 17.7159 5.47088 17.5909 5.59898L16.6253 6.56447L18.441 8.37983L19.4066 7.41434C19.5316 7.28311 19.5316 7.07689 19.4035 6.94879Z" fill="#404041"/>
+                                    </svg>
+                                    <label class="link-label">Edit</label>
+                                    </span>
+                                    <span className='link' onClick={() => handleDeleteShow(portfolio)}>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M13.4874 11.9998L16.8537 8.63358C17.0484 8.4389 17.0484 8.12296 16.8537 7.92796L16.0715 7.14577C15.8768 6.95108 15.5608 6.95108 15.3658 7.14577L11.9998 10.5123L8.63354 7.14608C8.43885 6.9514 8.12291 6.9514 7.92791 7.14608L7.14602 7.92796C6.95133 8.12265 6.95133 8.43858 7.14602 8.63358L10.5123 11.9998L7.14602 15.3661C6.95133 15.5608 6.95133 15.8767 7.14602 16.0717L7.92822 16.8539C8.12291 17.0486 8.43885 17.0486 8.63385 16.8539L11.9998 13.4873L15.3661 16.8536C15.5608 17.0483 15.8768 17.0483 16.0718 16.8536L16.854 16.0714C17.0487 15.8767 17.0487 15.5608 16.854 15.3658L13.4874 11.9998Z" fill="red"/>
+                                    </svg>
+                                    <label class="link-label">Delete</label>
+                                    </span>
+                                    {/* <span className="link" onClick={() => handleEditShow(portfolio)}>Edit</span> */}
+                                    {/* <span className="link" onClick={() => handleDeleteShow(portfolio)}> Delete</span> */}
                                 </td>
                             </tr>
                         ))
