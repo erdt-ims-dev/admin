@@ -1,6 +1,6 @@
 import { useEffect, useState , useRef} from "react";
 import { useLocation } from 'react-router-dom';
-import { Table, Button, Modal, Form } from "react-bootstrap";
+import { Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
 import API from 'services/Api'
 import { v4 as uuidv4 } from 'uuid';
 import Skeleton from 'react-loading-skeleton';
@@ -291,11 +291,11 @@ function ScholarLeaveApplication() {
     <>
     <div class="contentHeader">
       <div class="contentLabel">
-        <h4>Scholar Leave Request1</h4>
+        <h4>Scholar Leave Request</h4>
         <p>This is the Scholar Leave Request page</p>
       </div>
       <div class="contentButton">
-        <button onClick={handleShow}>+ Add New</button>
+        <button onClick={handleShow}>+ Add New11</button>
       </div>
     </div>
     
@@ -314,9 +314,11 @@ function ScholarLeaveApplication() {
     
     {/* add record modal */}
     <Modal show={show} onHide={handleClose}>
+        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
         <Modal.Header closeButton>
           <Modal.Title>Add New Leave Application</Modal.Title>
         </Modal.Header>
+        </div>
         <Modal.Body>
         <Form onSubmit={createRequest}>
           {/* <p style={{marginLeft:'1rem', marginBottom:'1rem', fontStyle:'italic'}}>please fill all the fields below</p> */}
@@ -325,28 +327,44 @@ function ScholarLeaveApplication() {
               <Form.Control type="text" placeholder="Enter ID" onChange={(event) => { handleInputChange('id', event)}}/>
               {/* <input type="text" placeholder=" User ID" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('id', event)}></input> */}
               {<p style={{color:'red', fontStyle:'italic'}}>{ validation.id === false ? 'enter id' : ''}</p>}
-          </Form.Group>
+          </Form.Group><br/>
           <Form.Group controlId="formStudyName">
+          <Row>
+            <Col xs={3}>
               <Form.Label>Leave Start:</Form.Label>
+            </Col>  
+            <Col>
               {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => { handleInputChange('leave_start', event)}}></input>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_start === false ? 'enter date' : ''}</p>}
+            </Col>  
+            <Col>
+              {<p style={{ color: 'red', fontStyle: 'italic' }}>{validation.leave_start === false ? 'enter date' : ''}</p>}
+            </Col>
+          </Row>
           </Form.Group>
           <Form.Group controlId="formStudy">
+          <Row>
+            <Col xs={3}>
               <Form.Label>Leave End:</Form.Label>
+            </Col>  
+            <Col>
               {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_end === false ? 'enter date' : ''}</p>}
-          </Form.Group>
+            </Col>  
+            <Col>
+              {<p style={{ color: 'red', fontStyle: 'italic' }}>{validation.leave_end === false ? 'enter date' : ''}</p>}
+          </Col>
+          </Row>
+          </Form.Group><br />
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter:</Form.Label>
               <Form.Control type="file" placeholder="Enter Study Category" ref={letterFile} onChange={(event) => handleInputChange('leave_letter', event)} />
               {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_letter === false ? 'enter file' : ''}</p>}
-          </Form.Group>
+          </Form.Group><br/>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status:</Form.Label>
               <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly/>
-          </Form.Group>
+          </Form.Group><br/>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Comment:</Form.Label>
               <Form.Control type="text" placeholder="Enter Comment" onChange={(event) => handleInputChange('comment', event)}/>
@@ -358,7 +376,7 @@ function ScholarLeaveApplication() {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={createRequest}>
+          <Button variant="dark" onClick={createRequest}>
             Submit
           </Button>
         </Modal.Footer>

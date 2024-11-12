@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
-import { Table, Button, Modal, Form } from "react-bootstrap";
+import { Table, Row, Col, Button, Modal, Form } from "react-bootstrap";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify'; // Toast notification
 import API from 'services/Api';
@@ -329,28 +329,46 @@ const validateField = (fieldName, value) => {
       </tbody>
     </table> */}
     <Modal show={show} onHide={handleClose}>
+        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
         <Modal.Header closeButton>
           <Modal.Title>Add New Leave Application</Modal.Title>
         </Modal.Header>
+        </div>
         <Modal.Body>
         <Form>
-          <Form.Group controlId="formStudyName">
+            <Form.Group controlId="formStudyName">
+          <Row>
+              <Col xs={3}>
               <Form.Label>Leave Start</Form.Label>
               {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_start', event)}></input>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_start === false ? 'Missing field' : ''}</p>}
-          </Form.Group>
+              </Col>
+              <Col>
+                <input type="date" placeholder=" Ex: 2024-03-19" style={{ marginLeft: '1rem' }} onChange={(event) => handleInputChange('leave_start', event)}></input>
+              </Col>
+              <Col>
+                {<p style={{ color: 'red', fontStyle: 'italic' }}>{validation.leave_start === false ? 'Missing field' : ''}</p>}
+              </Col>
+          </Row>
+          </Form.Group><br/>
           <Form.Group controlId="formStudy">
-              <Form.Label>Leave End</Form.Label>
+          <Row>
+              <Col xs={3}>
+                <Form.Label>Leave End</Form.Label>
+              </Col>
+              <Col>
               {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_end === false ? 'Missing field' : ''}</p>}
-          </Form.Group>
+              </Col>
+              <Col>
+              {<p style={{ color: 'red', fontStyle: 'italic' }}>{validation.leave_end === false ? 'Missing field' : ''}</p>}
+          </Col>
+          </Row>
+          </Form.Group><br/>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>
               <Form.Control type="file" placeholder="Enter Study Category" onChange={(event) => handleInputChange('leave_letter', event)} ref={letterFile}/>
               {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_letter === false ? 'Missing file' : ''}</p>}
-          </Form.Group>
+          </Form.Group><br/>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
               <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly disabled/>
@@ -367,7 +385,7 @@ const validateField = (fieldName, value) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={createRequest}>
+          <Button variant="dark" onClick={createRequest}>
             Submit
           </Button>
         </Modal.Footer>
