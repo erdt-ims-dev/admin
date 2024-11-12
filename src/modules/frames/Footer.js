@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Bindr from 'assets/img/bindr-white-long-alpha.png'
 import USCLogo from 'assets/img/usc.png'
 import DCISM from 'assets/img/dcism.png'
+import ERDT from 'assets/img/EDRTLogo.png'
+import SOE from 'assets/img/SOELogo.png'
 import './style.css'
 import { ListItem, List } from '@mui/material';
 
@@ -22,6 +24,18 @@ export class Footer extends Component {
                         height: 100,
                         width: 200
                       }} src={DCISM} alt="DCISM Logo" />
+                  </div>
+                  <div className='logo-item'>
+                      <img style={{
+                        height: 75,
+                        width: 75
+                      }} src={SOE} alt="DCISM Logo" />
+                  </div>
+                  <div className='logo-item'>
+                      <img style={{
+                        height: 75,
+                        width: 75
+                      }} src={ERDT} alt="DCISM Logo" />
                   </div>
                   {/* <div className='logo-item'>
                       <img style={{

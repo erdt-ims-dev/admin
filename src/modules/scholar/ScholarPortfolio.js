@@ -469,12 +469,18 @@ function ScholarPortfolio() {
                                 <td>{index + 1}</td>
                                 <td>{portfolio.study_name}</td>
                                 <td>
-                                    {/* Parse the 'study' JSON string and loop through the URLs */}
-                                    {JSON.parse(portfolio.study).map((url, urlIndex) => (
-                                        <div key={urlIndex}>
-                                            <a href={url} target="_blank" rel="noreferrer noopener">View link {urlIndex + 1}</a>
-                                        </div>
-                                    ))}
+                                    {/* Check if 'portfolio.study' is a valid JSON string and not null/undefined */}
+                                    {portfolio.study ? (
+                                        JSON.parse(portfolio.study).map((url, urlIndex) => (
+                                            <div key={urlIndex}>
+                                                <a href={url} target="_blank" rel="noreferrer noopener">
+                                                    View link {urlIndex + 1}
+                                                </a>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No files available</p>
+                                    )}
                                 </td>
                                 <td>{portfolio.study_category}</td>
                                 <td>{portfolio.publish_type}</td>
