@@ -9,6 +9,8 @@ import Stack from '../generic/spinnerV2';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDropzone } from 'react-dropzone';
+
 const TABLE_HEADERS = ["#", "Leave Start", "Leave End", "Leave Letter", "Status", "Comment", "Action"];
 
 function ScholarLeaveApplication() {
@@ -34,9 +36,9 @@ function ScholarLeaveApplication() {
   //error modal
   const [validation, setValidation] = useState({ 
     id: true,
-    leave_start: true,
-    leave_end: true,
-    leave_letter: true,
+    year: true,
+    semester: true,
+    file: true,
     status: true,
     comment: true,
     comment_id: true,
@@ -45,7 +47,7 @@ function ScholarLeaveApplication() {
   const [error, setError] = useState([]);
   const [errorModal, setErrorModal] = useState(false); 
   const [show, setShow] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState([]);
   const [editRequestShow, setEditRequestShow] = useState(false);
 
   const errorClose = () => setErrorModal(false);
@@ -55,12 +57,9 @@ function ScholarLeaveApplication() {
     setError([]);
     setValidation({
       id: true,
-      leave_start: true,
-      leave_end: true,
-      leave_letter: true,
-      status: true,
-      comment: true,
-      comment_id: true,
+      year: true,
+      semester: true,
+      file: true,
     });
     setShow(false);
   };
@@ -94,17 +93,45 @@ function ScholarLeaveApplication() {
     // Validate the new state immediately after setting it
     validateField(fieldName, event.target.value);
   };
-  const handleFileChange = (fieldName, event) => {
-    const file = event.target.files[0];
-      setNewLeaveRequest((prevState) => ({
-      ...prevState,
-        [fieldName]: file,
-      }));
+  // const handleFileChange = (fieldName, event) => {
+  //   const file = event.target.files[0];
+  //     setNewLeaveRequest((prevState) => ({
+  //     ...prevState,
+  //       [fieldName]: file,
+  //     }));
       
-      if (selectedRequest) {
-        setSelectedRequest({...selectedRequest, [fieldName]: file });
-      }
-  };
+  //     if (selectedRequest) {
+  //       setSelectedRequest({...selectedRequest, [fieldName]: file });
+  //     }
+  // };
+  const handleFileChange = (event) => {
+    // Handle file selection, whether through dropzone or file input
+    const files = event.target.files ? Array.from(event.target.files) : [];
+     // Filter valid files and check file types and sizes
+    const validFiles = [];
+    const invalidFiles = [];
+    files.forEach(file => {
+        if (!file.name.endsWith('.zip') && !file.name.endsWith('.rar')) {
+            invalidFiles.push(`${file.name} is not a ZIP or RAR file.`);
+        } else if (file.size > 10485760) { // 10MB in bytes
+            invalidFiles.push(`${file.name} exceeds the 10MB size limit.`);
+        } else {
+            validFiles.push(file);
+        }
+    });
+    // Display errors for invalid files
+    if (invalidFiles.length > 0) {
+        invalidFiles.forEach(error => toast.error(error));
+        return;
+    }
+    // Limit to 5 files
+    if (validFiles.length + selectedRequest.length > 5) {
+        toast.error('You can only upload up to 5 zip/rar files.');
+        return;
+    }
+    // Update selected files state
+    setSelectedRequest(prevFiles => [...prevFiles, ...validFiles]);
+};
 // Helper function to validate a single field
 const validateField = (fieldName, value) => {
   if (!value) {
@@ -163,8 +190,8 @@ const validateField = (fieldName, value) => {
     if (formValidation()) {
       const formData = new FormData();
       formData.append('user_id', newLeaveRequest.id);
-      formData.append('leave_letter', letterFile.current.files[0]);
-      formData.append('leave_start', newLeaveRequest.leave_start);
+      formData.append('year', letterFile.current.files[0]);
+      formData.append('semester', newLeaveRequest.leave_start);
       formData.append('leave_end', newLeaveRequest.leave_end);
       formData.append('status', newLeaveRequest.status);
       formData.append('comment_id', newLeaveRequest.comment_id);
@@ -269,7 +296,18 @@ const validateField = (fieldName, value) => {
   useEffect(() => {
     fetchRequests();
   }, []);
-
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleFileChange, accept: '.zip, .rar' });
+  const resetFiles = () => {
+    setSelectedRequest([]);
+    setNewLeaveRequest({
+      id: scholar.id,
+      year: '',
+      semester: '',
+      // leave_letter: '',
+      status: 'pending',
+      comment_id: 'no comment',
+        })
+};
 
   return (
     <>
@@ -336,44 +374,80 @@ const validateField = (fieldName, value) => {
         </div>
         <Modal.Body>
         <Form>
-            <Form.Group controlId="formStudyName">
-          <Row>
-              <Col xs={3}>
-              <Form.Label>Leave Start</Form.Label>
-              {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
-              </Col>
-              <Col>
-                <input type="date" placeholder=" Ex: 2024-03-19" style={{ marginLeft: '1rem' }} onChange={(event) => handleInputChange('leave_start', event)}></input>
-              </Col>
-              <Col>
-                {<p style={{ color: 'red', fontStyle: 'italic' }}>{validation.leave_start === false ? 'Missing field' : ''}</p>}
-              </Col>
-          </Row>
-          </Form.Group><br/>
-          <Form.Group controlId="formStudy">
-          <Row>
-              <Col xs={3}>
-                <Form.Label>Leave End</Form.Label>
-              </Col>
-              <Col>
-              {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
-              </Col>
-              <Col>
-              {<p style={{ color: 'red', fontStyle: 'italic' }}>{validation.leave_end === false ? 'Missing field' : ''}</p>}
-          </Col>
-          </Row>
-          </Form.Group><br/>
-          <Form.Group controlId="formStudyCategory">
+        <Form.Group controlId="formYearCategory">
+            <Form.Label>Year</Form.Label>
+            <Form.Select
+                aria-label="Select Year"
+                value={newLeaveRequest.year}
+                onChange={(event) => handleInputChange('year', event)}
+            >
+                <option value="">Select Year</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+            </Form.Select>
+            {!validation.year && (
+                <p style={{color:'red', fontStyle:'italic'}}>Year</p>
+            )}
+        </Form.Group>
+        <Form.Group controlId="formSemesterCategory">
+                        <Form.Label>Semester</Form.Label>
+                        <Form.Select
+                            aria-label="Select Semester"
+                            value={newLeaveRequest.semester}
+                            onChange={(event) => handleInputChange('semester', event)}
+                        >
+                            <option value="">Select Semester</option>
+                            <option value="1st Semester">1st Semester</option>
+                            <option value="2nd Semester">2nd Semester</option>
+                            <option value="Summer">Summer</option>
+                        </Form.Select>
+                        {!validation.semester && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Semester</p>
+                        )}
+                    </Form.Group>
+                    <Form.Group controlId="formStudy">
+                        <Form.Label>
+                            Files
+                            <Button
+                                variant="link"
+                                onClick={resetFiles}
+                                style={{ paddingLeft: '10px', color: 'blue', textDecoration: 'underline', fontSize: '10px' }}
+                            >
+                                Clear
+                            </Button>
+                        </Form.Label>
+                        <div {...getRootProps()} className="dropzone">
+                            <input {...getInputProps()} onChange={handleFileChange}/>
+                            {isDragActive ? (
+                                <p>Drop the files here...</p>
+                            ) : (
+                                <p>Click here to select ZIP/RAR files</p>
+                            )}
+                        </div>
+                        {selectedRequest.length > 0 && (
+                            <div>
+                                <ul>
+                                    {selectedRequest.map((file, index) => (
+                                        <li key={index}>{file.name}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        {/* {!validation.study && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Please select files</p>
+                        )} */}
+                    </Form.Group>
+          {/* <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label>
               <Form.Control type="file" placeholder="Enter Study Category" onChange={(event) => handleInputChange('leave_letter', event)} ref={letterFile}/>
               {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_letter === false ? 'Missing file' : ''}</p>}
-          </Form.Group><br/>
-          <Form.Group controlId="formStudyCategory">
+          </Form.Group><br/> */}
+          {/* <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
               <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly disabled/>
               {<p style={{color:'red', fontStyle:'italic'}}>{ validation.status === false ? 'Missing field' : ''}</p>}
-          </Form.Group>
+          </Form.Group> */}
           {/* <Form.Group controlId="formStudyCategory">
               <Form.Label>Comment</Form.Label>
               <Form.Control type="text" placeholder="" onChange={(event) => handleInputChange('status', event)} value={''} readOnly disabled/>
