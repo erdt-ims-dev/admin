@@ -155,6 +155,7 @@ class ViewModal extends Component {
             </Col>
         </Row> */}
         <Row className='Row'>
+            
             <Col xs={9} className="text-left">
                 <p style={{fontWeight: 'bold'}}>File Uploads</p>
             </Col>
