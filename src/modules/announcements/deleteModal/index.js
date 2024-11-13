@@ -54,21 +54,21 @@ class DeleteModal extends Component {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header style={{
-        backgroundColor: '#f1f5fb'
-      }}>
+        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
+        <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
         Unpublish Announcement
         </Modal.Title>
       </Modal.Header>
+        </div>
       <Modal.Body >
         Are you sure you want to unpublish announcement?
       </Modal.Body>
       <Modal.Footer style={{
         backgroundColor: '#f1f5fb'
       }}>
-        <Button variant='secondary' onClick={()=>{this.props.onHide()}}>Close</Button>
-        <Button onClick={()=>{this.onDeactivate()}}>Unpublish</Button>
+        <Button variant='secondary'  onClick={()=>{this.props.onHide()}}>Close</Button>
+        <Button variant='dark' onClick={()=>{this.onDeactivate()}}>Unpublish</Button>
       </Modal.Footer>
     </Modal>
                     

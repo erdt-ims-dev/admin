@@ -7,7 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify'; // Toast notification
-const TABLE_HEADERS = ["#", "Scholar ID", "Leave Start", "Leave End", "Leave Letter", "Status", "Comments", ""];
+const TABLE_HEADERS = ["#", "Email", "Name", "Leave Letter", "Status", "Comments", "Actions"];
 
 function ScholarLeaveApplication() {
   const location = useLocation();
@@ -33,7 +33,6 @@ function ScholarLeaveApplication() {
       leave_letter: '',
       status: 'pending',
       comment: '',
-      comment: ''
     });
     setShow(false);
   };
@@ -106,8 +105,71 @@ function ScholarLeaveApplication() {
       console.log(error);
       setLoading(false);
 
-    });
+      });
   }
+
+//   const fetchRequests = () => {
+//   setLoading(true);
+  
+//   API.request('leave_application/retrieveAll', {}, response => {
+//     if (response && response.data) {
+//       const leaveRequestsWithDetails = [];
+//       let requestsCompleted = 0; // Counter to track completed requests
+//       setLeaveRequests(response.data);
+//       response.data.forEach((request) => {
+//         // Fetch user details
+//         API.request(`user/retrieveOne`, {col: 'id', value: request.id}, userResponse => {
+//           // Fetch account details
+//           API.request(`account_details/retrieveOne`, {col: 'id', value: request.id}, accountResponse => {
+//             // Combine the data
+//             leaveRequestsWithDetails.push({
+//               ...request,
+//               user: userResponse.data,
+//               accountDetails: accountResponse.data,
+//             });
+
+//             // Check if all requests are completed
+//             requestsCompleted++;
+//             if (requestsCompleted === response.data.length) {
+//               setLeaveRequests(leaveRequestsWithDetails);
+//               setLoading(false);
+//             }
+//           }, error => {
+//             console.log('Error fetching account details:', error);
+//             requestsCompleted++;
+//             // Check if all requests are completed even if there's an error
+//             if (requestsCompleted === response.data.length) {
+//               setLeaveRequests(leaveRequestsWithDetails);
+//               setLoading(false);
+//             }
+//           });
+//         }, error => {
+//           console.log('Error fetching user details:', error);
+//           requestsCompleted++;
+//           // Check if all requests are completed even if there's an error
+//           if (requestsCompleted === response.data.length) {
+//             setLeaveRequests(leaveRequestsWithDetails);
+//             setLoading(false);
+//           }
+//         });
+//       });
+      
+//       // If there are no leave requests, update state immediately
+//       if (response.data.length === 0) {
+//         setLeaveRequests(leaveRequestsWithDetails);
+//         setLoading(false);
+//       }
+
+//       console.log("leave requests: ", leaverequests)
+//     } else {
+//       console.log('Error on retrieve');
+//       setLoading(false);
+//     }
+//   }, error => {
+//     console.log('Error fetching leave requests:', error);
+//     setLoading(false);
+//   });
+// };
 
   const approveRequest = (request) => {
     //set the selected request 
@@ -295,7 +357,7 @@ function ScholarLeaveApplication() {
         <p>This is the Scholar Leave Request page</p>
       </div>
       <div class="contentButton">
-        <button onClick={handleShow}>+ Add New11</button>
+        <button onClick={handleShow}>+ Add New Leave Request</button>
       </div>
     </div>
     
@@ -384,43 +446,61 @@ function ScholarLeaveApplication() {
       
       {/* to edit leave requests */}
       <Modal show={editRequestShow} onHide={handleEditRequestClose}>
+        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
         <Modal.Header closeButton>
-          
           <Modal.Title>Edit Request</Modal.Title>
         </Modal.Header>
+        </div>
         <Modal.Body>
         <Form>
-          <Form.Group controlId="formStudyName">
+            <Form.Group controlId="formStudyName">
+              
+          <Row>
+              <Col xs={3}>
               <Form.Label>Leave-Start</Form.Label>
+            </Col>
+                  
               {/* <Form.Control type="text" placeholder="Midterm file" onChange={(event) => handleInputChange('leave_start', event)} /> */}
+              <Col>
               <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} 
-                            onChange={(event) => {
-                              // Extract the new value from the event
-                              const newValue = event.target.value;
-                              // Update the setSelectedRequest state with the new leave_start
-                              setSelectedRequest(prevTask => ({...prevTask, leave_start: newValue }));
-                            }} 
-                            value={selectedRequest?.leave_start} 
-                          />
-          </Form.Group>
-          <Form.Group controlId="formStudy">
-              <Form.Label>Leave End</Form.Label>
+                  
+                onChange={(event) => {
+                  // Extract the new value from the event
+                  const newValue = event.target.value;
+                  // Update the setSelectedRequest state with the new leave_start
+                  setSelectedRequest(prevTask => ({...prevTask, leave_start: newValue }));
+                }} 
+                value={selectedRequest?.leave_start} 
+              />
+            </Col>  
+          </Row>
+            </Form.Group>
+            <br/>
+            <Form.Group controlId="formStudy">
+              <Row>
+                <Col xs={3}>
+                  <Form.Label>Leave End</Form.Label>
+                </Col>
+                <Col>
+                <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} 
+                    onChange={(event) => {
+                      // Extract the new value from the event
+                      const newValue = event.target.value;
+                      // Update the setSelectedRequest state with the new leave_end
+                      setSelectedRequest(prevTask => ({...prevTask, leave_end: newValue }));
+                    }} 
+                    value={selectedRequest?.leave_end} 
+                />
+                </Col>
+              </Row>
               {/* <Form.Control type="text" placeholder="Final file" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} 
-                            onChange={(event) => {
-                              // Extract the new value from the event
-                              const newValue = event.target.value;
-                              // Update the setSelectedRequest state with the new leave_end
-                              setSelectedRequest(prevTask => ({...prevTask, leave_end: newValue }));
-                            }} 
-                            value={selectedRequest?.leave_end} 
-                          />
-          </Form.Group>
+            </Form.Group>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Leave Letter</Form.Label><br/>
               <a style={{fontStyle:'italic'}} href={selectedRequest?.leave_letter} target="_blank" rel="noreferrer noopener">current file</a> 
               <Form.Control type="file" placeholder="Upload Leave Upload" onChange={(event) => handleFileChange('leave_letter', event)} ref={letterFile}/>
           </Form.Group>
+            <br/>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Status</Form.Label>
               <Form.Control type="text" placeholder={selectedRequest?.status} 
@@ -432,6 +512,7 @@ function ScholarLeaveApplication() {
                             }} 
                           />
           </Form.Group>
+            <br/>
           <Form.Group controlId="formStudyCategory">
               <Form.Label>Comment</Form.Label>
               <Form.Control type="text" placeholder={selectedRequest?.comment_id}
@@ -449,7 +530,7 @@ function ScholarLeaveApplication() {
           <Button variant="secondary" onClick={handleEditRequestClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={editRequest} >
+          <Button variant="dark" onClick={editRequest} >
             Submit
           </Button>
         </Modal.Footer>
@@ -491,7 +572,6 @@ function ScholarLeaveApplication() {
                   <td><Skeleton /></td>
                   <td><Skeleton /></td>
                   <td><Skeleton /></td>
-                  <td><Skeleton /></td>
                   <td><Skeleton width={80} height={25} /></td>
                 </tr>
               ))
@@ -510,12 +590,11 @@ function ScholarLeaveApplication() {
                   <td>{index + 1}</td>
                   <td>{request.user_id}</td>
                   <td>{request.leave_start}</td>
-                  <td>{request.leave_end}</td>
                   <td style={{ textAlign: "center" }}>
                   <span className='link'>
                     <a href={request.leave_letter} target="_blank" rel="noreferrer noopener">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M27.8453 16.9608L24.8549 13.9479C24.5403 13.6312 23.9999 13.8537 23.9999 14.3V16.3366H19.9999V10.8325C19.9999 10.3033 19.7845 9.79082 19.4095 9.41624L15.9141 5.92084C15.5391 5.54584 15.0308 5.33334 14.502 5.33334H5.99957C4.89583 5.33751 4 6.23334 4 7.33708V24.667C4 25.7708 4.89583 26.6666 5.99957 26.6666H17.997C19.1012 26.6666 19.9999 25.7708 19.9999 24.667V20.3362H17.9999V24.667H5.99957V7.33708H12.665V11.6696C12.665 12.2237 13.1108 12.6691 13.665 12.6691H17.9999V16.3362H11.1666C10.8904 16.3362 10.6666 16.56 10.6666 16.8362V17.8362C10.6666 18.1125 10.8904 18.3362 11.1666 18.3362H23.9999V20.3729C23.9999 20.8191 24.5403 21.0416 24.8549 20.7249L27.8453 17.712C28.0516 17.5041 28.0516 17.1687 27.8453 16.9608ZM14.6645 10.6696V7.49958L17.8349 10.6696H14.6645Z" fill="#404041"/>
+                      <path d="M27.8453 16.9608L24.8549 13.9479C24.5403 13.6312 23.9999 13.8537 23.9999 14.3V16.3366H19.9999V10.8325C19.9999 10.3033 19.7845 9.79082 19.4095 9.41624L15.9141 5.92084C15.5391 5.54584 15.0308 5.33334 14.502 5.33334H5.99957C4.89583 5.33751 4 6.23334 4 7.33708V24.667C4 25.7708 4.89583 26.6666 5.99957 26.6666H17.997C19.1012 26.6666 19.9999 25.7708 19.9999 24.667V20.3362H17.9999V24.667H5.99957V7.33708H12.665V11.6696C12.665 12.2237 13.1108 12.6691 13.665 12.6691H17.9999V16.3362H11.1666C10.8904 16.3362 10.6666 16.56 10.6666 16.8362V17.8362C10.6666 18.1125 10.8904 18.3362 11.1666 18.3362H23.9999V20.3729C23.9999 20.8191 24.5403 21.0416 24.8549 20.7249L27.8453 17.712C28.0516 17.5041 28.0516 17.1687 27.8453 16.9608ZM14.6645 10.6696V7.49958L17.8349 10.6696H14.6645Z" fill="#2a75c0"/>
                     </svg>
                     </a>
                     <label className='link-label' style={{ width: "4rem" }}>View file</label>

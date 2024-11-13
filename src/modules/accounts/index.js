@@ -242,7 +242,7 @@ class Accounts extends Component {
           {/* with scroll */}
           {/* <div className="table-container" style={{ overflowY: 'auto', maxHeight: '600px' }}> */}
          
-          <div className="table-container" style={{}}> 
+          <div className="table-container" style={{background: 'none'}}> 
 
             <TableComponent columns={columns} data={account_list} isLoading={tableLoader}/>
             {totalEntries > itemsPerPage && ( // Conditionally render pagination

@@ -65,9 +65,11 @@ class EditModal extends Component {
         const { title, message } = this.state;
     return (
         <Modal show={show} onHide={onHide}>
+        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
             <Modal.Header closeButton>
                 <Modal.Title>Edit Announcement</Modal.Title>
         </Modal.Header>
+        </div>
         <Modal.Body>
           <Form onSubmit={this.handleEditSubmit}>
             <Form.Group controlId="formTitle">
@@ -80,7 +82,7 @@ class EditModal extends Component {
             </Form.Group>
             <Button style={{
               marginTop: 25
-            }} variant="primary" onClick={()=>{this.handleSubmit()}}>
+            }} variant="dark" onClick={()=>{this.handleSubmit()}}>
               Submit
             </Button>
           </Form>

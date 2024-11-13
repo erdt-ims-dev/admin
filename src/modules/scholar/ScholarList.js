@@ -186,7 +186,7 @@ const ScholarList = () => {
                   </span>
                   <span className='link' onClick={() => handleDeleteShow(scholar.id)}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M13.4874 11.9998L16.8537 8.63358C17.0484 8.4389 17.0484 8.12296 16.8537 7.92796L16.0715 7.14577C15.8768 6.95108 15.5608 6.95108 15.3658 7.14577L11.9998 10.5123L8.63354 7.14604C8.43884 6.95134 8.12291 6.95134 7.92721 7.14604L7.14503 7.92823C6.95033 8.12293 6.95033 8.43887 7.14503 8.63357L10.5113 11.9998L7.14503 15.366L7.92721 16.1482C8.12291 16.3429 8.43884 16.3429 8.63354 16.1482L11.9998 12.781L15.3658 16.1479C15.5605 16.3426 15.8764 16.3426 16.0711 16.1479L16.8537 15.366L13.4874 11.9998Z" fill="#404041"/>
+                      <path d="M13.4874 11.9998L16.8537 8.63358C17.0484 8.4389 17.0484 8.12296 16.8537 7.92796L16.0715 7.14577C15.8768 6.95108 15.5608 6.95108 15.3658 7.14577L11.9998 10.5123L8.63354 7.14604C8.43884 6.95134 8.12291 6.95134 7.92721 7.14604L7.14503 7.92823C6.95033 8.12293 6.95033 8.43887 7.14503 8.63357L10.5113 11.9998L7.14503 15.366L7.92721 16.1482C8.12291 16.3429 8.43884 16.3429 8.63354 16.1482L11.9998 12.781L15.3658 16.1479C15.5605 16.3426 15.8764 16.3426 16.0711 16.1479L16.8537 15.366L13.4874 11.9998Z" fill="red"/>
                     </svg>
                     <label className='link-label'>Delete</label>
                   </span>
@@ -199,15 +199,17 @@ const ScholarList = () => {
       </div>
 
       <Modal show={showConfirm} onHide={handleDeleteCancel}>
+        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
         <Modal.Header closeButton>
           <Modal.Title>Are you sure?</Modal.Title>
         </Modal.Header>
+        </div>
         <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleDeleteCancel}>
             No
           </Button>
-          <Button variant="primary" onClick={handleDeleteConfirm}>
+          <Button variant="danger" onClick={handleDeleteConfirm}>
             Yes
           </Button>
         </Modal.Footer>

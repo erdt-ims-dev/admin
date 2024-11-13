@@ -54,9 +54,11 @@ class CreateModal extends Component {
  render() {
     return (
       <Modal show={this.props.show} onHide={this.props.onHide}>
+        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
         <Modal.Header closeButton>
           <Modal.Title>Create Announcement</Modal.Title>
         </Modal.Header>
+        </div>
         <Modal.Body>
           <Form onSubmit={this.handleSubmitForm}>
             <Form.Group controlId="formTitle">
@@ -69,7 +71,7 @@ class CreateModal extends Component {
             </Form.Group>
             <Button style={{
               marginTop: 25
-            }} variant="primary" onClick={()=>{this.handleSubmitAnnouncement()}}>
+            }} variant="dark" onClick={()=>{this.handleSubmitAnnouncement()}}>
               Submit
             </Button>
           </Form>
