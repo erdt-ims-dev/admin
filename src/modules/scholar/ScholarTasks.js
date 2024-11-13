@@ -154,7 +154,6 @@ function ScholarTasks() {
         formData.append('type', newTask.type);
         selectedFiles.forEach((file, index) => {
             formData.append('file[]', file); 
-            console.log(file)
         });  
         
         API.uploadFile('scholar_tasks/create', formData, response => {
@@ -198,7 +197,6 @@ function ScholarTasks() {
         formData.append('type', selectedTask.type);
         selectedFiles.forEach((file, index) => {
             formData.append('file[]', file); 
-            console.log(file)
         });  
 
         API.uploadFile('scholar_tasks/update', formData, response => {
