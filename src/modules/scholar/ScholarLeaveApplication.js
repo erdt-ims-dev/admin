@@ -224,11 +224,11 @@ const formValidation = () => {
   let formIsValid = true;
   const updatedValidation = { ...validation };
 
-  if (!selectedRequest.year) {
+  if (!newLeaveRequest.year) {
       updatedValidation.year = false;
       formIsValid = false;
   }
-  if (!selectedRequest.semester) {
+  if (!newLeaveRequest.semester) {
       updatedValidation.semester = false;
       formIsValid = false;
   }
@@ -259,7 +259,7 @@ const formValidation = () => {
       formData.append('semester', newLeaveRequest.semester);
       formData.append('status', newLeaveRequest.status);
       formData.append('comment_id', newLeaveRequest.comment_id);
-      selectedRequest.forEach((file, index) => {
+      selectedFiles.forEach((file, index) => {
         formData.append('file[]', file); 
         console.log(file)
     });  
