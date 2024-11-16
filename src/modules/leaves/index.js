@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify'; // Toast notification
 import { useDropzone } from 'react-dropzone';
 
-const TABLE_HEADERS = ["#", "Email", "Name", "Leave Letter", "Status", "Comments", "Actions"];
+const TABLE_HEADERS = ["#", "Email", "Name", "Semseter", "Year", "Leave Letter", "Status", "Comments", "Actions"];
 
 function ScholarLeaveApplication() {
   const location = useLocation();
@@ -63,6 +63,7 @@ function ScholarLeaveApplication() {
     semester: '',
     status: '',
     email: '',
+    comment: '',
     id: ''
   }); 
   const [editRequestShow, setEditRequestShow] = useState(false);
@@ -72,7 +73,10 @@ function ScholarLeaveApplication() {
     setSelectedRequest(request);
     setEditRequestShow(true);
   }
-  const handleEditRequestClose = () => setEditRequestShow(false);
+  const handleEditRequestClose = () => {
+    setEditRequestShow(false) 
+    resetFiles()
+  };
 
   
   //delete confimation modal
@@ -221,23 +225,17 @@ const validateField = (fieldName, value) => {
   const approveRequest = (request) => {
     //set the selected request 
     setLoading(true);
-
+    console.log("approve", request)
     request.status = "approved";
 
     //console.log(request);
     setSelectedRequest(request);
-    //change status to pending  
-    //console.log("change: ", selectedRequest); 
-     //apply to form data
+
     const formData = new FormData();
       //formData.append('user_id', selectedRequest.user_id);
-    formData.append('id', request.id);
-    formData.append('leave_letter', request.leave_letter);
-    formData.append('leave_start', request.leave_start);
-    formData.append('leave_end', request.leave_end);
-    formData.append('status', request.status);
+    formData.append('id', request.leave.id);
     //console.log(formData);
-    API.uploadFile('leave_application/updateOne', formData, response => {
+    API.uploadFile('leave_application/approveLeave', formData, response => {
       if (!response.data.error) {
         // console.log('Data updated successfully', response.data);
         toast.success("Data updated successfully")
@@ -351,18 +349,21 @@ const validateField = (fieldName, value) => {
       setLoading(true);
 
       const formData = new FormData();
-      formData.append('user_id', selectedRequest.user_id);
-      formData.append('id', selectedRequest.id);
-      formData.append('leave_letter', letterFile.current.files[0]);
-      formData.append('leave_start', selectedRequest.leave_start);
-      formData.append('leave_end', selectedRequest.leave_end);
-      formData.append('status', selectedRequest.status);
-      //console.log(selectedRequest.id);
-      API.uploadFile('leave_application/updateOne', formData, response => {
+      formData.append('year', newLeaveRequest.year);
+      formData.append('id', selectedRequest.leave.id);
+      formData.append('semester', newLeaveRequest.semester);
+      formData.append('status', newLeaveRequest.status);
+      formData.append('comment', newLeaveRequest.comment); // i know the db asks for ID, but for now im using the comment string as is
+      if (selectedFiles.length > 0) {
+        selectedFiles.forEach((file, index) => {
+            formData.append('file[]', file); 
+        });
+    } 
+      API.uploadFile('leave_application/editLeave', formData, response => {
         if (!response.data.error) {
           // console.log('Data updated successfully', response.data);
           toast.success("Information updated successfully")
-
+          resetFiles()
           fetchRequests();
         } else {
           toast.error("Something went wrong. Please try again")
@@ -372,7 +373,7 @@ const validateField = (fieldName, value) => {
         setLoading(false);
 
       }, error => {
-        toast.error("Something went wrong. Please try again")
+        toast.error("Something went wrong. Check your connection and try again")
 
         console.log(error)
         setLoading(false);
@@ -388,16 +389,11 @@ const validateField = (fieldName, value) => {
       setLoading(true);
 
       //console.log(selectedRequest.id);
-      API.request('leave_application/updateOne', {
-        id: selectedRequest.id,
-        leave_letter: selectedRequest.leave_letter,
-        leave_start: selectedRequest.leave_start,
-        leave_end: selectedRequest.leave_end,
-        status: "denied",
-        comment_id: "",
+      API.request('leave_application/rejectLeave', {
+        id: selectedRequest.leave.id,
       }, response => {
         // console.log('Data deleted successfully');
-        toast.successful("Deleted successfully")
+        toast.success("Leave Request Rejected")
 
         setLoading(false);
 
@@ -429,7 +425,7 @@ const validateField = (fieldName, value) => {
       year: '',
       semester: '',
       email: '',
-      status: 'pending',
+      status: 'Pending',
       comment_id: 'None',
         })
 };
@@ -559,95 +555,169 @@ const validateField = (fieldName, value) => {
       
       {/* to edit leave requests */}
       <Modal show={editRequestShow} onHide={handleEditRequestClose}>
-        <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Request</Modal.Title>
-        </Modal.Header>
+  <div
+    style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px" }}
+    data-bs-theme="dark"
+    className="bg-dark p-2"
+  >
+    <Modal.Header closeButton>
+      <Modal.Title>Edit Leave Application</Modal.Title>
+    </Modal.Header>
+  </div>
+  <Modal.Body>
+    <Form>
+      {/* Email Field */}
+      <Form.Group controlId="formEmail">
+        <Form.Label>Email</Form.Label>
+        <Form.Control
+          type="email"
+          placeholder="Enter email"
+          value={selectedRequest?.email || ''}
+          disabled
+        />
+      </Form.Group>
+
+      {/* Year Field */}
+      <Form.Group controlId="formYearCategory">
+        <Form.Label>Year</Form.Label>
+        <Form.Select
+          aria-label="Select Year"
+          value={newLeaveRequest.year ? newLeaveRequest.year : selectedRequest?.leave?.year}
+          onChange={(event) =>
+            setNewLeaveRequest((prevTask) => ({
+              ...prevTask,
+              year: event.target.value,
+            }))
+          }
+        >
+          <option value="">Select Year</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+        </Form.Select>
+      </Form.Group>
+
+      {/* Semester Field */}
+      <Form.Group controlId="formSemesterCategory">
+        <Form.Label>Semester</Form.Label>
+        <Form.Select
+          aria-label="Select Semester"
+          value={newLeaveRequest.semester ? newLeaveRequest.semester : selectedRequest?.leave?.semester}
+          onChange={(event) =>
+            setNewLeaveRequest((prevTask) => ({
+              ...prevTask,
+              semester: event.target.value,
+            }))
+          }
+        >
+          <option value="">Select Semester</option>
+          <option value="1st Semester">1st Semester</option>
+          <option value="2nd Semester">2nd Semester</option>
+          <option value="Summer">Summer</option>
+        </Form.Select>
+      </Form.Group>
+
+      {/* File Upload Field */}
+      <Form.Group controlId="formStudy">
+        <Form.Label>
+          Files
+          <Button
+            variant="link"
+            onClick={() => setSelectedFiles([])} // Reset files
+            style={{
+              paddingLeft: "10px",
+              color: "blue",
+              textDecoration: "underline",
+              fontSize: "10px",
+            }}
+          >
+            Clear
+          </Button>
+        </Form.Label>
+        <div {...getRootProps()} className="dropzone">
+          <input
+            {...getInputProps()}
+            onChange={handleFileChange}
+          />
+          {isDragActive ? (
+            <p>Drop the files here...</p>
+          ) : (
+            <p>Click here to select ZIP/RAR files</p>
+          )}
         </div>
-        <Modal.Body>
-        <Form>
-            <Form.Group controlId="formStudyName">
-              
-          <Row>
-              <Col xs={3}>
-              <Form.Label>Leave-Start</Form.Label>
-            </Col>
-                  
-              {/* <Form.Control type="text" placeholder="Midterm file" onChange={(event) => handleInputChange('leave_start', event)} /> */}
-              <Col>
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} 
-                  
-                onChange={(event) => {
-                  // Extract the new value from the event
-                  const newValue = event.target.value;
-                  // Update the setSelectedRequest state with the new leave_start
-                  setSelectedRequest(prevTask => ({...prevTask, leave_start: newValue }));
-                }} 
-                value={selectedRequest?.leave_start} 
-              />
-            </Col>  
-          </Row>
-            </Form.Group>
-            <br/>
-            <Form.Group controlId="formStudy">
-              <Row>
-                <Col xs={3}>
-                  <Form.Label>Leave End</Form.Label>
-                </Col>
-                <Col>
-                <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} 
-                    onChange={(event) => {
-                      // Extract the new value from the event
-                      const newValue = event.target.value;
-                      // Update the setSelectedRequest state with the new leave_end
-                      setSelectedRequest(prevTask => ({...prevTask, leave_end: newValue }));
-                    }} 
-                    value={selectedRequest?.leave_end} 
-                />
-                </Col>
-              </Row>
-              {/* <Form.Control type="text" placeholder="Final file" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
-            </Form.Group>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Leave Letter</Form.Label><br/>
-              <a style={{fontStyle:'italic'}} href={selectedRequest?.leave_letter} target="_blank" rel="noreferrer noopener">current file</a> 
-              <Form.Control type="file" placeholder="Upload Leave Upload" onChange={(event) => handleFileChange('leave_letter', event)} ref={letterFile}/>
-          </Form.Group>
-            <br/>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Status</Form.Label>
-              <Form.Control type="text" placeholder={selectedRequest?.status} 
-                            onChange={(event) => {
-                              // Extract the new value from the event
-                              const newValue = event.target.value;
-                              // Update the setSelectedRequest state with the new status
-                              setSelectedRequest(prevTask => ({...prevTask, status: newValue }));
-                            }} 
-                          />
-          </Form.Group>
-            <br/>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Comment</Form.Label>
-              <Form.Control type="text" placeholder={selectedRequest?.comment_id}
-                            onChange={(event) => {
-                              // Extract the new value from the event
-                              const newValue = event.target.value;
-                              // Update the setSelectedRequest state with the new status
-                              setSelectedRequest(prevTask => ({...prevTask, comment_id: newValue }));
-                            }} 
-                            />
-          </Form.Group>
-        </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleEditRequestClose}>
-            Close
-          </Button>
-          <Button variant="dark" onClick={editRequest} >
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        {selectedFiles.length > 0 && (
+          <div>
+            <ul>
+              {selectedFiles.map((file, index) => (
+                <li key={index}>{file.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {selectedRequest?.file && (
+          <div>
+            <p>Current Files:</p>
+            <ul>
+              {JSON.parse(selectedRequest.file).map((url, index) => (
+                <li key={index}>
+                  <a href={url} target="_blank" rel="noreferrer">
+                    File {index + 1}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Form.Group>
+
+      {/* Status Field */}
+      <Form.Group controlId="formStatusCategory">
+        <Form.Label>Status</Form.Label>
+        <Form.Select
+          aria-label="Select Status"
+          value={newLeaveRequest.status ? newLeaveRequest.status : selectedRequest?.leave?.status}
+          onChange={(event) =>
+            setNewLeaveRequest((prevTask) => ({
+              ...prevTask,
+              status: event.target.value,
+            }))
+          }
+        >
+          <option value="">Select Status</option>
+          <option value="Approved">Approved</option>
+          <option value="Pending">Pending</option>
+          <option value="Denied">Denied</option>
+        </Form.Select>
+      </Form.Group>
+
+      {/* Comment Field */}
+      <Form.Group controlId="formStudyCategory">
+        <Form.Label>Comment</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={2}
+          placeholder="Enter comment"
+          value={newLeaveRequest.comment ? newLeaveRequest.comment : selectedRequest?.leave?.comment}
+          onChange={(event) =>
+            setNewLeaveRequest((prevTask) => ({
+              ...prevTask,
+              comment: event.target.value,
+            }))
+          }
+        />
+      </Form.Group>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={handleEditRequestClose}>
+      Close
+    </Button>
+    <Button variant="dark" onClick={editRequest}>
+      Submit
+    </Button>
+  </Modal.Footer>
+</Modal>
+
       
        {/* delete confirmation modal for tasks */}
        <Modal show={deleteRequestShow} onHide={handleDeleteRequestClose}>
@@ -685,6 +755,8 @@ const validateField = (fieldName, value) => {
                   <td><Skeleton /></td>
                   <td><Skeleton /></td>
                   <td><Skeleton /></td>
+                  <td><Skeleton /></td>
+                  <td><Skeleton /></td>
                   <td><Skeleton width={80} height={25} /></td>
                 </tr>
               ))
@@ -703,28 +775,38 @@ const validateField = (fieldName, value) => {
                   <td>{index + 1}</td>
                   <td>{request.email}</td>
                   <td>{request.name}</td>
+                  <td>{request?.leave?.semester}</td>
+                  <td>{request?.leave?.year}</td>
                   <td style={{ textAlign: "center" }}>
-                      {request?.leave?.file ? (
-                          JSON.parse(request.leave.file).map((url, urlIndex) => (
-                              <div key={urlIndex}>
-                                  <a href={url} target="_blank" rel="noreferrer noopener">
-                                    <span className='link'>
-                                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M26 17.3333H22.1625L24.0833 15.4125C25.3375 14.1583 24.45 12 22.6708 12H20.0042V7.33331C20.0042 6.22915 19.1083 5.33331 18.0042 5.33331H14.0042C12.9 5.33331 12.0042 6.22915 12.0042 7.33331V12H9.3375C7.5625 12 6.6625 14.1541 7.925 15.4125L9.84583 17.3333H6C4.89583 17.3333 4 18.2291 4 19.3333V24.6666C4 25.7708 4.89583 26.6666 6 26.6666H26C27.1042 26.6666 28 25.7708 28 24.6666V19.3333C28 18.2291 27.1042 17.3333 26 17.3333ZM9.33333 14H14V7.33331H18V14H22.6667L16 20.6666L9.33333 14ZM26 24.6666H6V19.3333H11.8375L14.5833 22.0791C15.3667 22.8625 16.6292 22.8583 17.4125 22.0791L20.1583 19.3333H26V24.6666ZM22.3333 22C22.3333 21.4458 22.7792 21 23.3333 21C23.8875 21 24.3333 21.4458 24.3333 22C24.3333 22.5541 23.8875 23 23.3333 23C22.7792 23 22.3333 22.5541 22.3333 22Z" fill="#2a75c0"/>
-                                      </svg>
-                                      <label class="link-label">Download</label>
-                                    </span>
-                                  </a>
-
-                              </div>
-                          ))
-                      ) : (
-                          <p>No files available</p>
-                      )}
+                  {request?.leave?.file ? (
+                      (() => {
+                          try {
+                              const files = JSON.parse(request.leave.file);
+                              return files.map((url, urlIndex) => (
+                                  <div key={urlIndex}>
+                                      <a href={url} target="_blank" rel="noreferrer noopener">
+                                          <span className='link'>
+                                          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M26 17.3333H22.1625L24.0833 15.4125C25.3375 14.1583 24.45 12 22.6708 12H20.0042V7.33331C20.0042 6.22915 19.1083 5.33331 18.0042 5.33331H14.0042C12.9 5.33331 12.0042 6.22915 12.0042 7.33331V12H9.3375C7.5625 12 6.6625 14.1541 7.925 15.4125L9.84583 17.3333H6C4.89583 17.3333 4 18.2291 4 19.3333V24.6666C4 25.7708 4.89583 26.6666 6 26.6666H26C27.1042 26.6666 28 25.7708 28 24.6666V19.3333C28 18.2291 27.1042 17.3333 26 17.3333ZM9.33333 14H14V7.33331H18V14H22.6667L16 20.6666L9.33333 14ZM26 24.6666H6V19.3333H11.8375L14.5833 22.0791C15.3667 22.8625 16.6292 22.8583 17.4125 22.0791L20.1583 19.3333H26V24.6666ZM22.3333 22C22.3333 21.4458 22.7792 21 23.3333 21C23.8875 21 24.3333 21.4458 24.3333 22C24.3333 22.5541 23.8875 23 23.3333 23C22.7792 23 22.3333 22.5541 22.3333 22Z" fill="#2a75c0"/>
+                                          </svg>
+                                              <label class="link-label">Download</label>
+                                          </span>
+                                      </a>
+                                  </div>
+                              ));
+                          } catch (error) {
+                              console.error("Invalid file format:", error);
+                              return <p>Unable to display files</p>;
+                          }
+                      })()
+                  ) : (
+                      <p>No files available</p>
+                  )}
                   </td>
                   <td>{request?.leave?.status}</td>
                   <td>{request?.leave?.comment_id}</td>
-                  <td style={{ textAlign: "center" }}>
+                  <td style={{ textAlign: "center",  }}>
+                    <div style={{display: 'flex', justifyContent: 'center', gap: '10px',}}>
                     <span className='link' 
                           onClick={() => approveRequest(request)} 
                     >
@@ -749,6 +831,8 @@ const validateField = (fieldName, value) => {
                       </svg>
                     <label class="link-label">Delete</label>
                     </span>
+                    </div>
+                    
                   </td>
                 </tr>
               ))
