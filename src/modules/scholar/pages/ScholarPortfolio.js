@@ -26,7 +26,7 @@ function ScholarPortfolio() {
     const [isLoading, setIsLoading] = useState(true);
     const [show, setShow] = useState(false);
     const [newPortfolios, setNewPortfolios] = useState({
-      id: details.user_id,
+      id: details.user_id ? details.user_id : '',
       study_name: '',
       study: '',
       study_category: '',

@@ -7,17 +7,21 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify'; // Toast notification
+import { useDropzone } from 'react-dropzone';
+
 const TABLE_HEADERS = ["#", "Email", "Name", "Leave Letter", "Status", "Comments", "Actions"];
 
 function ScholarLeaveApplication() {
   const location = useLocation();
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const [leaverequests, setLeaveRequests] = useState([]);
   const [newLeaveRequest, setNewLeaveRequest] = useState({
     id: '',
-    leave_start: '',
-    leave_end: '',
-    leave_letter: '',
+    year: '',
+    semester: '',
+    file: '',
+    email: '',
     status: 'pending',
     comment: '',
   });
@@ -27,13 +31,13 @@ function ScholarLeaveApplication() {
   const handleClose = () => {
     setError([]);
     setValidation({
-      id: '',
-      leave_start: '',
-      leave_end: '',
-      leave_letter: '',
-      status: 'pending',
-      comment: '',
+      id: true,
+      year: true,
+      semester: true,
+      email: true,
+      file: true,
     });
+    resetFiles()
     setShow(false);
   };
   const handleShow = () => setShow(true);
@@ -41,9 +45,10 @@ function ScholarLeaveApplication() {
   //error modal
   const [validation, setValidation] = useState({ 
     id: true,
-    leave_start: true,
-    leave_end: true,
-    leave_letter: true,
+    year: true,
+    semester: true,
+    file: true,
+    email: true,
     status: true,
     comment: true,
   });
@@ -53,7 +58,13 @@ function ScholarLeaveApplication() {
   const errorShow = () => setErrorModal(true);
 
   //edit modal
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState({
+    year: '',
+    semester: '',
+    status: '',
+    email: '',
+    id: ''
+  }); 
   const [editRequestShow, setEditRequestShow] = useState(false);
   
   const handleEditRequestShow = (request) => {
@@ -78,22 +89,58 @@ function ScholarLeaveApplication() {
         ...prevState,
         [fieldName]: event.target.value
     }));
+    // Validate the new state immediately after setting it
+    validateField(fieldName, event.target.value);
+  };
+  const handleFileChange = (event) => {
+    // Handle file selection, whether through dropzone or file input
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    
+    // Filter valid files and check file types and sizes
+    const validFiles = [];
+    const invalidFiles = [];
+    
+    files.forEach(file => {
+        if (!file.name.endsWith('.zip') && !file.name.endsWith('.rar')) {
+            invalidFiles.push(`${file.name} is not a ZIP or RAR file.`);
+        } else if (file.size > 10485760) { // 10MB in bytes
+            invalidFiles.push(`${file.name} exceeds the 10MB size limit.`);
+        } else {
+            validFiles.push(file);
+        }
+    });
+    
+    // Display errors for invalid files
+    if (invalidFiles.length > 0) {
+        invalidFiles.forEach(error => toast.error(error));
+        return;
+    }
+    
+    // Limit to 5 files
+    if (validFiles.length + selectedRequest.length > 5) {
+        toast.error('You can only upload up to 5 zip/rar files.');
+        return;
+    }
+    
+    // Update selected files state
+    setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
+};
+const validateField = (fieldName, value) => {
+  if (!value) {
     setValidation(prevState => ({
-        ...prevState,
-        [fieldName]: true
+     ...prevState,
+      [fieldName]: false
     }));
-  };
-  const handleFileChange = (fieldName, event) => {
-    const file = event.target.files[0];
-      setNewLeaveRequest((prevState) => ({
-      ...prevState,
-        [fieldName]: file,
-      }));
-  };
-
+  } else {
+    setValidation(prevState => ({
+     ...prevState,
+      [fieldName]: true
+    }));
+  }
+};
   const fetchRequests = async () => {
     setLoading(true);
-    API.request('leave_application/retrieveAll', {}, response => {
+    API.request('leave_application/retrieveLeaves', {}, response => {
       if (response && response.data) {
         setLeaveRequests(response.data)
         //console.log(response.data);
@@ -211,45 +258,67 @@ function ScholarLeaveApplication() {
   }
 
   const formValidation = () => {
-
     let formIsValid = true;
-    Object.entries(newLeaveRequest).forEach(([key, value]) => {
-      if (!value) {
-        // inputErrorMessage.message += `${key}, `; 
-        // inputErrorMessage.exists = true;
-        setValidation(prevState => ({
-          ...prevState,
-          [key]: false
-        }));
+    const updatedValidation = { ...validation };
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|usc\.edu\.ph)$/;
+    if (!emailRegex.test(newLeaveRequest.email)) {
+      updatedValidation.email = false;
+      formIsValid = false;
+      toast.error('Invalid email.');
+    }
+    if (!newLeaveRequest.email) {
+      updatedValidation.email = false;
+      formIsValid = false;
+    }
+    if (!newLeaveRequest.year) {
+        updatedValidation.year = false;
         formIsValid = false;
-      }
-    });
-    console.log(validation);
-    return (formIsValid) ? true : false;
-    
-  }
+    }
+    if (!newLeaveRequest.semester) {
+        updatedValidation.semester = false;
+        formIsValid = false;
+    }
+    if (selectedFiles.length === 0) {
+        updatedValidation.file = false;
+        formIsValid = false;
+    } else if (selectedFiles.length > 5) {
+        updatedValidation.file = false;
+        formIsValid = false;
+        toast.error('You can upload a maximum of 5 files.');
+    } else {
+        updatedValidation.file = true;
+    }
+  
+    setValidation(updatedValidation);
+    return formIsValid;
+  };
   //create
   const createRequest = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    let validated = formValidation();
-    if (validated) {
+    if (formValidation()) {
       const formData = new FormData();
-      formData.append('user_id', newLeaveRequest.id);
-      formData.append('leave_letter', letterFile.current.files[0]);
-      formData.append('leave_start', newLeaveRequest.leave_start);
-      formData.append('leave_end', newLeaveRequest.leave_end);
+      formData.append('year', newLeaveRequest.year);
+      formData.append('email', newLeaveRequest.email);
+      formData.append('semester', newLeaveRequest.semester);
       formData.append('status', newLeaveRequest.status);
-      formData.append('comment_id', newLeaveRequest.comment);
-      //console.log(formData);
-      API.uploadFile('leave_application/create', formData, response => {
-        if (!response.data.error) {
+      formData.append('comment_id', newLeaveRequest.comment_id);
+      selectedFiles.forEach((file, index) => {
+        formData.append('file[]', file); 
+    });  
+      API.uploadFile('leave_application/uploadWithEmail', formData, response => {
+        if(response.error){
+          toast.error("Entered email is not valid.")
+          return
+        }
+        if (!response.error && response.data) {
           // console.log('response: ', response);
           
-          const newTask = {...response.data, tempId: uuidv4() };
-          setLeaveRequests(prevTasks => [...prevTasks, newTask]);
+          const newLeaveRequest = {...response.data, tempId: uuidv4() };
+          setLeaveRequests(prevTasks => [...prevTasks, newLeaveRequest]);
           fetchRequests();
+          resetFiles()
           setShow(false);
           toast.success("Request created successfully")
         } else {
@@ -347,8 +416,23 @@ function ScholarLeaveApplication() {
   useEffect(() => {
     fetchRequests();
   }, []);
-
-
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: handleFileChange, accept: '.zip, .rar' });
+  const resetFilesOnly = () => {
+    setSelectedFiles([]);
+    
+  };
+  const resetFiles = () => {
+    setSelectedRequest([]);
+    setSelectedFiles([]);
+    setNewLeaveRequest({
+      id: '',
+      year: '',
+      semester: '',
+      email: '',
+      status: 'pending',
+      comment_id: 'None',
+        })
+};
   return (
     <>
     <div class="contentHeader">
@@ -382,56 +466,85 @@ function ScholarLeaveApplication() {
         </Modal.Header>
         </div>
         <Modal.Body>
-        <Form onSubmit={createRequest}>
-          {/* <p style={{marginLeft:'1rem', marginBottom:'1rem', fontStyle:'italic'}}>please fill all the fields below</p> */}
-          <Form.Group controlId="formStudyName">
-              <Form.Label>Scholar ID:</Form.Label>
-              <Form.Control type="text" placeholder="Enter ID" onChange={(event) => { handleInputChange('id', event)}}/>
-              {/* <input type="text" placeholder=" User ID" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('id', event)}></input> */}
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.id === false ? 'enter id' : ''}</p>}
-          </Form.Group><br/>
-          <Form.Group controlId="formStudyName">
-          <Row>
-            <Col xs={3}>
-              <Form.Label>Leave Start:</Form.Label>
-            </Col>  
-            <Col>
-              {/* <Form.Control type="text" placeholder=" Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_start', event)} /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => { handleInputChange('leave_start', event)}}></input>
-            </Col>  
-            <Col>
-              {<p style={{ color: 'red', fontStyle: 'italic' }}>{validation.leave_start === false ? 'enter date' : ''}</p>}
-            </Col>
-          </Row>
-          </Form.Group>
-          <Form.Group controlId="formStudy">
-          <Row>
-            <Col xs={3}>
-              <Form.Label>Leave End:</Form.Label>
-            </Col>  
-            <Col>
-              {/* <Form.Control type="text" placeholder="Ex: 2024-03-19" onChange={(event) => handleInputChange('leave_end', event)}  /> */}
-              <input type="date" placeholder=" Ex: 2024-03-19" style={{marginLeft:'1rem'}} onChange={(event) => handleInputChange('leave_end', event)}></input>
-            </Col>  
-            <Col>
-              {<p style={{ color: 'red', fontStyle: 'italic' }}>{validation.leave_end === false ? 'enter date' : ''}</p>}
-          </Col>
-          </Row>
-          </Form.Group><br />
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Leave Letter:</Form.Label>
-              <Form.Control type="file" placeholder="Enter Study Category" ref={letterFile} onChange={(event) => handleInputChange('leave_letter', event)} />
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.leave_letter === false ? 'enter file' : ''}</p>}
-          </Form.Group><br/>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Status:</Form.Label>
-              <Form.Control type="text" placeholder="Enter Study Category" onChange={(event) => handleInputChange('status', event)} value={'pending'} readOnly/>
-          </Form.Group><br/>
-          <Form.Group controlId="formStudyCategory">
-              <Form.Label>Comment:</Form.Label>
-              <Form.Control type="text" placeholder="Enter Comment" onChange={(event) => handleInputChange('comment', event)}/>
-              {<p style={{color:'red', fontStyle:'italic'}}>{ validation.comment === false ? 'enter comment' : ''}</p>}
-          </Form.Group>
+        <Form>
+        <Form.Group controlId="formEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={newLeaveRequest.email}
+                onChange={(event) => handleInputChange('email', event)}
+            />
+            {!validation.email && (
+                <p style={{ color: 'red', fontStyle: 'italic' }}>Please enter a valid email</p>
+            )}
+        </Form.Group>
+        <Form.Group controlId="formYearCategory">
+            <Form.Label>Year</Form.Label>
+            <Form.Select
+                aria-label="Select Year"
+                value={newLeaveRequest.year}
+                onChange={(event) => handleInputChange('year', event)}
+            >
+                <option value="">Select Year</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+            </Form.Select>
+            {!validation.year && (
+                <p style={{color:'red', fontStyle:'italic'}}>Year</p>
+            )}
+        </Form.Group>
+        <br/>
+        <Form.Group controlId="formSemesterCategory">
+                        <Form.Label>Semester</Form.Label>
+                        <Form.Select
+                            aria-label="Select Semester"
+                            value={newLeaveRequest.semester}
+                            onChange={(event) => handleInputChange('semester', event)}
+                        >
+                            <option value="">Select Semester</option>
+                            <option value="1st Semester">1st Semester</option>
+                            <option value="2nd Semester">2nd Semester</option>
+                            <option value="Summer">Summer</option>
+                        </Form.Select>
+                        {!validation.semester && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Semester</p>
+                        )}
+                    </Form.Group>
+        <br/>
+                    <Form.Group controlId="formStudy">
+                        <Form.Label>
+                            Files
+                            <Button
+                                variant="link"
+                                onClick={resetFilesOnly}
+                                style={{ paddingLeft: '10px', color: 'blue', textDecoration: 'underline', fontSize: '10px' }}
+                            >
+                                Clear
+                            </Button>
+                        </Form.Label>
+                        <div {...getRootProps()} className="dropzone">
+                            <input {...getInputProps()} onChange={handleFileChange}/>
+                            {isDragActive ? (
+                                <p>Drop the files here...</p>
+                            ) : (
+                                <p>Click here to select ZIP/RAR files</p>
+                            )}
+                        </div>
+                        {selectedFiles.length > 0 && (
+                            <div>
+                                <ul>
+                                    {selectedFiles.map((file, index) => (
+                                        <li key={index}>{file.name}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        {/* {!validation.study && (
+                            <p style={{color:'red', fontStyle:'italic'}}>Please select files</p>
+                        )} */}
+                    </Form.Group>
         </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -588,20 +701,29 @@ function ScholarLeaveApplication() {
                 !loading && leaverequests.map((request, index) => (
                 <tr key={request.id || request.tempId}>
                   <td>{index + 1}</td>
-                  <td>{request.user_id}</td>
-                  <td>{request.leave_start}</td>
+                  <td>{request.email}</td>
+                  <td>{request.name}</td>
                   <td style={{ textAlign: "center" }}>
-                  <span className='link'>
-                    <a href={request.leave_letter} target="_blank" rel="noreferrer noopener">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M27.8453 16.9608L24.8549 13.9479C24.5403 13.6312 23.9999 13.8537 23.9999 14.3V16.3366H19.9999V10.8325C19.9999 10.3033 19.7845 9.79082 19.4095 9.41624L15.9141 5.92084C15.5391 5.54584 15.0308 5.33334 14.502 5.33334H5.99957C4.89583 5.33751 4 6.23334 4 7.33708V24.667C4 25.7708 4.89583 26.6666 5.99957 26.6666H17.997C19.1012 26.6666 19.9999 25.7708 19.9999 24.667V20.3362H17.9999V24.667H5.99957V7.33708H12.665V11.6696C12.665 12.2237 13.1108 12.6691 13.665 12.6691H17.9999V16.3362H11.1666C10.8904 16.3362 10.6666 16.56 10.6666 16.8362V17.8362C10.6666 18.1125 10.8904 18.3362 11.1666 18.3362H23.9999V20.3729C23.9999 20.8191 24.5403 21.0416 24.8549 20.7249L27.8453 17.712C28.0516 17.5041 28.0516 17.1687 27.8453 16.9608ZM14.6645 10.6696V7.49958L17.8349 10.6696H14.6645Z" fill="#2a75c0"/>
-                    </svg>
-                    </a>
-                    <label className='link-label' style={{ width: "4rem" }}>View file</label>
-                  </span>
+                      {request?.leave?.file ? (
+                          JSON.parse(request.leave.file).map((url, urlIndex) => (
+                              <div key={urlIndex}>
+                                  <a href={url} target="_blank" rel="noreferrer noopener">
+                                    <span className='link'>
+                                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M26 17.3333H22.1625L24.0833 15.4125C25.3375 14.1583 24.45 12 22.6708 12H20.0042V7.33331C20.0042 6.22915 19.1083 5.33331 18.0042 5.33331H14.0042C12.9 5.33331 12.0042 6.22915 12.0042 7.33331V12H9.3375C7.5625 12 6.6625 14.1541 7.925 15.4125L9.84583 17.3333H6C4.89583 17.3333 4 18.2291 4 19.3333V24.6666C4 25.7708 4.89583 26.6666 6 26.6666H26C27.1042 26.6666 28 25.7708 28 24.6666V19.3333C28 18.2291 27.1042 17.3333 26 17.3333ZM9.33333 14H14V7.33331H18V14H22.6667L16 20.6666L9.33333 14ZM26 24.6666H6V19.3333H11.8375L14.5833 22.0791C15.3667 22.8625 16.6292 22.8583 17.4125 22.0791L20.1583 19.3333H26V24.6666ZM22.3333 22C22.3333 21.4458 22.7792 21 23.3333 21C23.8875 21 24.3333 21.4458 24.3333 22C24.3333 22.5541 23.8875 23 23.3333 23C22.7792 23 22.3333 22.5541 22.3333 22Z" fill="#2a75c0"/>
+                                      </svg>
+                                      <label class="link-label">Download</label>
+                                    </span>
+                                  </a>
+
+                              </div>
+                          ))
+                      ) : (
+                          <p>No files available</p>
+                      )}
                   </td>
-                  <td>{request.status}</td>
-                  <td>{request.comment_id}</td>
+                  <td>{request?.leave?.status}</td>
+                  <td>{request?.leave?.comment_id}</td>
                   <td style={{ textAlign: "center" }}>
                     <span className='link' 
                           onClick={() => approveRequest(request)} 

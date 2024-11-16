@@ -23,7 +23,7 @@ function ScholarTasks() {
 
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState({
-        id: details.user_id,
+        id: details.user_id ? details.user_id : '',
         year: '',
         semester: '',
         type: '',

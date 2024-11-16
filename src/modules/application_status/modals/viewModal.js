@@ -15,6 +15,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import API from 'services/Api'
 import 'modules/application_status/style.css'
+import { toast } from 'react-toastify'; // Toast notification
 
 
 const files = [
@@ -78,18 +79,62 @@ class ViewModal extends Component {
           comment: null,
           isCollapsed: true,
 
-          details: null
+          details: null,
+          fileObject: null
         };
       }
       componentDidMount() {
         this.setState({
             details: this.props.details
         })
-        
+        this.getFiles(() => {
+            // This function will be called after getList successfully retrieves data
+            this.setState({
+                tableLoader: false,
+            });
+        });
     }
-    
+    getFiles(callback){
+        const {details} = this.props;
+        this.props.setIsLoadingV2(true);
+        API.request('account_details/retrieveWithAccountDetailsWithDetailsId', {
+            account_details_id: details.id
+          }, response => {
+              if (response && response.data) {
+                //   toast.success("")
+                this.setState({
+                    fileObject: response.data
+                })
+              } else {
+                    toast.error("Something went wrong. Please try again")
+                  this.setState({
+                    tableLoader: false
+                  })
+                  // Optionally, call the callback function with an error or a specific value
+                  if (typeof callback === 'function') {
+                      callback(false);
+                  }
+              }
+              this.props.setIsLoadingV2(false);
+
+          }, error => {
+            toast.error("Something went wrong. Check your connection and try again")
+              this.props.setIsLoadingV2(false);
+
+              // Optionally, call the callback function with an error or a specific value
+              if (typeof callback === 'function') {
+                  callback(false);
+              }
+          });
+    }
     componentDidUpdate(prevProps) {
-       
+        // If details or other relevant props change, update state
+        if (this.props.details !== prevProps.details) {
+            this.setState({ details: this.props.details });
+            if (!this.state.fileObject) {
+                this.getFiles();
+            }
+        }
     }
     toggleFilesSectionVisibility() {
         this.setState(prevState => ({
@@ -104,7 +149,7 @@ class ViewModal extends Component {
         this.props.onHide()
     }
     render() {
-        const {details} = this.state
+        const {details, fileObject} = this.state
     return (
         <div >
             {/* <div className="headerStyle"><h2>LEAVE REQUESTS</h2></div> */}
@@ -155,7 +200,6 @@ class ViewModal extends Component {
             </Col>
         </Row> */}
         <Row className='Row'>
-            
             <Col xs={9} className="text-left">
                 <p style={{fontWeight: 'bold'}}>File Uploads</p>
             </Col>
@@ -171,7 +215,7 @@ class ViewModal extends Component {
     <div  className={`files-container ${this.state.isCollapsed? '' : 'expanded'}`}>
     {!this.state.isCollapsed &&
         files.map((item, index) => {
-            const fileUrl = details? details[item.key] : '';
+            const fileUrl = fileObject? fileObject[item.key] : details[item.key];
             return (
                 <div key={index}>
                     <Row className='Row'>

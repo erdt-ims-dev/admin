@@ -60,7 +60,7 @@ class Tracker extends Component {
             this.props.setIsLoadingV2(false);
             if (response && response.data) {
                 this.setState({
-                    comments: response.data.message
+                    comments: response.data.message ? response.data.message : ""
                 })
             } else {
                 console.log('error on retrieve');

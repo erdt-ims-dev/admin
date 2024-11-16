@@ -261,7 +261,6 @@ const formValidation = () => {
       formData.append('comment_id', newLeaveRequest.comment_id);
       selectedFiles.forEach((file, index) => {
         formData.append('file[]', file); 
-        console.log(file)
     });  
       API.uploadFile('leave_application/upload', formData, response => {
         if (response && response.data !== null) {

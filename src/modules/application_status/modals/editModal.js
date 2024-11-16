@@ -14,7 +14,7 @@ import placeholder from 'assets/img/placeholder.jpeg'
 import { Button, Modal } from 'react-bootstrap';
 import API from 'services/Api'
 import { connect } from 'react-redux'; // Import connect from react-redux
-import './style.css'
+import 'modules/applications/editModal/style.css'
 import { toast } from 'react-toastify'; // Import toast from react-toastify
 
 const files = [
@@ -135,7 +135,7 @@ class EditModal extends Component {
             this.props.setIsLoadingV2(false);
             if (response && response.data) {
                 this.setState({
-                    comment: response.data.message
+                    comment: response.data.message ? response.data.message : ""
                 })
             } else {
                 console.log('error on retrieve');
@@ -210,9 +210,9 @@ class EditModal extends Component {
             const { selectedFiles, aliasToTitle } = this.state;
             const { setData } = this.props;
             let formData = new FormData();
-        
+            console.log('id', setData)
             // Append user_id to the FormData
-            formData.append('user_id', setData.user_id);
+            formData.append('account_details_id', setData.account_details_id);
         
             // Loop through each file and check if it's a PDF
             for (const [field, fileData] of Object.entries(selectedFiles)) {
@@ -235,12 +235,13 @@ class EditModal extends Component {
             this.props.setIsLoadingV2(true);
         
             // Make a single API call with all files
-            API.uploadFile('account_details/uploadNewFiles', formData, response => {
+            API.uploadFile('account_details/uploadViaScholar', formData, response => {
                 // Set loading to false after the API call is completed
                 this.props.setIsLoadingV2(false);
         
                 if (response && response.data) {
                     toast.success("File(s) uploaded successfully!");
+                    // this.props.setDetails(response.details)
                     this.handleDiscard();
                     this.props.refreshList();
                     this.props.onHide();
@@ -324,26 +325,7 @@ class EditModal extends Component {
 
         </Row>
 
-        <Row className='Row' style={{alignItems:'center'}}>
-            <Col className='imageCircle'>
-                <img className='circle' src={placeholder}></img>
-            </Col>
-            <Col className='imageText'>
-            <p className=''>{setData ? `${setData.first_name} ${setData.middle_name !== 'null' ? setData.middle_name : ''} ${setData.last_name}, ${setData.program}` : ''}</p>
-            </Col>
-        </Row>
-        <Row className='Row'>
-            <Col>
-            <InputFieldV4
-                id={3}
-                type={'field'}
-                label={'Latest Staff Comment'}
-                inject={this.state.comment}
-                locked={true}
-                active={false}
-                />
-            </Col>
-        </Row>
+        
         <Row className='Row'>
             <Col xs={9} className="text-left">
                 <p style={{fontWeight: 'bold'}}>File Uploads</p>
@@ -490,7 +472,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setIsLoadingV2: (status) => {
         dispatch({ type: 'SET_IS_LOADING_V2', payload: { status } });
-      }
+      },
+      setDetails: (details) => dispatch({ type: 'SET_DETAILS', payload: { details } }),
+
   };
 };
 
