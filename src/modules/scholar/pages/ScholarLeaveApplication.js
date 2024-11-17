@@ -19,7 +19,7 @@ function ScholarLeaveApplication() {
 
   const [leaverequests, setLeaveRequests] = useState([]);
   const [newLeaveRequest, setNewLeaveRequest] = useState({
-    id: details.user_id ? details.user_id : '',
+    id: details?.user_id,
     year: '',
     semester: '',
     file: '',
