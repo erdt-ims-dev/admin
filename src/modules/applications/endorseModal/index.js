@@ -110,7 +110,7 @@ class endorseModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={()=>{this.handleEndorse()}}>Endorse</Button>
+        <Button variant='success' onClick={()=>{this.handleEndorse()}}>Endorse</Button>
       </Modal.Footer>
     </Modal>
                     

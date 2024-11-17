@@ -105,7 +105,7 @@ class approveModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={()=>{this.handleApprove()}}>Approve</Button>
+        <Button variant='success' onClick={()=>{this.handleApprove()}}>Approve</Button>
       </Modal.Footer>
     </Modal>
                     

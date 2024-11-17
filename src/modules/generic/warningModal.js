@@ -37,7 +37,7 @@ class WarningModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Discard</Button>
-        <Button onClick={()=>{this.props.onContinue()}}>Continue</Button>
+        <Button variant='danger' onClick={()=>{this.props.onContinue()}}>Continue</Button>
       </Modal.Footer>
     </Modal>    
     </div> 

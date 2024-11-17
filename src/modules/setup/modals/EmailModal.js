@@ -248,7 +248,7 @@ class EmailModal extends Component {
                 discardModal: true
             })
             }}>Discard Changes</Button>
-        <Button variant='primary' onClick={this.updateEmail}>Save Changes</Button>
+        <Button variant='success' onClick={this.updateEmail}>Save Changes</Button>
       </Modal.Footer>
     </Modal>
                     

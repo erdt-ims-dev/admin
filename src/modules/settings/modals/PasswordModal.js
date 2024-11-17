@@ -235,7 +235,7 @@ class PasswordModal extends Component {
                 discardModal: true
             })
             }}>Discard Changes</Button>
-        <Button variant='primary' onClick={()=>{this.updatePassword()}}>Save Changes</Button>
+        <Button variant='success' onClick={()=>{this.updatePassword()}}>Save Changes</Button>
       </Modal.Footer>
     </Modal>
                     

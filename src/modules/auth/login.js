@@ -187,9 +187,11 @@ class Login extends Component {
           centered // Center the modal on the screen
           className="custom-modal" // Custom class for theme styling
         >
-          <Modal.Header closeButton className="custom-modal-header">
+          <div style={{ background: "#404041", color: "#f5f5f5", borderRadius: "8px 8px 0px 0px"}} data-bs-theme="dark" className='bg-dark p-2'>
+          <Modal.Header closeButton className="">
             <Modal.Title className="custom-modal-title">Forgot Password</Modal.Title>
           </Modal.Header>
+          </div>
           <Modal.Body className="custom-modal-body">
             <Form>
               <Form.Group controlId="forgotPasswordEmail">
@@ -209,7 +211,7 @@ class Login extends Component {
             {/* <Button variant="secondary" onClick={this.toggleForgotPasswordModal} className="custom-button">
               Close
             </Button> */}
-            <Button variant="primary" onClick={this.handleForgotPasswordSubmit} className="custom-button-primary">
+            <Button variant="success" onClick={this.handleForgotPasswordSubmit} className="custom-button-primary">
               Send Reset Link
             </Button>
           </Modal.Footer>

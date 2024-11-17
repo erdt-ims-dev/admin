@@ -71,7 +71,7 @@ class endorseModal extends Component {
         backgroundColor: '#f1f5fb'
       }}>
         <Button variant='secondary' onClick={this.props.onHide}>Close</Button>
-        <Button onClick={()=>{this.handleReject()}}>Reject</Button>
+        <Button variant='danger' onClick={()=>{this.handleReject()}}>Reject</Button>
       </Modal.Footer>
     </Modal>
                     

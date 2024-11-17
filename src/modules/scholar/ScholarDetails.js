@@ -166,9 +166,9 @@ function ScholarDetails() {
           </Row>
           <hr className='break'/>
 
-          <Row className='Row'>
+          <Row className='Row' style={{display: 'flex', alignItems: 'center'}}>
               <Col className='imageCircle'>
-                  <img className='circle' src={placeholder}></img>  
+                  <img className='circle' src={scholar?.account_details?.profile_picture ? scholar?.account_details?.profile_picture : placeholder}></img>  
               </Col>
               <Col className='imageText'>
                   <p className=''>This will be the profile picture displayed</p>
@@ -282,7 +282,15 @@ function ScholarDetails() {
                 </Col>
                 <Col md={4}>
                   {/* Conditionally render the file link */}  {/* <a className='icon' href={fileLink} target='_blank' rel='noopener noreferrer'>View File</a> */}
-                  <a href={(item.link !== null) ? item.link : "#"} target="_blank" rel="noreferrer noopener">View File</a>
+                  <a href={(item.link !== null) ? item.link : "#"} target="_blank" rel="noreferrer noopener">
+                  
+                  <span className='link'>
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M27.8453 16.9608L24.8549 13.9479C24.5403 13.6312 23.9999 13.8537 23.9999 14.3V16.3366H19.9999V10.8325C19.9999 10.3033 19.7845 9.79082 19.4095 9.41624L15.9141 5.92084C15.5391 5.54584 15.0308 5.33334 14.502 5.33334H5.99957C4.89583 5.33751 4 6.23334 4 7.33708V24.667C4 25.7708 4.89583 26.6666 5.99957 26.6666H17.997C19.1012 26.6666 19.9999 25.7708 19.9999 24.667V20.3362H17.9999V24.667H5.99957V7.33708H12.665V11.6696C12.665 12.2237 13.1108 12.6691 13.665 12.6691H17.9999V16.3362H11.1666C10.8904 16.3362 10.6666 16.56 10.6666 16.8362V17.8362C10.6666 18.1125 10.8904 18.3362 11.1666 18.3362H23.9999V20.3729C23.9999 20.8191 24.5403 21.0416 24.8549 20.7249L27.8453 17.712C28.0516 17.5041 28.0516 17.1687 27.8453 16.9608ZM14.6645 10.6696V7.49958L17.8349 10.6696H14.6645Z" fill="#0d6efd"/>
+                    </svg>
+                    <label className='link-label' style={{ width: '4rem'}}>View File</label>
+                  </span>
+                  </a>
                 </Col>
                 <Col md={4} className='switch'>
                   <Col>
@@ -294,7 +302,6 @@ function ScholarDetails() {
                       style={{ display: 'none' }}
                       onChange={(event) => this.handleFileChange(event, item.alias)}
                     />
-                    
                   </Col>
                 </Col>
               </Row>
@@ -308,7 +315,7 @@ function ScholarDetails() {
       
       </Col>
       <Col md={2}>
-          <Button onClick={updateDetails}>
+          <Button style={{width: '9rem'}} onClick={updateDetails}>
               Update Account
           </Button>
       </Col>

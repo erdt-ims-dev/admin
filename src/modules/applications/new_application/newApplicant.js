@@ -341,7 +341,7 @@ class newApplicant extends Component {
                 {!hasFilesSelected && !this.state.emailRetrieved && (
                   <Row className="sectionHeader">
                     <Col className="options">
-                      <Button onClick={() => this.retrieveUser()}>Find Email</Button>
+                      <Button variant='dark' onClick={() => this.retrieveUser()}>Find Email</Button>
                     </Col>
                   </Row>
                 )}
@@ -349,8 +349,8 @@ class newApplicant extends Component {
                 {hasFilesSelected && (
                   <Row className="sectionHeader">
                     <Col className="options">
-                      <Button variant="danger" onClick={() => this.setState({ discardModal: true })}>Discard</Button>
-                      <Button onClick={() => this.uploadFile()}>Create Applicant</Button>
+                      <Button variant="secondary" onClick={() => this.setState({ discardModal: true })}>Discard</Button>
+                      <Button variant="success" onClick={() => this.uploadFile()}>Create Applicant</Button>
                     </Col>
                   </Row>
                 )}

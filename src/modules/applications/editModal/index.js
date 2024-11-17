@@ -376,7 +376,7 @@ class EditModal extends Component {
                                 <div class="contentButton link">
                                         <button onClick={() => {
                                         window.open(fileUrl, '_blank');
-                                        }} style={{display: 'flex', alignItems: 'center'}}>
+                                        }} style={{display: 'flex', alignItems: 'center',width: '10rem'}}>
                                         <FontAwesomeIcon icon={faFilePdf} style={{marginRight: 5}} />
                                         <span className="upload-text">Submitted File</span>
                                         </button>
@@ -473,7 +473,7 @@ class EditModal extends Component {
                 discardModal: true
             })
             }}>Discard Changes</Button>
-        <Button variant='primary' onClick={()=>{this.uploadFile()}} disabled={!this.state.hasChanges}>Save Changes</Button>
+        <Button variant='success' onClick={()=>{this.uploadFile()}} disabled={!this.state.hasChanges}>Save Changes</Button>
       </Modal.Footer>
     </Modal>
                     

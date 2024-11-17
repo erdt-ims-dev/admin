@@ -66,7 +66,7 @@ class RemarksModal extends Component {
               <Form.Label>Add Remarks for Applicant</Form.Label>
               <Form.Control as="textarea" rows={3} placeholder="Enter remarks" value={this.state.message} onChange={this.handleMessageChange} />
             </Form.Group>
-            <Button variant="primary" onClick={()=>{this.handleRemarkSubmit()}}>
+            <Button variant="dark" onClick={()=>{this.handleRemarkSubmit()}}>
               Submit
             </Button>
           </Form>

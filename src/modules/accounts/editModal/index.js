@@ -91,7 +91,7 @@ class EditModal extends Component {
                     <Button variant="secondary" onClick={onHide}>
                         Discard
                     </Button>
-                    <Button variant="primary" onClick={()=>{this.handleSubmit()}}>
+                    <Button variant="success" onClick={()=>{this.handleSubmit()}}>
                         Save
                     </Button>
                     {/* Add a button for saving changes if necessary */}

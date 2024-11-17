@@ -474,7 +474,8 @@ const validateField = (fieldName, value) => {
             {!validation.email && (
                 <p style={{ color: 'red', fontStyle: 'italic' }}>Please enter a valid email</p>
             )}
-        </Form.Group>
+            </Form.Group>
+            <br/>
         <Form.Group controlId="formYearCategory">
             <Form.Label>Year</Form.Label>
             <Form.Select
@@ -724,12 +725,12 @@ const validateField = (fieldName, value) => {
         <Modal.Header closeButton>
           <Modal.Title>Are you sure?</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+        <Modal.Body>Are you sure you want to deny this item?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleDeleteRequestClose}>
             No
           </Button>
-          <Button variant="primary" onClick={deleteRequest}>
+          <Button variant="danger" onClick={deleteRequest}>
             Yes
           </Button>
         </Modal.Footer>
@@ -829,7 +830,7 @@ const validateField = (fieldName, value) => {
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M13.4874 11.9998L16.8537 8.63358C17.0484 8.4389 17.0484 8.12296 16.8537 7.92796L16.0715 7.14577C15.8768 6.95108 15.5608 6.95108 15.3658 7.14577L11.9998 10.5123L8.63354 7.14608C8.43885 6.9514 8.12291 6.9514 7.92791 7.14608L7.14602 7.92796C6.95133 8.12265 6.95133 8.43858 7.14602 8.63358L10.5123 11.9998L7.14602 15.3661C6.95133 15.5608 6.95133 15.8767 7.14602 16.0717L7.92822 16.8539C8.12291 17.0486 8.43885 17.0486 8.63385 16.8539L11.9998 13.4873L15.3661 16.8536C15.5608 17.0483 15.8768 17.0483 16.0718 16.8536L16.854 16.0714C17.0487 15.8767 17.0487 15.5608 16.854 15.3658L13.4874 11.9998Z" fill="red"/>
                       </svg>
-                    <label class="link-label">Delete</label>
+                    <label class="link-label">Deny</label>
                     </span>
                     </div>
                     

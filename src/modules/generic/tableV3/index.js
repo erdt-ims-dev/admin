@@ -145,16 +145,6 @@ return isLoading ? (
         <td>
           <Skeleton baseColor='lightgrey' />
         </td>
-      </tr>
-    </tbody>
-    <tbody>
-      <tr>
-        <td>
-          <Skeleton baseColor='lightgrey' />
-        </td>
-        <td>
-          <Skeleton baseColor='lightgrey' />
-        </td>
         <td>
           <Skeleton baseColor='lightgrey' />
         </td>
@@ -165,6 +155,34 @@ return isLoading ? (
     </tbody>
     <tbody>
       <tr>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
+        <td>
+          <Skeleton baseColor='lightgrey' />
+        </td>
         <td>
           <Skeleton baseColor='lightgrey' />
         </td>

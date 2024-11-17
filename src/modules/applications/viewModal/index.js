@@ -218,7 +218,7 @@ class ViewModal extends Component {
                                 <div class="contentButton link">
                                     <button onClick={() => {
                                     window.open(fileUrl, '_blank');
-                                    }} style={{display: 'flex', alignItems: 'center'}}>
+                                    }} style={{display: 'flex', alignItems: 'center', width: '10rem'}}>
                                     <FontAwesomeIcon icon={faFilePdf} style={{marginRight: 5}} />
                                     <span className="upload-text">Submitted File</span>
                                     </button>

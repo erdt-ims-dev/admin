@@ -431,7 +431,7 @@ class EditModal extends Component {
             overwriteModal: false
         })}}
     />
-    <WarningModal
+    <WarningModal                    
         show={this.state.discardModal}
         message={"Are you sure you want to discard changes?"}
         button1={"No"}
