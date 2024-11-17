@@ -75,8 +75,8 @@ class Register extends Component {
             <h3 className="">Register</h3>
             <p>Register and proceed using the app.</p>
             </Row>
+            <br/>
             <Row className="">
-              <Col>
               <label><b>First Name:</b></label>
               <input
                 onChange={(e) => this.setState({ firstName: e.target.value, errorFirstName: '' })}
@@ -93,8 +93,8 @@ class Register extends Component {
                   onChange={(firstName) => this.setState({ firstName, errorFirstName: '' })}
                 />
                 <p className='errorText'>{errorFirstName}</p> */}
-              </Col>
-              <Col>
+            </Row>
+            <Row className="">
               <label><b>Last Name:</b></label>
               <input
                 onChange={(e) => this.setState({ lastName: e.target.value, errorLastName: '' })}
@@ -111,7 +111,6 @@ class Register extends Component {
                   onChange={(lastName) => this.setState({ lastName, errorLastName: '' })}
                 />
                 <p className='errorText'>{errorLastName}</p> */}
-              </Col>
             </Row>
             <Row className="">
             <label><b>Email:</b></label>
@@ -131,7 +130,7 @@ class Register extends Component {
               />
               <p className='errorText'>{errorEmail}</p> */}
             </Row>
-            <Row className="Row mx-4">
+            <Row className="Row">
               {/* <Button variant="primary" size="lg" onClick={this.submit}>
                 Register
               </Button> */}
