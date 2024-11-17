@@ -258,12 +258,12 @@ const validateField = (fieldName, value) => {
   const formValidation = () => {
     let formIsValid = true;
     const updatedValidation = { ...validation };
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|usc\.edu\.ph)$/;
-    if (!emailRegex.test(newLeaveRequest.email)) {
-      updatedValidation.email = false;
-      formIsValid = false;
-      toast.error('Invalid email.');
-    }
+    // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|usc\.edu\.ph)$/;
+    // if (!emailRegex.test(newLeaveRequest.email)) {
+    //   updatedValidation.email = false;
+    //   formIsValid = false;
+    //   toast.error('Invalid email.');
+    // }
     if (!newLeaveRequest.email) {
       updatedValidation.email = false;
       formIsValid = false;
