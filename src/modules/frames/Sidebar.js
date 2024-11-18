@@ -27,6 +27,7 @@ import {
 
 import "./style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckSquare } from "@fortawesome/free-regular-svg-icons";
 
 // Modify 'item' as needed
 const item = [
@@ -64,6 +65,11 @@ const item = [
     name: "Announcements",
     route: "/announcements",
     icon: faBullhorn,
+  },
+  {
+    name: "Report Generation",
+    route: "/reports",
+    icon: faCheckSquare,
   },
   {
     name: "Accounts",

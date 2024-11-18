@@ -16,6 +16,9 @@ import EndorsementList from "modules/endorsements/index";
 import NewApplicant from "modules/applications/new_application/newApplicant";
 import SystemAnnouncements from "modules/announcements/index";
 
+import Reports from "modules/report/index";
+
+
 
 export default function Routes() {
   return (
@@ -61,7 +64,8 @@ export default function Routes() {
           <Route path="/accounts" exact component={Accounts} isPrivate/>
           <Route path="/settings" exact component={Settings} isPrivate/>
           <Route path="/register" exact component={Register} isPrivate/>
-        
+          <Route path="/reports" exact component={Reports} isPrivate/>
+
 
 
           {/* default */}
