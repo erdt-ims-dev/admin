@@ -27,6 +27,7 @@ class Reports extends Component {
     constructor(props) {
       super(props);
       this.state = {
+          type: '',
           status: '',
           year: '',
           semester: ''
@@ -41,26 +42,63 @@ class Reports extends Component {
   };
 
   // Generate report using pdf-lib
-  generateReport = async () => {
-    const { status, year, semester } = this.state;
-
-    if (!status || !year || !semester) {
-      alert("Please fill all fields before generating the report.");
-      return;
-    }
-
+  generateReport = async (data) => {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([600, 400]);
-
+  
     page.drawText('Report Summary', { x: 50, y: 350, size: 20, color: rgb(0, 0.53, 0.71) });
-    page.drawText(`Status: ${status}`, { x: 50, y: 300, size: 12 });
-    page.drawText(`Year: ${year}`, { x: 50, y: 280, size: 12 });
-    page.drawText(`Semester: ${semester}`, { x: 50, y: 260, size: 12 });
-
+    page.drawText(`Status: ${this.state.status}`, { x: 50, y: 300, size: 12 });
+    page.drawText(`Year: ${this.state.year}`, { x: 50, y: 280, size: 12 });
+    page.drawText(`Semester: ${this.state.semester}`, { x: 50, y: 260, size: 12 });
+  
+    const yStart = 220;
+    const rowHeight = 20;
+    let yPosition = yStart;
+  
+    // Check if the status is 'on going' and create the appropriate table
+    if (this.state.status === 'on going' && data.scholars) {
+      page.drawText('Ongoing Scholars', { x: 50, y: yPosition, size: 14, color: rgb(0, 0.53, 0.71) });
+      yPosition -= rowHeight;
+      
+      // Draw table headers
+      page.drawText('Name', { x: 50, y: yPosition, size: 10 });
+      page.drawText('Email', { x: 200, y: yPosition, size: 10 });
+      page.drawText('Program', { x: 350, y: yPosition, size: 10 });
+      yPosition -= rowHeight;
+  
+      // Draw the scholar data rows
+      data.scholars.forEach((scholar) => {
+        page.drawText(scholar.name, { x: 50, y: yPosition, size: 10 });
+        page.drawText(scholar.email, { x: 200, y: yPosition, size: 10 });
+        page.drawText(scholar.program, { x: 350, y: yPosition, size: 10 });
+        yPosition -= rowHeight;
+      });
+    } else if (this.state.status === 'on leave' && data.leaves) {
+      // Check if the status is 'on leave' and create the leave data table
+      page.drawText('Leave Applications', { x: 50, y: yPosition, size: 14, color: rgb(0, 0.53, 0.71) });
+      yPosition -= rowHeight;
+  
+      // Draw table headers
+      page.drawText('Name', { x: 50, y: yPosition, size: 10 });
+      page.drawText('Leave Duration', { x: 200, y: yPosition, size: 10 });
+      page.drawText('Leave Status', { x: 350, y: yPosition, size: 10 });
+      yPosition -= rowHeight;
+  
+      // Draw the leave application data rows
+      data.leaves.forEach((leave) => {
+        page.drawText(leave.user_name, { x: 50, y: yPosition, size: 10 });
+        page.drawText(`${leave.leave_duration.semester} ${leave.leave_duration.year}`, { x: 200, y: yPosition, size: 10 });
+        page.drawText(leave.leave_status, { x: 350, y: yPosition, size: 10 });
+        yPosition -= rowHeight;
+      });
+    }
+  
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     saveAs(blob, 'Report.pdf');
   };
+  
+  
 
   // Clear all fields
   clearFields = () => {
@@ -69,37 +107,37 @@ class Reports extends Component {
     
     
     // State
-    fetchReportData(callback) {
+    fetchReportData = () => {
         const { status, year, semester } = this.state;
       
         if (!status || !year || !semester) {
-          alert("Please fill all fields before generating the report.");
+          toast.info("Please fill all fields before generating the report.");
           return;
         }
       
         // API Request
         this.props.setIsLoadingV2(true); // Trigger loading state if applicable
-        API.request(
-          'report/generate', // Your API endpoint
+        API.request('user/generateReport', 
           {
             status, 
             year, 
             semester,
           },
-          (response) => {
-            if (response && response.data) {
-              console.log("Report data fetched successfully:", response.data);
-              callback(response.data); // Pass the fetched data to the callback
+          response => {
+            if (response) {
+              toast.success("Report data fetched successfully");
+              // callback(response.data); // Pass the fetched data to the callback
+              this.generateReport(response);
             } else {
-              console.error("Error fetching report data.");
-              callback(null); // Handle the error gracefully
+              toast.error("Error fetching report data.");
+              // callback(null); // Handle the error gracefully
             }
             this.props.setIsLoadingV2(false);
           },
           (error) => {
-            console.error("Error during API call:", error);
+            toast.error("Error during API call:", error);
             this.props.setIsLoadingV2(false);
-            callback(null); // Handle the error gracefully
+            // callback(null); // Handle the error gracefully
           }
         );
       }
@@ -110,7 +148,7 @@ class Reports extends Component {
   }
     
     render() {
-        const { status, year, semester } = this.state;
+        const { status, year, semester, type } = this.state;
         const {history} = this.props;
       return (
       <div className="">
@@ -123,31 +161,26 @@ class Reports extends Component {
       >
         <Breadcrumbs header="Generate Report" subheader="Generate a report here"/>
             
-            
-        {/* <div class="contentButton">
-          <button onClick={()=>{ history.push('/new_application')}}>+ Add New Application</button>
-        </div> */}
       </Box>
 
       <div className="table-container">
       <div className="form-container">
           <Form>
             <Form.Group controlId="status">
-              <Form.Label>Status</Form.Label>
+              <Form.Label>Scholars that are:</Form.Label>
               <Form.Control
                 as="select"
                 value={status}
                 onChange={(e) => this.handleInputChange('status', e.target.value)}
               >
                 <option value="">Select Status</option>
-                <option value="applications">Applications</option>
-                <option value="scholar">Scholar</option>
-                <option value="leaves">Leaves</option>
+                <option value="on going">On Going</option>
+                <option value="on leave">On Leave</option>
               </Form.Control>
             </Form.Group>
 
             <Form.Group controlId="year" className="mt-3">
-              <Form.Label>Year</Form.Label>
+              <Form.Label>Of the Year</Form.Label>
               <Form.Control
                 as="select"
                 value={year}
@@ -157,11 +190,12 @@ class Reports extends Component {
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
                 <option value="2025">2025</option>
+                <option value="all">All Records</option>
               </Form.Control>
             </Form.Group>
 
             <Form.Group controlId="semester" className="mt-3">
-              <Form.Label>Semester</Form.Label>
+              <Form.Label>Of the Semester</Form.Label>
               <Form.Control
                 as="select"
                 value={semester}
@@ -171,11 +205,12 @@ class Reports extends Component {
                 <option value="1st semester">1st Semester</option>
                 <option value="2nd semester">2nd Semester</option>
                 <option value="summer">Summer</option>
+                <option value="all">All Semesters</option>
               </Form.Control>
             </Form.Group>
 
             <div className="mt-4">
-              <Button variant="primary" onClick={this.generateReport}>
+              <Button variant="primary" onClick={this.fetchReportData}>
                 Generate Report
               </Button>
               <Button variant="secondary" className="ms-2" onClick={this.clearFields}>
