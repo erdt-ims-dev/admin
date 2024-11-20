@@ -210,12 +210,13 @@ class Reports extends Component {
             </Form.Group>
 
             <div className="mt-4">
-              <Button variant="primary" onClick={this.fetchReportData}>
-                Generate Report
-              </Button>
               <Button variant="secondary" className="ms-2" onClick={this.clearFields}>
                 Clear Fields
               </Button>
+              <Button variant="primary" onClick={this.fetchReportData}>
+                Generate Report
+              </Button>
+              
             </div>
           </Form>
         </div>

@@ -23,7 +23,8 @@ import {
   faGear,
   faList,
   faClipboardCheck,
-  faScroll
+  faScroll,
+  faCheckSquare
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./style.css";
@@ -56,6 +57,11 @@ const item = [
     name: "Manage Leave Requests",
     route: "/leaves",
     icon: faEnvira,
+  },
+  {
+    name: "Report Generation",
+    route: "/reports",
+    icon: faCheckSquare,
   },
   {
     name: "Settings",

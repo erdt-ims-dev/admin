@@ -10,6 +10,7 @@ import Leaves from "modules/leaves/index.js";
 import Accounts from "modules/accounts/index.js";
 import Settings from "modules/settings/index.js";
 import Register from "modules/auth/register.js";
+import Reports from "modules/report/index";
 
 import ApplicantList from "modules/applications/index.js";
 import EndorsementList from "modules/endorsements/index";
@@ -59,7 +60,7 @@ export default function Routes() {
           <Route path="/leaves" exact component={Leaves} isPrivate/>
           <Route path="/settings" exact component={Settings} isPrivate/>
           <Route path="/register" exact component={Register} isPrivate/>
-        
+          <Route path="/reports" exact component={Reports} isPrivate/>
 
 
           {/* default */}
