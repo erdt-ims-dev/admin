@@ -163,10 +163,10 @@ class Reports extends Component {
             
       </Box>
 
-      <div className="table-container">
-      <div className="form-container">
+      <div className="table-container" style={{ backgroundColor: 'transparent', outline: '1px solid #ececec' }}>
+      <div className="form-container" style={{ alignContent: 'center' }}>
           <Form>
-            <Form.Group controlId="status">
+            <Form.Group controlId="status" style={{ textAlign: 'left' }}>
               <Form.Label>Scholars that are:</Form.Label>
               <Form.Control
                 as="select"
@@ -179,7 +179,7 @@ class Reports extends Component {
               </Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="year" className="mt-3">
+            <Form.Group controlId="year" className="mt-3" style={{ textAlign: 'left' }}>
               <Form.Label>Of the Year</Form.Label>
               <Form.Control
                 as="select"
@@ -194,7 +194,7 @@ class Reports extends Component {
               </Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="semester" className="mt-3">
+            <Form.Group controlId="semester" className="mt-3" style={{ textAlign: 'left' }}>
               <Form.Label>Of the Semester</Form.Label>
               <Form.Control
                 as="select"
@@ -210,12 +210,15 @@ class Reports extends Component {
             </Form.Group>
 
             <div className="mt-4">
+              <Button variant="success" onClick={this.fetchReportData}>
+                Generate Report
+              </Button>
               <Button variant="secondary" className="ms-2" onClick={this.clearFields}>
                 Clear Fields
               </Button>
-              <Button variant="primary" onClick={this.fetchReportData}>
+              {/* <Button variant="primary" onClick={this.fetchReportData}>
                 Generate Report
-              </Button>
+              </Button> */}
               
             </div>
           </Form>
